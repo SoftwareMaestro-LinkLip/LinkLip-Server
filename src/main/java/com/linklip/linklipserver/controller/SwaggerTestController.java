@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class SwaggerTestController {
 
     @ApiOperation(value = "test", notes = "테스트입니다.")    // 요청 URL에 매핑된 API 에 대한 설명
-    @ApiResponses({     // 응답에 대한 설명
+    @ApiResponses({     // 응답에 대한 설명 (공통 응답 메시지 덮어쓰기)
             @ApiResponse(code = 200, message = "ok"),
             @ApiResponse(code = 500, message = "server error"),
             @ApiResponse(code = 404, message = "not found")
