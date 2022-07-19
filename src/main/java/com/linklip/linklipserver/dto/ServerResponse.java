@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class ServerResponseWithData {
+public class ServerResponse {
 
     private final int status;
     private final String message;
-    private final Object data;
 
 }
