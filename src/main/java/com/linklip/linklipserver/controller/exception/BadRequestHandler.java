@@ -1,22 +1,21 @@
 package com.linklip.linklipserver.controller.exception;
 
-import com.linklip.linklipserver.constant.ErrorResponse;
 import com.linklip.linklipserver.dto.ServerResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
-import static com.linklip.linklipserver.constant.ErrorResponse.NOT_FOUND;
+import static com.linklip.linklipserver.constant.ErrorResponse.BAD_REQUEST;
 
 
 @RestControllerAdvice
-public class NotFoundHandler {
+public class BadRequestHandler {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ServerResponse handle404(NoHandlerFoundException exception) {
-        return new ServerResponse(NOT_FOUND.getStatus(), NOT_FOUND.getMessage());
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ServerResponse handle400(MethodArgumentNotValidException exception) {
+        return new ServerResponse(BAD_REQUEST.getStatus(), BAD_REQUEST.getMessage());
     }
 }

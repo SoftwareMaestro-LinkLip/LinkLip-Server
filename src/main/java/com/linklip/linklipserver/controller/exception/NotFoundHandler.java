@@ -1,6 +1,5 @@
-package com.linklip.linklipserver.controller;
+package com.linklip.linklipserver.controller.exception;
 
-import com.linklip.linklipserver.constant.ErrorResponse;
 import com.linklip.linklipserver.dto.ServerResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +15,7 @@ public class NotFoundHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ServerResponse handle404(NoHandlerFoundException exception) {
+    public ServerResponse handle404(Exception exception) {
         return new ServerResponse(NOT_FOUND.getStatus(), NOT_FOUND.getMessage());
     }
 }
