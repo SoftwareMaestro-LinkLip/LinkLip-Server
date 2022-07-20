@@ -20,7 +20,7 @@ public class InternalErrorHandler {
     @ExceptionHandler({MissingPathVariableException.class,
             ConversionNotSupportedException.class,
             HttpMessageNotWritableException.class})
-    public ServerResponse handle500(NoHandlerFoundException exception) {
-        return new ServerResponse(INTERNAL_ERROR.getStatus(), INTERNAL_ERROR.getMessage());
+    public ServerResponse handle500(Exception exception) {
+        return new ServerResponse(INTERNAL_ERROR.getStatus(), INTERNAL_ERROR.getSuccess(), INTERNAL_ERROR.getMessage());
     }
 }

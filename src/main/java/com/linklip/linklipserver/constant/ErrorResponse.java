@@ -15,6 +15,9 @@ public enum ErrorResponse {
     private final String code;
 
     @Getter
+    private final Boolean success = false;
+
+    @Getter
     private final String message;
 
     private ErrorResponse(HttpStatus status, String code, String message) {

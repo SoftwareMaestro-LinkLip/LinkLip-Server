@@ -16,6 +16,6 @@ public class NotFoundHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
     public ServerResponse handle404(Exception exception) {
-        return new ServerResponse(NOT_FOUND.getStatus(), NOT_FOUND.getMessage());
+        return new ServerResponse(NOT_FOUND.getStatus(), NOT_FOUND.getSuccess(), NOT_FOUND.getMessage());
     }
 }

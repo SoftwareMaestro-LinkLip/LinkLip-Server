@@ -13,6 +13,9 @@ public enum SuccessResponse {
     private final String code;
 
     @Getter
+    private final Boolean success = true;
+
+    @Getter
     private final String message;
 
     private SuccessResponse(HttpStatus status, String code, String message) {

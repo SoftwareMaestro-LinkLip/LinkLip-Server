@@ -37,7 +37,12 @@ public class ContentController {
     public ServerResponse saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
         Content content = Content.builder().linkUrl(request.getUrl()).build();
         contentService.saveContent(content);
-        return new ServerResponse(SAVE_LINK_SUCCESS.getStatus(), SAVE_LINK_SUCCESS.getMessage());
+
+        return new ServerResponse(
+                SAVE_LINK_SUCCESS.getStatus(),
+                SAVE_LINK_SUCCESS.getSuccess(),
+                SAVE_LINK_SUCCESS.getMessage()
+        );
     }
 
 

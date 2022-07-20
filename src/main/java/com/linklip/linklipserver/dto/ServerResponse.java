@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class ServerResponse {
 
     private final int status;
+    private final Boolean success;
     private final String message;
 
 }
