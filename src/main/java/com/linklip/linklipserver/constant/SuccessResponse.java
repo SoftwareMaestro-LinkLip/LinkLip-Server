@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 public enum SuccessResponse {
-    SAVE_LINK_SUCCESS(HttpStatus.OK, "OK1", "링크 저장 완료");
+    SAVE_LINK_SUCCESS(HttpStatus.CREATED, "OK1", "링크 저장 완료");
 
     @Getter
     private int status;

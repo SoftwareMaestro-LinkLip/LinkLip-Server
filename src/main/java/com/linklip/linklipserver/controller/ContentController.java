@@ -28,7 +28,7 @@ public class ContentController {
             notes = "[GYJB-50] 링크 저장 API 생성"
     )
     @ApiResponses({
-            @ApiResponse(code = 200, message = "링크 저장 완료"),
+            @ApiResponse(code = 201, message = "링크 저장 완료"),
             @ApiResponse(code = 400, message = "잘못된 요청입니다"),
             @ApiResponse(code = 404, message = "요청 경로 오류"),
             @ApiResponse(code = 500, message = "서버 내부 오류")
