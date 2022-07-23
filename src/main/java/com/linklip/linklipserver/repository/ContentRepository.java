@@ -15,5 +15,4 @@ public class ContentRepository {
     public void save(Content content) {
         em.persist(content);
     }
-
 }

@@ -9,5 +9,4 @@ public class LinklipserverApplication {
     public static void main(String[] args) {
         SpringApplication.run(LinklipserverApplication.class, args);
     }
-
 }

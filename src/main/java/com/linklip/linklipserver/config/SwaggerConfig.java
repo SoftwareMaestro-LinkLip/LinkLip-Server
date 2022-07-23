@@ -26,26 +26,13 @@ public class SwaggerConfig {
 
         // 공통 응답 메시지
         List<ResponseMessage> responseMessages = new ArrayList<>();
-        responseMessages.add(new ResponseMessageBuilder()
-                .code(200)
-                .message("OK")
-                .build());
-        responseMessages.add(new ResponseMessageBuilder()
-                .code(401)
-                .message("Unauthorized")
-                .build());
-        responseMessages.add(new ResponseMessageBuilder()
-                .code(403)
-                .message("Forbidden")
-                .build());
-        responseMessages.add(new ResponseMessageBuilder()
-                .code(404)
-                .message("Not Found")
-                .build());
-        responseMessages.add(new ResponseMessageBuilder()
-                .code(500)
-                .message("Server Error")
-                .build());
+        responseMessages.add(new ResponseMessageBuilder().code(200).message("OK").build());
+        responseMessages.add(
+                new ResponseMessageBuilder().code(401).message("Unauthorized").build());
+        responseMessages.add(new ResponseMessageBuilder().code(403).message("Forbidden").build());
+        responseMessages.add(new ResponseMessageBuilder().code(404).message("Not Found").build());
+        responseMessages.add(
+                new ResponseMessageBuilder().code(500).message("Server Error").build());
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())

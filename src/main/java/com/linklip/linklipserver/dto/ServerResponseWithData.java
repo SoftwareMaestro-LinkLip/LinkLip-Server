@@ -11,5 +11,4 @@ public class ServerResponseWithData {
     private final Boolean success;
     private final String message;
     private final Object data;
-
 }

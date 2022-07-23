@@ -23,15 +23,12 @@ public class ContentController {
 
     private final ContentService contentService;
 
-    @ApiOperation(
-            value = "링크 저장 API v1",
-            notes = "[GYJB-50] 링크 저장 API 생성"
-    )
+    @ApiOperation(value = "링크 저장 API v1", notes = "[GYJB-50] 링크 저장 API 생성")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "링크 저장 완료"),
-            @ApiResponse(code = 400, message = "잘못된 요청입니다"),
-            @ApiResponse(code = 404, message = "요청 경로 오류"),
-            @ApiResponse(code = 500, message = "서버 내부 오류")
+        @ApiResponse(code = 201, message = "링크 저장 완료"),
+        @ApiResponse(code = 400, message = "잘못된 요청입니다"),
+        @ApiResponse(code = 404, message = "요청 경로 오류"),
+        @ApiResponse(code = 500, message = "서버 내부 오류")
     })
     @PostMapping("/v1/link")
     public ServerResponse saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
@@ -41,9 +38,6 @@ public class ContentController {
         return new ServerResponse(
                 SAVE_LINK_SUCCESS.getStatus(),
                 SAVE_LINK_SUCCESS.getSuccess(),
-                SAVE_LINK_SUCCESS.getMessage()
-        );
+                SAVE_LINK_SUCCESS.getMessage());
     }
-
-
 }

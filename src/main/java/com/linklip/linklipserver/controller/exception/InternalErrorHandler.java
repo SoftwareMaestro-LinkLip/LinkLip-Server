@@ -12,15 +12,19 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import static com.linklip.linklipserver.constant.ErrorResponse.INTERNAL_ERROR;
 
-
 @RestControllerAdvice
 public class InternalErrorHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({MissingPathVariableException.class,
-            ConversionNotSupportedException.class,
-            HttpMessageNotWritableException.class})
+    @ExceptionHandler({
+        MissingPathVariableException.class,
+        ConversionNotSupportedException.class,
+        HttpMessageNotWritableException.class
+    })
     public ServerResponse handle500(Exception exception) {
-        return new ServerResponse(INTERNAL_ERROR.getStatus(), INTERNAL_ERROR.getSuccess(), INTERNAL_ERROR.getMessage());
+        return new ServerResponse(
+                INTERNAL_ERROR.getStatus(),
+                INTERNAL_ERROR.getSuccess(),
+                INTERNAL_ERROR.getMessage());
     }
 }
