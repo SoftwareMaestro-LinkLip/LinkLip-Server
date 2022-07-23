@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.github.sherter.google-java-format' version '0.9'
 }
 
 group = 'com.linklip'
@@ -32,4 +33,8 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+googleJavaFormat {
+	options style: 'AOSP'
 }
