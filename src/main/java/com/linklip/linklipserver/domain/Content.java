@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Content {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "content_id")
     private Long id;
 
