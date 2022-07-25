@@ -23,13 +23,20 @@ public class Content {
 
     private String linkImg;
 
+    private String title;
+
+    @Lob // column type을 longtext로 설정
+    private String text;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public Content(String linkUrl, String linkImg) {
+    public Content(String linkUrl, String linkImg, String title, String text) {
         this.linkUrl = linkUrl;
         this.linkImg = linkImg;
+        this.title = title;
+        this.text = text;
     }
 }
