@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -17,5 +19,9 @@ public class ContentService {
     @Transactional
     public void saveContent(Content content) {
         contentRepository.save(content);
+    }
+
+    public List<Content> findContentByTerm(String term) {
+        return contentRepository.findByTitleOrTextContains(term, term);
     }
 }
