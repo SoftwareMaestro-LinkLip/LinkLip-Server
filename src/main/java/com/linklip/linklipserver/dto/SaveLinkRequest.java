@@ -7,4 +7,6 @@ import lombok.Data;
 public class SaveLinkRequest {
     @NotEmpty private String url;
     private String linkImg;
+    private String title;
+    private String text;
 }

@@ -22,7 +22,7 @@ public class ContentController {
 
     private final ContentService contentService;
 
-    @ApiOperation(value = "링크 저장 API v1", notes = "[GYJB-50] 링크 저장 API 생성")
+    @ApiOperation(value = "링크 저장 API v1", notes = "[GYJB-79] 링크 url, image, title, text DB에 저장")
     @ApiResponses({
         @ApiResponse(code = 201, message = "링크 저장 완료"),
         @ApiResponse(code = 400, message = "잘못된 요청입니다"),
@@ -31,8 +31,7 @@ public class ContentController {
     })
     @PostMapping("/v1/link")
     public ServerResponse saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
-        Content content =
-                Content.builder().linkUrl(request.getUrl()).linkImg(request.getLinkImg()).build();
+        Content content = new Content(request);
         contentService.saveContent(content);
 
         return new ServerResponse(

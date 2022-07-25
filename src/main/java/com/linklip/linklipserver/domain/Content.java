@@ -1,5 +1,6 @@
 package com.linklip.linklipserver.domain;
 
+import com.linklip.linklipserver.dto.SaveLinkRequest;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import lombok.AccessLevel;
@@ -23,6 +24,11 @@ public class Content {
 
     private String linkImg;
 
+    private String title;
+
+    @Lob // column type을 longtext로 설정
+    private String text;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -31,5 +37,12 @@ public class Content {
     public Content(String linkUrl, String linkImg) {
         this.linkUrl = linkUrl;
         this.linkImg = linkImg;
+    }
+
+    public Content(SaveLinkRequest saveLinkRequest) {
+        linkUrl = saveLinkRequest.getUrl();
+        linkImg = saveLinkRequest.getLinkImg();
+        title = saveLinkRequest.getTitle();
+        text = saveLinkRequest.getText();
     }
 }
