@@ -31,7 +31,8 @@ public class ContentController {
     })
     @PostMapping("/v1/link")
     public ServerResponse saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
-        Content content = Content.builder().linkUrl(request.getUrl()).build();
+        Content content =
+                Content.builder().linkUrl(request.getUrl()).linkImg(request.getLinkImg()).build();
         contentService.saveContent(content);
 
         return new ServerResponse(
