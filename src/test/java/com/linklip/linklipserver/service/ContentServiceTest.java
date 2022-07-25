@@ -1,6 +1,5 @@
 package com.linklip.linklipserver.service;
 
-
 import com.linklip.linklipserver.domain.Content;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
