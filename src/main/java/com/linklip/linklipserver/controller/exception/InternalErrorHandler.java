@@ -16,9 +16,7 @@ public class InternalErrorHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({
-        MissingPathVariableException.class,
-        ConversionNotSupportedException.class,
-        HttpMessageNotWritableException.class
+        Exception.class
     })
     public ServerResponse handle500(Exception exception) {
         return new ServerResponse(
