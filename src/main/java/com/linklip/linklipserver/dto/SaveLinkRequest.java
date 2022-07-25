@@ -1,11 +1,9 @@
 package com.linklip.linklipserver.dto;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotEmpty;
+import lombok.Data;
 
 @Data
 public class SaveLinkRequest {
-    @NotEmpty
-    private String url;
+    @NotEmpty private String url;
 }

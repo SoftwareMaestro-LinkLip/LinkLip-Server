@@ -1,21 +1,19 @@
 package com.linklip.linklipserver.domain;
 
-
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
 public class Content {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "content_id")
     private Long id;
 

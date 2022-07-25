@@ -18,5 +18,4 @@ public class ContentService {
     public void saveContent(Content content) {
         contentRepository.save(content);
     }
-
 }
