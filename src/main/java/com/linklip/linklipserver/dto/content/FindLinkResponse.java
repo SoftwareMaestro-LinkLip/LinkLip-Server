@@ -3,9 +3,6 @@ package com.linklip.linklipserver.dto.content;
 import com.linklip.linklipserver.domain.Content;
 import lombok.Data;
 
-import javax.persistence.Lob;
-import java.util.List;
-
 @Data
 public class FindLinkResponse {
 

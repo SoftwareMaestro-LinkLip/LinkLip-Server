@@ -1,7 +1,7 @@
 package com.linklip.linklipserver.controller;
 
-import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
 
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.ServerResponse;
@@ -10,12 +10,11 @@ import com.linklip.linklipserver.dto.content.FindLinkResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
 import io.swagger.annotations.*;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Api(value = "ContentController")
 @RestController
@@ -43,16 +42,15 @@ public class ContentController {
     @GetMapping("/v1/link")
     public ServerResponseWithData<?> saveLinkV1(@RequestParam String term) {
         List<Content> contents = contentService.findContentByTerm(term);
-        List<FindLinkResponse> findLinkResponses = contents.stream()
-                .map(content -> new FindLinkResponse(content))
-                .collect(Collectors.toList());
+        List<FindLinkResponse> findLinkResponses =
+                contents.stream()
+                        .map(content -> new FindLinkResponse(content))
+                        .collect(Collectors.toList());
 
         return new ServerResponseWithData(
                 FIND_LINK_SUCCESS.getStatus(),
                 FIND_LINK_SUCCESS.getSuccess(),
                 FIND_LINK_SUCCESS.getMessage(),
-                findLinkResponses
-        );
+                findLinkResponses);
     }
-
 }

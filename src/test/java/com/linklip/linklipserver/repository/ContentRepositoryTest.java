@@ -1,6 +1,7 @@
 package com.linklip.linklipserver.repository;
 
 import com.linklip.linklipserver.domain.Content;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,27 +11,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
-
-@DataJpaTest    //DB와 관련된 컴포넌트만 메모리에 로딩, 테스트 종료 후 롤백도 같이 수행
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)    //실제 데이터베이스에 테스트
+@DataJpaTest // DB와 관련된 컴포넌트만 메모리에 로딩, 테스트 종료 후 롤백도 같이 수행
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스에 테스트
 class ContentRepositoryTest {
 
-    @Autowired
-    private ContentRepository contentRepository;
+    @Autowired private ContentRepository contentRepository;
 
     @Nested
     @DisplayName("링크 검색 테스트")
     class findContentsByTerm {
 
-        //각 test 시작 이전에 실행
+        // 각 test 시작 이전에 실행
         @BeforeEach
         public void createContent() {
             Content content =
                     Content.builder()
                             .linkUrl("https://www.swmaestro.org/")
-                            .linkImg("\"https://swmaestro.org/static/sw/renewal/images/common/logo_200.png\"")
+                            .linkImg(
+                                    "\"https://swmaestro.org/static/sw/renewal/images/common/logo_200.png\"")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
                             .build();
@@ -47,7 +45,8 @@ class ContentRepositoryTest {
 
             // then
             Assertions.assertThat(contents.size()).isEqualTo(1);
-            Assertions.assertThat(contents.get(0).getLinkUrl()).isEqualTo("https://www.swmaestro.org/");
+            Assertions.assertThat(contents.get(0).getLinkUrl())
+                    .isEqualTo("https://www.swmaestro.org/");
         }
 
         @Test
@@ -60,7 +59,8 @@ class ContentRepositoryTest {
 
             // then
             Assertions.assertThat(contents.size()).isEqualTo(1);
-            Assertions.assertThat(contents.get(0).getLinkUrl()).isEqualTo("https://www.swmaestro.org/");
+            Assertions.assertThat(contents.get(0).getLinkUrl())
+                    .isEqualTo("https://www.swmaestro.org/");
         }
 
         @Test
@@ -120,7 +120,5 @@ class ContentRepositoryTest {
             // then
             Assertions.assertThat(contents.size()).isEqualTo(0);
         }
-
-
     }
 }

@@ -20,5 +20,4 @@ public enum SuccessResponse {
         this.code = code;
         this.message = message;
     }
-
 }

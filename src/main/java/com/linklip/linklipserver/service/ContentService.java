@@ -2,11 +2,10 @@ package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.repository.ContentRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
