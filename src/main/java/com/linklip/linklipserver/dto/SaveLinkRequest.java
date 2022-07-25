@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public class SaveLinkRequest {
     @NotEmpty private String url;
+    private String linkImg;
 }
