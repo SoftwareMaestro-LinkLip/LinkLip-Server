@@ -1,6 +1,5 @@
 package com.linklip.linklipserver.domain;
 
-import com.linklip.linklipserver.dto.SaveLinkRequest;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import lombok.AccessLevel;
@@ -34,15 +33,10 @@ public class Content {
     private LocalDateTime createdAt;
 
     @Builder
-    public Content(String linkUrl, String linkImg) {
+    public Content(String linkUrl, String linkImg, String title, String text) {
         this.linkUrl = linkUrl;
         this.linkImg = linkImg;
-    }
-
-    public Content(SaveLinkRequest saveLinkRequest) {
-        linkUrl = saveLinkRequest.getUrl();
-        linkImg = saveLinkRequest.getLinkImg();
-        title = saveLinkRequest.getTitle();
-        text = saveLinkRequest.getText();
+        this.title = title;
+        this.text = text;
     }
 }

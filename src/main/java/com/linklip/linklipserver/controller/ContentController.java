@@ -31,7 +31,7 @@ public class ContentController {
     })
     @PostMapping("/v1/link")
     public ServerResponse saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
-        Content content = new Content(request);
+        Content content = request.toEntity();
         contentService.saveContent(content);
 
         return new ServerResponse(
