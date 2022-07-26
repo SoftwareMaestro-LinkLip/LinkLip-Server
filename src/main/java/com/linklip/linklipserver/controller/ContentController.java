@@ -6,6 +6,7 @@ import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCE
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
+import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.FindLinkResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
@@ -38,19 +39,20 @@ public class ContentController {
     }
 
     @ApiOperation(value = "링크 검색 API v1", notes = "[GYJB-75] term을 통한 링크 검색")
-    @ApiResponses({@ApiResponse(code = 200, message = "검색결과 응답 완료")})
+    @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
-    public ServerResponseWithData<?> saveLinkV1(@RequestParam String term) {
+    public ServerResponseWithData<?> saveLinkV1(@RequestParam(required = false) String term) {
+
         List<Content> contents = contentService.findContentByTerm(term);
-        List<FindLinkResponse> findLinkResponses =
+        List<ContentDto> contentDtos =
                 contents.stream()
-                        .map(content -> new FindLinkResponse(content))
+                        .map(content -> new ContentDto(content))
                         .collect(Collectors.toList());
 
         return new ServerResponseWithData(
                 FIND_LINK_SUCCESS.getStatus(),
                 FIND_LINK_SUCCESS.getSuccess(),
                 FIND_LINK_SUCCESS.getMessage(),
-                findLinkResponses);
+                new FindLinkResponse(contentDtos));
     }
 }

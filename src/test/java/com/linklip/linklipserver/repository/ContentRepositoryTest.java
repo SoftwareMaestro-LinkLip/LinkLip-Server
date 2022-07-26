@@ -28,7 +28,7 @@ class ContentRepositoryTest {
                     Content.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
-                                    "\"https://swmaestro.org/static/sw/renewal/images/common/logo_200.png\"")
+                                    "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
                             .build();
