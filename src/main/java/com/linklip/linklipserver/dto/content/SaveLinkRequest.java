@@ -1,4 +1,4 @@
-package com.linklip.linklipserver.dto;
+package com.linklip.linklipserver.dto.content;
 
 import com.linklip.linklipserver.domain.Content;
 import javax.validation.constraints.NotEmpty;

@@ -1,17 +1,10 @@
 package com.linklip.linklipserver.repository;
 
 import com.linklip.linklipserver.domain.Content;
-import javax.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-@RequiredArgsConstructor
-public class ContentRepository {
+public interface ContentRepository extends JpaRepository<Content, Long> {
 
-    private final EntityManager em;
-
-    public void save(Content content) {
-        em.persist(content);
-    }
+    List<Content> findByTitleOrTextContains(String title, String text);
 }
