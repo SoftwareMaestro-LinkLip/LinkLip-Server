@@ -1,8 +1,9 @@
 package com.linklip.linklipserver.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.linklip.linklipserver.domain.Content;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +17,50 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class ContentRepositoryTest {
 
     @Autowired private ContentRepository contentRepository;
+
+    @Nested
+    @DisplayName("링크 저장 테스트")
+    class saveContent {
+
+        @Test
+        @DisplayName("링크 url만 저장")
+        public void saveOnlyUrl() {
+            Content content = Content.builder().linkUrl("https://www.swmaestro.org/").build();
+
+            Content savedContent = contentRepository.save(content);
+            assertThat(content).isEqualTo(savedContent);
+        }
+
+        @Test
+        @DisplayName("링크 url과 썸네일 저장")
+        public void saveUrlAndThumbnail() {
+            Content content =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .linkImg(
+                                    "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
+                            .build();
+
+            Content savedContent = contentRepository.save(content);
+            assertThat(content).isEqualTo(savedContent);
+        }
+
+        @Test
+        @DisplayName("링크 url, 썸네일, Title, Text 저장")
+        public void saveLinkContent() {
+            Content content =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .linkImg(
+                                    "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
+                            .title("소프트웨어 마에스트로")
+                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .build();
+
+            Content savedContent = contentRepository.save(content);
+            assertThat(content).isEqualTo(savedContent);
+        }
+    }
 
     @Nested
     @DisplayName("링크 검색 테스트")
@@ -44,9 +89,8 @@ class ContentRepositoryTest {
             List<Content> contents = contentRepository.findByTitleOrTextContains("소프트", "소프트");
 
             // then
-            Assertions.assertThat(contents.size()).isEqualTo(1);
-            Assertions.assertThat(contents.get(0).getLinkUrl())
-                    .isEqualTo("https://www.swmaestro.org/");
+            assertThat(contents.size()).isEqualTo(1);
+            assertThat(contents.get(0).getLinkUrl()).isEqualTo("https://www.swmaestro.org/");
         }
 
         @Test
@@ -58,9 +102,8 @@ class ContentRepositoryTest {
             List<Content> contents = contentRepository.findByTitleOrTextContains("웨어 마에", "웨어 마에");
 
             // then
-            Assertions.assertThat(contents.size()).isEqualTo(1);
-            Assertions.assertThat(contents.get(0).getLinkUrl())
-                    .isEqualTo("https://www.swmaestro.org/");
+            assertThat(contents.size()).isEqualTo(1);
+            assertThat(contents.get(0).getLinkUrl()).isEqualTo("https://www.swmaestro.org/");
         }
 
         @Test
@@ -79,7 +122,7 @@ class ContentRepositoryTest {
             List<Content> contents = contentRepository.findByTitleOrTextContains("", "");
 
             // then
-            Assertions.assertThat(contents.size()).isEqualTo(2);
+            assertThat(contents.size()).isEqualTo(2);
         }
 
         @Test
@@ -106,7 +149,7 @@ class ContentRepositoryTest {
             List<Content> contents = contentRepository.findByTitleOrTextContains("13", "13");
 
             // then
-            Assertions.assertThat(contents.size()).isEqualTo(2);
+            assertThat(contents.size()).isEqualTo(2);
         }
 
         @Test
@@ -118,7 +161,7 @@ class ContentRepositoryTest {
             List<Content> contents = contentRepository.findByTitleOrTextContains("1기", "1기");
 
             // then
-            Assertions.assertThat(contents.size()).isEqualTo(0);
+            assertThat(contents.size()).isEqualTo(0);
         }
     }
 }
