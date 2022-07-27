@@ -12,8 +12,8 @@
 
 - [x] Something you did..
 
----
+<!-- ---
 
 ### 😳 Issue
 
-- [ ] Help me..
+- [ ] Help me.. -->
