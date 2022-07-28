@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ContentIntegrationTest {
 
-    @Autowired MockMvc mockMvc;
+    @Autowired MockMvc mockMvc; //해당 변수에 빨간줄 들어오는데 정확한 이유 파악 필요
 
     @Autowired private ContentRepository contentRepository;
 
@@ -96,7 +96,6 @@ public class ContentIntegrationTest {
         public void findContentByNotTerm() throws Exception {
 
             // when
-            String term = "";
             ResultActions actions = mockMvc.perform(get("/content/v1/link"));
 
             // then
