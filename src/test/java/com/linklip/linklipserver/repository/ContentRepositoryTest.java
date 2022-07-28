@@ -83,7 +83,6 @@ class ContentRepositoryTest {
         @Test
         @DisplayName("일반적인 검색어")
         public void findContentByNormalTerm() throws Exception {
-            // given
 
             // when
             List<Content> contents = contentRepository.findByTitleOrTextContains("소프트", "소프트");
@@ -96,7 +95,6 @@ class ContentRepositoryTest {
         @Test
         @DisplayName("검색어 중간에 빈칸을 포함")
         public void findContentByBlankSpaceInTerm() throws Exception {
-            // given
 
             // when
             List<Content> contents = contentRepository.findByTitleOrTextContains("웨어 마에", "웨어 마에");
@@ -109,6 +107,7 @@ class ContentRepositoryTest {
         @Test
         @DisplayName("검색어에 아무것도 입력하지 않음")
         public void findContentByNullInTerm() throws Exception {
+
             // given
             Content content2 =
                     Content.builder()
@@ -128,6 +127,7 @@ class ContentRepositoryTest {
         @Test
         @DisplayName("여러개 검색 결과")
         public void findMultiResult() throws Exception {
+
             // given
             Content content2 =
                     Content.builder()
@@ -155,7 +155,6 @@ class ContentRepositoryTest {
         @Test
         @DisplayName("일치하는 검색 결과 없음")
         public void findZeroResult() throws Exception {
-            // given
 
             // when
             List<Content> contents = contentRepository.findByTitleOrTextContains("1기", "1기");
