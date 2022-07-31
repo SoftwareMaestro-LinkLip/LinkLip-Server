@@ -3,7 +3,6 @@ package com.linklip.linklipserver.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.linklip.linklipserver.domain.Content;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @DataJpaTest // DB와 관련된 컴포넌트만 메모리에 로딩, 테스트 종료 후 롤백도 같이 수행
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스에 테스트
@@ -66,6 +68,8 @@ class ContentRepositoryTest {
     @DisplayName("링크 검색 테스트")
     class findContentsByTerm {
 
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
+
         // 각 test 시작 이전에 실행
         @BeforeEach
         public void createContent() {
@@ -85,11 +89,11 @@ class ContentRepositoryTest {
         public void findContentByNormalTerm() throws Exception {
 
             // when
-            List<Content> contents = contentRepository.findByTitleOrTextContains("소프트", "소프트");
+            Page<Content> page =
+                    contentRepository.findByTitleOrTextContains("소프트", "소프트", pageRequest);
 
             // then
-            assertThat(contents.size()).isEqualTo(1);
-            assertThat(contents.get(0).getLinkUrl()).isEqualTo("https://www.swmaestro.org/");
+            assertThat(page.getContent().size()).isEqualTo(1);
         }
 
         @Test
@@ -97,11 +101,11 @@ class ContentRepositoryTest {
         public void findContentByBlankSpaceInTerm() throws Exception {
 
             // when
-            List<Content> contents = contentRepository.findByTitleOrTextContains("웨어 마에", "웨어 마에");
+            Page<Content> page =
+                    contentRepository.findByTitleOrTextContains("웨어 마에", "웨어 마에", pageRequest);
 
             // then
-            assertThat(contents.size()).isEqualTo(1);
-            assertThat(contents.get(0).getLinkUrl()).isEqualTo("https://www.swmaestro.org/");
+            assertThat(page.getContent().size()).isEqualTo(1);
         }
 
         @Test
@@ -118,10 +122,10 @@ class ContentRepositoryTest {
             contentRepository.save(content2);
 
             // when
-            List<Content> contents = contentRepository.findByTitleOrTextContains("", "");
+            Page<Content> page = contentRepository.findByTitleOrTextContains("", "", pageRequest);
 
             // then
-            assertThat(contents.size()).isEqualTo(2);
+            assertThat(page.getContent().size()).isEqualTo(2);
         }
 
         @Test
@@ -146,10 +150,11 @@ class ContentRepositoryTest {
             contentRepository.save(content3);
 
             // when
-            List<Content> contents = contentRepository.findByTitleOrTextContains("13", "13");
+            Page<Content> page =
+                    contentRepository.findByTitleOrTextContains("13", "13", pageRequest);
 
             // then
-            assertThat(contents.size()).isEqualTo(2);
+            assertThat(page.getContent().size()).isEqualTo(2);
         }
 
         @Test
@@ -157,10 +162,54 @@ class ContentRepositoryTest {
         public void findZeroResult() throws Exception {
 
             // when
-            List<Content> contents = contentRepository.findByTitleOrTextContains("1기", "1기");
+            Page<Content> page =
+                    contentRepository.findByTitleOrTextContains("1기", "1기", pageRequest);
 
             // then
-            assertThat(contents.size()).isEqualTo(0);
+            assertThat(page.getContent().size()).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("각 페이지 결과 갯수 확인")
+        public void getEachPageResult() throws Exception {
+
+            // given
+            Content content2 =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .title("소프트웨어 마에스트로")
+                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .build();
+            contentRepository.save(content2);
+
+            Content content3 =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .title("소프트웨어 마에스트로")
+                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .build();
+            contentRepository.save(content3);
+
+            Content content4 =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .title("소프트웨어 마에스트로")
+                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .build();
+            contentRepository.save(content4);
+
+            // when
+            pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
+            Page<Content> page1 =
+                    contentRepository.findByTitleOrTextContains("13", "13", pageRequest);
+
+            pageRequest = PageRequest.of(1, 3, Sort.by(Sort.Direction.DESC, "id"));
+            Page<Content> page2 =
+                    contentRepository.findByTitleOrTextContains("13", "13", pageRequest);
+
+            // then
+            assertThat(page1.getContent().size()).isEqualTo(3); // 첫번째 페이지 결과
+            assertThat(page2.getContent().size()).isEqualTo(1); // 두번째 페이지 결과
         }
     }
 }
