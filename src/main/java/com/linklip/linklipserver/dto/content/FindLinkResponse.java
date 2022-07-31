@@ -1,14 +1,14 @@
 package com.linklip.linklipserver.dto.content;
 
-import java.util.List;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 @Data
 public class FindLinkResponse {
 
-    List<ContentDto> contents;
+    Page<ContentDto> pageDto;
 
-    public FindLinkResponse(List<ContentDto> contents) {
-        this.contents = contents;
+    public FindLinkResponse(Page<ContentDto> pageDto) {
+        this.pageDto = pageDto;
     }
 }

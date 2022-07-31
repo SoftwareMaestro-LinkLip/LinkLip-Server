@@ -2,8 +2,9 @@ package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.repository.ContentRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +21,11 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public List<Content> findContentByTerm(String term) {
+    public Page<Content> findContentByTerm(String term, Pageable pageable) {
 
         // term이 파라미터로 넘어오지 않는 경우 모든 값을 조회할 수 있도록 term에 ""를 넣어줌
         if (term == null) term = "";
 
-        return contentRepository.findByTitleOrTextContains(term, term);
+        return contentRepository.findByTitleOrTextContains(term, term, pageable);
     }
 }
