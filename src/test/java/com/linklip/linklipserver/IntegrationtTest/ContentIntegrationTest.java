@@ -45,11 +45,16 @@ public class ContentIntegrationTest {
 
             // when
             String term = "13기";
-            ResultActions actions = mockMvc.perform(get("/content/v1/link").param("term", term));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/link")
+                                    .param("term", term)
+                                    .param("page", "0")
+                                    .param("size", "20"));
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.contents").value(hasSize(2)));
+                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
         }
 
         @Test
@@ -58,11 +63,16 @@ public class ContentIntegrationTest {
 
             // when
             String term = "웨어 마에";
-            ResultActions actions = mockMvc.perform(get("/content/v1/link").param("term", term));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/link")
+                                    .param("term", term)
+                                    .param("page", "0")
+                                    .param("size", "20"));
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.contents").value(hasSize(3)));
+                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(3)));
         }
 
         @Test
@@ -71,11 +81,17 @@ public class ContentIntegrationTest {
 
             // when
             String term = "";
-            ResultActions actions = mockMvc.perform(get("/content/v1/link").param("term", term));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/link")
+                                    .param("term", term)
+                                    .param("page", "0")
+                                    .param("size", "20"));
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.contents").value(hasSize(3))); // 모든 Content 출력
+                    .andExpect(
+                            jsonPath("$.data.pageDto.content").value(hasSize(3))); // 모든 Content 출력
         }
 
         @Test
@@ -84,11 +100,17 @@ public class ContentIntegrationTest {
 
             // when
             String term = "1기";
-            ResultActions actions = mockMvc.perform(get("/content/v1/link").param("term", term));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/link")
+                                    .param("term", term)
+                                    .param("page", "0")
+                                    .param("size", "20"));
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.contents").value(hasSize(0))); // 모든 Content 출력
+                    .andExpect(
+                            jsonPath("$.data.pageDto.content").value(hasSize(0))); // 모든 Content 출력
         }
 
         @Test
@@ -96,11 +118,32 @@ public class ContentIntegrationTest {
         public void findContentByNotTerm() throws Exception {
 
             // when
-            ResultActions actions = mockMvc.perform(get("/content/v1/link"));
+            ResultActions actions =
+                    mockMvc.perform(get("/content/v1/link").param("page", "0").param("size", "20"));
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.contents").value(hasSize(3))); // 모든 Content 출력
+                    .andExpect(
+                            jsonPath("$.data.pageDto.content").value(hasSize(3))); // 모든 Content 출력
+        }
+
+        @Test
+        @DisplayName("마지막 페이지 결과 갯수 확인")
+        public void getLastPageResult() throws Exception {
+
+            // given
+            String baseUrl = "https://www.swmaestro.org";
+            String baseTitle = "소프트웨어 마에스트로";
+            Content content14 = saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...");
+
+            // when
+            ResultActions actions =
+                    mockMvc.perform(get("/content/v1/link").param("page", "1").param("size", "3"));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(
+                            jsonPath("$.data.pageDto.content").value(hasSize(1))); // 모든 Content 출력
         }
     }
 

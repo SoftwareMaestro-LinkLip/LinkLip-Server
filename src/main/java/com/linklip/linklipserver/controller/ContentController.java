@@ -11,10 +11,12 @@ import com.linklip.linklipserver.dto.content.FindLinkResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
 import io.swagger.annotations.*;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @Api(value = "ContentController")
@@ -41,18 +43,17 @@ public class ContentController {
     @ApiOperation(value = "링크 검색 API v1", notes = "[GYJB-75] term을 통한 링크 검색")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
-    public ServerResponseWithData<?> saveLinkV1(@RequestParam(required = false) String term) {
+    public ServerResponseWithData<?> saveLinkV1(
+            @RequestParam(required = false) String term,
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<Content> contents = contentService.findContentByTerm(term);
-        List<ContentDto> contentDtos =
-                contents.stream()
-                        .map(content -> new ContentDto(content))
-                        .collect(Collectors.toList());
+        Page<Content> page = contentService.findContentByTerm(term, pageable);
+        Page<ContentDto> pageDto = page.map(c -> new ContentDto(c));
 
         return new ServerResponseWithData(
                 FIND_LINK_SUCCESS.getStatus(),
                 FIND_LINK_SUCCESS.getSuccess(),
                 FIND_LINK_SUCCESS.getMessage(),
-                new FindLinkResponse(contentDtos));
+                new FindLinkResponse(pageDto));
     }
 }
