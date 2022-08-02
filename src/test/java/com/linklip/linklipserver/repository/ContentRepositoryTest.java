@@ -88,9 +88,12 @@ class ContentRepositoryTest {
         @DisplayName("일반적인 검색어")
         public void findContentByNormalTerm() throws Exception {
 
+            // given
+            String term = "소프트";
+
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains("소프트", "소프트", pageRequest);
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(1);
@@ -100,9 +103,12 @@ class ContentRepositoryTest {
         @DisplayName("검색어 중간에 빈칸을 포함")
         public void findContentByBlankSpaceInTerm() throws Exception {
 
+            // given
+            String term = "웨어 마에";
+
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains("웨어 마에", "웨어 마에", pageRequest);
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(1);
@@ -121,8 +127,11 @@ class ContentRepositoryTest {
                             .build();
             contentRepository.save(content2);
 
+            String term = "";
+
             // when
-            Page<Content> page = contentRepository.findByTitleOrTextContains("", "", pageRequest);
+            Page<Content> page =
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(2);
@@ -149,9 +158,11 @@ class ContentRepositoryTest {
                             .build();
             contentRepository.save(content3);
 
+            String term = "13";
+
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains("13", "13", pageRequest);
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(2);
@@ -161,9 +172,12 @@ class ContentRepositoryTest {
         @DisplayName("일치하는 검색 결과 없음")
         public void findZeroResult() throws Exception {
 
+            // given
+            String term = "1기";
+
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains("1기", "1기", pageRequest);
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(0);
@@ -198,14 +212,16 @@ class ContentRepositoryTest {
                             .build();
             contentRepository.save(content4);
 
+            String term = "13";
+
             // when
             pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
             Page<Content> page1 =
-                    contentRepository.findByTitleOrTextContains("13", "13", pageRequest);
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             pageRequest = PageRequest.of(1, 3, Sort.by(Sort.Direction.DESC, "id"));
             Page<Content> page2 =
-                    contentRepository.findByTitleOrTextContains("13", "13", pageRequest);
+                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page1.getContent().size()).isEqualTo(3); // 첫번째 페이지 결과

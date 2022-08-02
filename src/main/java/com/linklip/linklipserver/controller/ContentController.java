@@ -48,12 +48,12 @@ public class ContentController {
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Content> page = contentService.findContentByTerm(term, pageable);
-        Page<ContentDto> dtoPage = page.map(c -> new ContentDto(c));
+        Page<ContentDto> pageDto = page.map(c -> new ContentDto(c));
 
         return new ServerResponseWithData(
                 FIND_LINK_SUCCESS.getStatus(),
                 FIND_LINK_SUCCESS.getSuccess(),
                 FIND_LINK_SUCCESS.getMessage(),
-                new FindLinkResponse(dtoPage));
+                new FindLinkResponse(pageDto));
     }
 }
