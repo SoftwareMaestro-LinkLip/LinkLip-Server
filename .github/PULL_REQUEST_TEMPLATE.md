@@ -1,10 +1,8 @@
-### ✅ Default Checklist
+### ✅ Checklist
 
-- [x] check branch
+- [x] Set Reviewers
 
-- [x] set Labels
-
-- [x] set Reviewers
+- [x] Set Labels
 
 ---
 
