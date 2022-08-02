@@ -48,6 +48,7 @@ jobs:
           character set server: 'utf8'
           collation server: 'utf8_general_ci'
           mysql database: 'linklip_db'
+          mysql root password: 1234
           mysql user: 'root'
           mysql password: 1234
 
