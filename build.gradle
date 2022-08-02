@@ -39,3 +39,7 @@ googleJavaFormat {
 	options style: 'AOSP'
 }
 
+// *-plain.jar 파일 생성 방지 (Spring-Boot 2.5.0 이상)
+jar {
+	enabled = false
+}
