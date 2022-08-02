@@ -1,6 +1,7 @@
 package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,8 @@ public class ContentService {
 
     // 컨텐츠 저장
     @Transactional
-    public void saveContent(Content content) {
+    public void saveLinkContent(SaveLinkRequest request) {
+        Content content = request.toEntity();
         contentRepository.save(content);
     }
 

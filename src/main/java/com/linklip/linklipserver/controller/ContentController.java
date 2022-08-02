@@ -31,8 +31,8 @@ public class ContentController {
     @ApiResponses({@ApiResponse(code = 201, message = "링크 저장 완료")})
     @PostMapping("/v1/link")
     public ServerResponse saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
-        Content content = request.toEntity();
-        contentService.saveContent(content);
+
+        contentService.saveLinkContent(request);
 
         return new ServerResponse(
                 SAVE_LINK_SUCCESS.getStatus(),
