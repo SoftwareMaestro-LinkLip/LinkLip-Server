@@ -40,46 +40,19 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
       - name: MariaDB Connection
         uses: getong/mariadb-action@v1.1
         with:
-          host port: 3306
-          character set server: 'utf8'
-          collation server: 'utf8_general_ci'
-          mysql database: 'linklip_db'
-          mysql root password: 1234
-          mysql user: 'root'
-          mysql password: 1234
+          host port: 3306 # Optional, default value is 3306. The port of host
+          #          container port: 3307 # Optional, default value is 3306. The port of container
+          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          #          mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+          mysql database: 'linklip_db' # Optional, default value is "test". The specified database which will be create
+          mysql root password: 1234 # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: 1234 # Required if "mysql user" exists. The password for the "mysql user"
 
       ## gradle build with checking code style
       - name: Gradle Build with Checking Code Style
         run: ./gradlew clean build
-
-      - name: Make Directory for deliver
-        run: mkdir deploy
-
-      - name: Copy Jar
-        run: cp ./build/libs/*.jar ./deploy/
-
-      - name: Copy appsepc.yml
-        run: cp ./appspec.yml ./deploy/
-
-      - name: Copy deploy.sh
-        run: cp ./scripts/deploy.sh ./deploy/
-
-      - name: Make zip file
-        run: zip -r -qq -j ./linklip-dev-server.zip ./deploy
-
-      - name: aws credential
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Upload to AWS S3
-        run: aws s3 cp --region ap-northeast-2 --acl private ./linklip-dev-server.zip s3://${{ secrets.AWS_S3_BUCKET }}/
-
-      - name: Code Deploy
-        run: aws deploy create-deployment --application-name ${{ secrets.AWS_CODEDEPLOY_NAME }} --deployment-group-name ${{ secrets.AWS_CODEDEPLOY_GROUP }} --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},key=linklip-dev-server.zip,bundleType=zip
