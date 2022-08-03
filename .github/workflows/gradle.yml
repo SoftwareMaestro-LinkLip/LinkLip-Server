@@ -62,6 +62,12 @@ jobs:
       - name: Copy Jar
         run: cp ./build/libs/*.jar ./deploy/
 
+      - name: Copy appsepc.yml
+        run: cp ./appspec.yml ./deploy/
+
+      - name: Copy deploy.sh
+        run: cp ./scripts/deploy.sh ./deploy/
+
       - name: Make zip file
         run: zip -r -qq -j ./linklip-dev-server.zip ./deploy
 
