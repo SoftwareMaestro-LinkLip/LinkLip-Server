@@ -39,12 +39,17 @@ sudo mariadb-secure-installation
 - PW: 1234
 ```
 
-### 3. Clone this project
+### 3. Create a database
+```
+mysql -u root -p1234 -e "create database linklip_db;"
+```
+
+### 4. Clone this project
 ```shell
 git clone https://github.com/SoftwareMaestro-LinkLip/LinkLip-Server.git
 ```
 
-### 4. Run server
+### 5. Run server
 ```shell
 # Base URL: http://127.0.0.1:8080
 ./gradlew bootRun
