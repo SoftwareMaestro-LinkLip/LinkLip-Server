@@ -23,9 +23,13 @@ public class ContentService {
 
     public Page<Content> findContentByTerm(String term, Pageable pageable) {
 
-        // term이 파라미터로 넘어오지 않는 경우 모든 값을 조회할 수 있도록 term에 ""를 넣어줌
-        if (term == null) term = "";
+        if (isTermNullOrEmpty(term))
+            return contentRepository.findAll(pageable);
 
-        return contentRepository.findByTitleOrTextContains(term, term, pageable);
+        return contentRepository.findByTitleContainsOrTextContains(term, term, pageable);
+    }
+
+    static boolean isTermNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
     }
 }
