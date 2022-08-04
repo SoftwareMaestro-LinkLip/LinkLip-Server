@@ -93,7 +93,7 @@ class ContentRepositoryTest {
 
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(1);
@@ -108,7 +108,7 @@ class ContentRepositoryTest {
 
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(1);
@@ -122,8 +122,6 @@ class ContentRepositoryTest {
             Content content2 =
                     Content.builder()
                             .linkUrl("https://www.swmaestro.org/")
-                            .title("소프트웨어 마에스트로")
-                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
                             .build();
             contentRepository.save(content2);
 
@@ -131,7 +129,26 @@ class ContentRepositoryTest {
 
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findAll(pageRequest);
+
+            // then
+            assertThat(page.getContent().size()).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("검색어 따로 없을 때, url만 포함한 데이터 검색")
+        public void findByNullInTerm() throws Exception {
+
+            // given
+            Content content2 =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .build();
+            contentRepository.save(content2);
+
+            // when
+            Page<Content> page =
+                    contentRepository.findAll(pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(2);
@@ -162,7 +179,7 @@ class ContentRepositoryTest {
 
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(2);
@@ -177,7 +194,7 @@ class ContentRepositoryTest {
 
             // when
             Page<Content> page =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(0);
@@ -217,11 +234,11 @@ class ContentRepositoryTest {
             // when
             pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
             Page<Content> page1 =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
 
             pageRequest = PageRequest.of(1, 3, Sort.by(Sort.Direction.DESC, "id"));
             Page<Content> page2 =
-                    contentRepository.findByTitleOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
 
             // then
             assertThat(page1.getContent().size()).isEqualTo(3); // 첫번째 페이지 결과
