@@ -32,11 +32,13 @@ public class ContentIntegrationTest {
 
         @BeforeEach
         public void createContents() {
-            String baseUrl = "https://www.swmaestro.org";
-            String baseTitle = "소프트웨어 마에스트로";
-            Content content1 = saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...");
-            Content content2 = saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 13기 연수생 여러분...");
-            Content content3 = saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 13기 연수생 여러분...");
+            String url1 = "https://www.swmaestro.org";
+            String url2 = "https://www.naver.com";
+            String title1 = "소프트웨어 마에스트로";
+            saveContent(url1, title1, "소프트웨어 마에스트로 12기 연수생 여러분...");
+            saveContent(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...");
+            saveContent(url1, null, null);
+            saveContent(url2, null, null);
         }
 
         @DisplayName("일반적인 검색어")
@@ -54,7 +56,7 @@ public class ContentIntegrationTest {
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
+                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(1)));
         }
 
         @Test
@@ -72,7 +74,7 @@ public class ContentIntegrationTest {
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(3)));
+                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
         }
 
         @Test
@@ -91,7 +93,7 @@ public class ContentIntegrationTest {
             // then
             actions.andExpect(status().isOk())
                     .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(3))); // 모든 Content 출력
+                            jsonPath("$.data.pageDto.content").value(hasSize(4))); // 모든 Content 출력
         }
 
         @Test
@@ -124,7 +126,7 @@ public class ContentIntegrationTest {
             // then
             actions.andExpect(status().isOk())
                     .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(3))); // 모든 Content 출력
+                            jsonPath("$.data.pageDto.content").value(hasSize(4))); // 모든 Content 출력
         }
 
         @Test
@@ -134,7 +136,7 @@ public class ContentIntegrationTest {
             // given
             String baseUrl = "https://www.swmaestro.org";
             String baseTitle = "소프트웨어 마에스트로";
-            Content content14 = saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...");
+            saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...");
 
             // when
             ResultActions actions =
@@ -143,7 +145,7 @@ public class ContentIntegrationTest {
             // then
             actions.andExpect(status().isOk())
                     .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(1))); // 모든 Content 출력
+                            jsonPath("$.data.pageDto.content").value(hasSize(2))); // 모든 Content 출력
         }
     }
 
