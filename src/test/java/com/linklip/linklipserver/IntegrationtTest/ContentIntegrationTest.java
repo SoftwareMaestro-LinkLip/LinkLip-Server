@@ -34,7 +34,7 @@ public class ContentIntegrationTest {
         public void createContents() {
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
-            String title1 = "소프트웨어 마에스트로";
+            String title1 = "소마";
             saveContent(url1, title1, "소프트웨어 마에스트로 12기 연수생 여러분...");
             saveContent(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...");
             saveContent(url1, null, null);
@@ -46,7 +46,7 @@ public class ContentIntegrationTest {
         public void findContentByNormalTerm() throws Exception {
 
             // when
-            String term = "13기";
+            String term = "소마";
             ResultActions actions =
                     mockMvc.perform(
                             get("/content/v1/link")
@@ -149,8 +149,8 @@ public class ContentIntegrationTest {
         }
     }
 
-    public Content saveContent(String url, String title, String text) {
+    public void saveContent(String url, String title, String text) {
         Content content = Content.builder().linkUrl(url).title(title).text(text).build();
-        return contentRepository.save(content);
+        contentRepository.save(content);
     }
 }
