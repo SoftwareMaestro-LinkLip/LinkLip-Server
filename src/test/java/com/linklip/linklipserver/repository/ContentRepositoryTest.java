@@ -119,17 +119,13 @@ class ContentRepositoryTest {
         public void findContentByNullInTerm() throws Exception {
 
             // given
-            Content content2 =
-                    Content.builder()
-                            .linkUrl("https://www.swmaestro.org/")
-                            .build();
+            Content content2 = Content.builder().linkUrl("https://www.swmaestro.org/").build();
             contentRepository.save(content2);
 
             String term = "";
 
             // when
-            Page<Content> page =
-                    contentRepository.findAll(pageRequest);
+            Page<Content> page = contentRepository.findAll(pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(2);
@@ -140,15 +136,11 @@ class ContentRepositoryTest {
         public void findByNullInTerm() throws Exception {
 
             // given
-            Content content2 =
-                    Content.builder()
-                            .linkUrl("https://www.swmaestro.org/")
-                            .build();
+            Content content2 = Content.builder().linkUrl("https://www.swmaestro.org/").build();
             contentRepository.save(content2);
 
             // when
-            Page<Content> page =
-                    contentRepository.findAll(pageRequest);
+            Page<Content> page = contentRepository.findAll(pageRequest);
 
             // then
             assertThat(page.getContent().size()).isEqualTo(2);

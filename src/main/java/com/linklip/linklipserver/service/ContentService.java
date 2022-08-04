@@ -23,8 +23,7 @@ public class ContentService {
 
     public Page<Content> findContentByTerm(String term, Pageable pageable) {
 
-        if (isTermNullOrEmpty(term))
-            return contentRepository.findAll(pageable);
+        if (isTermNullOrEmpty(term)) return contentRepository.findAll(pageable);
 
         return contentRepository.findByTitleContainsOrTextContains(term, term, pageable);
     }
