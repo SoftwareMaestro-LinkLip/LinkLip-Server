@@ -1,22 +1,24 @@
 package com.linklip.linklipserver.controller;
 
 import static com.linklip.linklipserver.constant.SuccessResponse.CREATE_CATEGORY_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.GET_CATEGORY_SUCCESS;
 
 import com.linklip.linklipserver.dto.ServerResponse;
+import com.linklip.linklipserver.dto.ServerResponseWithData;
+import com.linklip.linklipserver.dto.category.CategoryDto;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
+import com.linklip.linklipserver.dto.category.FindCategoryResponse;
 import com.linklip.linklipserver.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(value = "CategoryController")
 @RestController
@@ -39,5 +41,22 @@ public class CategoryController {
                         CREATE_CATEGORY_SUCCESS.getSuccess(),
                         CREATE_CATEGORY_SUCCESS.getMessage()),
                 HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "카테고리 조회 API v1", notes = "[GYJB-106] 카테고리 조회")
+    @ApiResponses({@ApiResponse(code = 200, message = "카테고리 조회 완료")})
+    @GetMapping("/v1")
+    @ResponseBody
+    public ResponseEntity<?> getCategoryV1() {
+
+        List<CategoryDto> allCategory = categoryService.findAllCategory();
+
+        return new ResponseEntity<>(
+                new ServerResponseWithData(
+                        GET_CATEGORY_SUCCESS.getStatus(),
+                        GET_CATEGORY_SUCCESS.getSuccess(),
+                        GET_CATEGORY_SUCCESS.getMessage(),
+                        new FindCategoryResponse(allCategory)),
+                HttpStatus.OK);
     }
 }
