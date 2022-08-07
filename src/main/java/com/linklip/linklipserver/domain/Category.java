@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,4 +29,9 @@ public class Category {
     private LocalDateTime createdAt;
 
     @LastModifiedDate private LocalDateTime updatedAt;
+
+    @Builder
+    public Category(String name) {
+        this.name = name;
+    }
 }
