@@ -70,6 +70,8 @@ class CategoryRepositoryTest {
         public void findCategory() {
             Category category1 = Category.builder().name("채용 정보").build();
             Category category2 = Category.builder().name("개발 정보").build();
+            categoryRepository.save(category1);
+            categoryRepository.save(category2);
 
             List<Category> categoryList = categoryRepository.findAllByOrderByName();
             assertThat(categoryList.size()).isEqualTo(2);
