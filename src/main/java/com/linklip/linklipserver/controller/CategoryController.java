@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +29,15 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 생성 API v1", notes = "[GYJB-105] 카테고리 생성")
     @ApiResponses({@ApiResponse(code = 201, message = "카테고리 생성 완료")})
     @PostMapping("/v1")
-    public ServerResponse createCategoryV1(@RequestBody @Valid CreateCategoryRequest request) {
+    public ResponseEntity<?> createCategoryV1(@RequestBody @Valid CreateCategoryRequest request) {
 
         categoryService.createCategory(request);
 
-        return new ServerResponse(
-                CREATE_CATEGORY_SUCCESS.getStatus(),
-                CREATE_CATEGORY_SUCCESS.getSuccess(),
-                CREATE_CATEGORY_SUCCESS.getMessage());
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        CREATE_CATEGORY_SUCCESS.getStatus(),
+                        CREATE_CATEGORY_SUCCESS.getSuccess(),
+                        CREATE_CATEGORY_SUCCESS.getMessage()),
+                HttpStatus.CREATED);
     }
 }
