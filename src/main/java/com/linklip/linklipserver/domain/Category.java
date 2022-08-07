@@ -1,19 +1,15 @@
 package com.linklip.linklipserver.domain;
 
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 public class Category extends JpaBaseDomain {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue()
     @Column(name = "category_id")
     private Long id;
 

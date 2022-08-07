@@ -1,13 +1,12 @@
 package com.linklip.linklipserver.domain;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import lombok.Data;
+import javax.persistence.*;
+import lombok.Getter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Data
+@EntityListeners(AuditingEntityListener.class)
+@Getter
 @MappedSuperclass
 public class JpaBaseDomain {
 
