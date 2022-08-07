@@ -1,10 +1,7 @@
 package com.linklip.linklipserver.dto.category;
 
-import com.linklip.linklipserver.dto.content.ContentDto;
-import lombok.Data;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class FindCategoryResponse {

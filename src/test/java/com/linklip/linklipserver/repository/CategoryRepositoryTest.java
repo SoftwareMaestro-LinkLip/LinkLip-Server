@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.linklip.linklipserver.domain.Category;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,24 @@ class CategoryRepositoryTest {
             Category createdCategory = categoryRepository.save(category);
 
             assertThat(createdCategory).isEqualTo(category);
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 조회 테스트")
+    class findCategory {
+        @Test
+        @DisplayName("이름 순으로 카테고리 조회")
+        public void findCategory() {
+            Category category1 = Category.builder().name("채용 정보").build();
+            Category createdCategory1 = categoryRepository.save(category1);
+            Category category2 = Category.builder().name("개발 정보").build();
+            Category createdCategory2 = categoryRepository.save(category2);
+
+            List<Category> categoryList = categoryRepository.findAllByOrderByName();
+            assertThat(categoryList.size()).isEqualTo(2);
+            assertThat(categoryList.get(0)).isEqualTo(category2);
+            assertThat(categoryList.get(1)).isEqualTo(category1);
         }
     }
 }
