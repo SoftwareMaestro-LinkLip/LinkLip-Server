@@ -19,7 +19,7 @@ class CategoryRepositoryTest {
 
     @Nested
     @DisplayName("카테고리 생성 테스트")
-    class saveContent {
+    class saveCategory {
 
         @Test
         @DisplayName("일반적인 카테고리 명 생성")
