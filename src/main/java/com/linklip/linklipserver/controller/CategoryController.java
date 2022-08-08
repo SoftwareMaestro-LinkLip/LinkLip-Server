@@ -8,6 +8,7 @@ import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.category.CategoryDto;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
 import com.linklip.linklipserver.dto.category.FindCategoryResponse;
+import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
 import com.linklip.linklipserver.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,6 +58,23 @@ public class CategoryController {
                         GET_CATEGORY_SUCCESS.getSuccess(),
                         GET_CATEGORY_SUCCESS.getMessage(),
                         new FindCategoryResponse(allCategory)),
+                HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "카테고리 수정 API v1", notes = "[GYJB-101] 카테고리 수정")
+    @ApiResponses({@ApiResponse(code = 200, message = "카테고리 수정 완료")})
+    @PatchMapping("/v1/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateCategoryV1(
+            @PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
+
+        categoryService.updateCategory(id, request);
+
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        GET_CATEGORY_SUCCESS.getStatus(),
+                        GET_CATEGORY_SUCCESS.getSuccess(),
+                        GET_CATEGORY_SUCCESS.getMessage()),
                 HttpStatus.OK);
     }
 }
