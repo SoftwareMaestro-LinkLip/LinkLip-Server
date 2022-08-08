@@ -1,6 +1,7 @@
 package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,14 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<Content> findContentByTerm(String term, Pageable pageable) {
+    public Page<ContentDto> findContentByTerm(String term, Pageable pageable) {
 
-        if (isTermNullOrEmpty(term)) return contentRepository.findAll(pageable);
+        if (isTermNullOrEmpty(term))
+            return contentRepository.findAll(pageable).map(c -> new ContentDto(c));
 
-        return contentRepository.findByTitleContainsOrTextContains(term, term, pageable);
+        return contentRepository
+                .findByTitleContainsOrTextContains(term, term, pageable)
+                .map(c -> new ContentDto(c));
     }
 
     static boolean isTermNullOrEmpty(String str) {
