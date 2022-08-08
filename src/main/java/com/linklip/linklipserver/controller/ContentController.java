@@ -3,17 +3,14 @@ package com.linklip.linklipserver.controller;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
 
-import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
-import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.FindLinkResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
 import io.swagger.annotations.*;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -47,13 +44,10 @@ public class ContentController {
             @RequestParam(required = false) String term,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<Content> page = contentService.findContentByTerm(term, pageable);
-        Page<ContentDto> pageDto = page.map(c -> new ContentDto(c));
-
         return new ServerResponseWithData(
                 FIND_LINK_SUCCESS.getStatus(),
                 FIND_LINK_SUCCESS.getSuccess(),
                 FIND_LINK_SUCCESS.getMessage(),
-                new FindLinkResponse(pageDto));
+                new FindLinkResponse(contentService.findContentByTerm(term, pageable)));
     }
 }
