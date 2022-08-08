@@ -1,5 +1,6 @@
 package com.linklip.linklipserver.IntegrationtTest;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,6 +82,17 @@ public class CategoryIntegrationTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(asJsonString(createCategoryRequest)))
                     .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 조회 통합테스트")
+    class findCategoryIntegrationTest {
+        @Test
+        @DisplayName("카테고리 조회에 성공한 경우 200")
+        public void findCategory() throws Exception {
+            mockMvc.perform(get("/category/v1").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
         }
     }
 

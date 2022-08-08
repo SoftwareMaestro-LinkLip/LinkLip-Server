@@ -14,6 +14,7 @@ public class InternalErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class})
     public ServerResponse handle500(Exception exception) {
+        System.out.println("❗❗️ exception = " + exception);
         return new ServerResponse(
                 INTERNAL_ERROR.getStatus(),
                 INTERNAL_ERROR.getSuccess(),
