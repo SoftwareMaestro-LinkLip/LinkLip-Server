@@ -66,9 +66,9 @@ public class CategoryController {
     @PatchMapping("/v1/{id}")
     @ResponseBody
     public ResponseEntity<?> updateCategoryV1(
-            @PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
+            @PathVariable Long categoryId, @RequestBody @Valid UpdateCategoryRequest request) {
 
-        categoryService.updateCategory(id, request);
+        categoryService.updateCategory(categoryId, request);
 
         return new ResponseEntity<>(
                 new ServerResponse(

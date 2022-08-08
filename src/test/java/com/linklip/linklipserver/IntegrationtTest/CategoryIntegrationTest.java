@@ -117,7 +117,7 @@ public class CategoryIntegrationTest {
 
             ResultActions actions =
                     mockMvc.perform(
-                            patch("/category/v1/{id}", categoryId)
+                            patch("/category/v1/{categoryId}", categoryId)
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(asJsonString(updateCategoryRequest)));
 
@@ -142,7 +142,7 @@ public class CategoryIntegrationTest {
 
             ResultActions actions =
                     mockMvc.perform(
-                            patch("/category/v1/{id}", categoryId)
+                            patch("/category/v1/{categoryId}", categoryId)
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(asJsonString(updateCategoryRequest)));
 
@@ -165,7 +165,7 @@ public class CategoryIntegrationTest {
 
             ResultActions actions =
                     mockMvc.perform(
-                            patch("/category/v1/{id}", categoryId)
+                            patch("/category/v1/{categoryId}", categoryId)
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(asJsonString(updateCategoryRequest)));
 

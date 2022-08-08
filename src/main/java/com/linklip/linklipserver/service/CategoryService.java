@@ -31,11 +31,11 @@ public class CategoryService {
     }
 
     @Transactional
-    public void updateCategory(Long id, UpdateCategoryRequest request) {
+    public void updateCategory(Long categoryId, UpdateCategoryRequest request) {
         Category category =
                 categoryRepository
-                        .findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id입니다."));
+                        .findById(categoryId)
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 categoryId입니다."));
         category.update(request.getName());
     }
 }
