@@ -63,7 +63,7 @@ public class CategoryController {
 
     @ApiOperation(value = "카테고리 수정 API v1", notes = "[GYJB-101] 카테고리 수정")
     @ApiResponses({@ApiResponse(code = 200, message = "카테고리 수정 완료")})
-    @PatchMapping("/v1/{id}")
+    @PatchMapping("/v1/{categoryId}")
     @ResponseBody
     public ResponseEntity<?> updateCategoryV1(
             @PathVariable Long categoryId, @RequestBody @Valid UpdateCategoryRequest request) {
