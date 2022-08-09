@@ -1,12 +1,10 @@
 package com.linklip.linklipserver.domain;
 
-import java.time.LocalDateTime;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Getter
