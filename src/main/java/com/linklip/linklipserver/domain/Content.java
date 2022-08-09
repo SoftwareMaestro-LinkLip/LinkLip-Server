@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Content {
+public class Content extends JpaBaseDomain {
 
     @Id
     @GeneratedValue
@@ -27,10 +27,6 @@ public class Content {
 
     @Lob // column type을 longtext로 설정
     private String text;
-
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     @Builder
     public Content(String linkUrl, String linkImg, String title, String text) {
