@@ -78,5 +78,19 @@ class CategoryRepositoryTest {
             assertThat(categoryList.get(0)).isEqualTo(category2);
             assertThat(categoryList.get(1)).isEqualTo(category1);
         }
+
+        @Test
+        @DisplayName("카테고리 검색어 조회")
+        public void findCategoryByTerm() {
+            Category category1 = Category.builder().name("채용 정보").build();
+            Category category2 = Category.builder().name("개발 정보").build();
+            categoryRepository.save(category1);
+            categoryRepository.save(category2);
+
+            String categoryTerm = "정보";
+
+            List<Category> categoryList = categoryRepository.findAllByNameContains(categoryTerm);
+            assertThat(categoryList.size()).isEqualTo(2);
+        }
     }
 }
