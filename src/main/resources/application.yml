@@ -4,9 +4,9 @@ spring:
       matching-strategy: ant_path_matcher
     throw-exception-if-no-handler-found: true
     # 404 error를 위한 설정인데, Swagger와 Conflict
-  #  web:
-#    resources:
-#      add-mappings: false
+  web:
+    resources:
+      add-mappings: false
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/linklip_db
