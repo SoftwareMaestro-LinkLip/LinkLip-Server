@@ -13,8 +13,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class NotFoundHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler({
+        NoHandlerFoundException.class,
+    })
     public ServerResponse handle404(Exception exception) {
+        System.out.println("❗❗️ exception = " + exception);
         return new ServerResponse(
                 NOT_FOUND.getStatus(), NOT_FOUND.getSuccess(), NOT_FOUND.getMessage());
     }
