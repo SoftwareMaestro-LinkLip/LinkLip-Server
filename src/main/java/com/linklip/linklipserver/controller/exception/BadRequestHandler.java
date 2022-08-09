@@ -19,6 +19,7 @@ public class BadRequestHandler {
         MethodArgumentNotValidException.class
     })
     public ServerResponse handle400(Exception exception) {
+        System.out.println("❗❗️ exception = " + exception);
         return new ServerResponse(
                 BAD_REQUEST.getStatus(), BAD_REQUEST.getSuccess(), BAD_REQUEST.getMessage());
     }

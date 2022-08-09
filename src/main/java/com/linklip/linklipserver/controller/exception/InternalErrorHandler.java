@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class InternalErrorHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({RuntimeException.class})
     public ServerResponse handle500(Exception exception) {
         System.out.println("❗❗️ exception = " + exception);
         return new ServerResponse(
