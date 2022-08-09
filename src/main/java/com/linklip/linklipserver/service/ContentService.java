@@ -1,9 +1,13 @@
 package com.linklip.linklipserver.service;
 
+import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
+import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
+import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContentService {
 
     private final ContentRepository contentRepository;
+    private final CategoryRepository categoryRepository;
 
     // 컨텐츠 저장
     @Transactional
@@ -24,17 +29,33 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContentByTerm(String term, Pageable pageable) {
+    // 동적 쿼리 해결을 위한 QueryDSL 방안도 고려 필요
+    public Page<ContentDto> findContent(FindContentRequest request, Pageable pageable) {
 
-        if (isTermNullOrEmpty(term))
+        String categoryTerm = request.getCategoryTerm();
+        String allTerm = request.getAllTerm();
+
+        if (isCategoryTermPresent(categoryTerm)) {
+            List<Category> categoryList = categoryRepository.findAllByNameContains(categoryTerm);
+            return contentRepository
+                    .findByCategoryIn(categoryList, pageable)
+                    .map(c -> new ContentDto(c));
+        }
+
+        if (isAllTermNullOrEmpty(allTerm)) {
             return contentRepository.findAll(pageable).map(c -> new ContentDto(c));
+        }
 
         return contentRepository
-                .findByTitleContainsOrTextContains(term, term, pageable)
+                .findByTitleContainsOrTextContains(allTerm, allTerm, pageable)
                 .map(c -> new ContentDto(c));
     }
 
-    static boolean isTermNullOrEmpty(String str) {
+    static boolean isCategoryTermPresent(String str) {
+        return str != null;
+    }
+
+    static boolean isAllTermNullOrEmpty(String str) {
         return str == null || str.isEmpty();
     }
 }

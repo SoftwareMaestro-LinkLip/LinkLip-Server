@@ -5,6 +5,7 @@ import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCE
 
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
+import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.FindLinkResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
@@ -45,7 +46,7 @@ public class ContentController {
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
     public ResponseEntity<?> saveLinkV1(
-            @RequestParam(required = false) String term,
+            @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return new ResponseEntity<>(
@@ -53,7 +54,7 @@ public class ContentController {
                         FIND_LINK_SUCCESS.getStatus(),
                         FIND_LINK_SUCCESS.getSuccess(),
                         FIND_LINK_SUCCESS.getMessage(),
-                        new FindLinkResponse(contentService.findContentByTerm(term, pageable))),
+                        new FindLinkResponse(contentService.findContent(request, pageable))),
                 HttpStatus.OK);
     }
 }
