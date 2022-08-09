@@ -2,7 +2,9 @@ package com.linklip.linklipserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Sort;
 class ContentRepositoryTest {
 
     @Autowired private ContentRepository contentRepository;
+    @Autowired private CategoryRepository categoryRepository;
 
     @Nested
     @DisplayName("링크 저장 테스트")
@@ -73,15 +76,81 @@ class ContentRepositoryTest {
         // 각 test 시작 이전에 실행
         @BeforeEach
         public void createContent() {
-            Content content =
+            Category category = Category.builder().name("활동").build();
+            categoryRepository.save(category);
+
+            Content content1 =
                     Content.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
                                     "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .category(category)
                             .build();
-            contentRepository.save(content);
+
+            Content content2 =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .linkImg(
+                                    "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
+                            .title("멋쟁이 사자처럼")
+                            .text("멋쟁이 사자처럼 7기 연수생 여러분...")
+                            .category(category)
+                            .build();
+
+            contentRepository.save(content1);
+            contentRepository.save(content2);
+        }
+
+        @Nested
+        @DisplayName("카테고리 검색어")
+        class findContentsByCategoryTerm {
+
+            @Test
+            @DisplayName("일반적인 검색어")
+            public void findContentByNormalTerm() throws Exception {
+
+                // when
+                String categoryTerm = "활동";
+                List<Category> categoryList =
+                        categoryRepository.findAllByNameContains(categoryTerm);
+
+                Page<Content> page = contentRepository.findByCategoryIn(categoryList, pageRequest);
+
+                // then
+                assertThat(page.getContent().size()).isEqualTo(2);
+            }
+
+            @Test
+            @DisplayName("일치하는 검색어가 0개")
+            public void findZeroResult() throws Exception {
+
+                // when
+                String categoryTerm = "스펙";
+                List<Category> categoryList =
+                        categoryRepository.findAllByNameContains(categoryTerm);
+
+                Page<Content> page = contentRepository.findByCategoryIn(categoryList, pageRequest);
+
+                // then
+                assertThat(page.getContent().size()).isEqualTo(0);
+            }
+
+            @Test
+            @DisplayName("빈값 검색어")
+            public void findContentByEmptyTerm() throws Exception {
+
+                // when
+                String categoryTerm = "";
+                List<Category> categoryList =
+                        categoryRepository.findAllByNameContains(categoryTerm);
+
+                Page<Content> page = contentRepository.findByCategoryIn(categoryList, pageRequest);
+
+                // then
+                assertThat(page.getContent().size()).isEqualTo(2);
+            }
         }
 
         @Nested
@@ -132,7 +201,7 @@ class ContentRepositoryTest {
                 Page<Content> page = contentRepository.findAll(pageRequest);
 
                 // then
-                assertThat(page.getContent().size()).isEqualTo(2);
+                assertThat(page.getContent().size()).isEqualTo(3);
             }
 
             @Test

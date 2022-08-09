@@ -4,7 +4,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +27,7 @@ public class ContentIntegrationTest {
     @Autowired MockMvc mockMvc; // 해당 변수에 빨간줄 들어오는데 정확한 이유 파악 필요
 
     @Autowired private ContentRepository contentRepository;
+    @Autowired private CategoryRepository categoryRepository;
 
     @Nested
     @DisplayName("링크 검색 통합테스트")
@@ -34,99 +37,172 @@ public class ContentIntegrationTest {
         public void createContents() {
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
-            String title1 = "소마";
-            saveContent(url1, title1, "소프트웨어 마에스트로 12기 연수생 여러분...");
-            saveContent(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...");
-            saveContent(url1, null, null);
-            saveContent(url2, null, null);
+            String title = "소마";
+
+            Category category1 = Category.builder().name("활동").build();
+            Category category2 = Category.builder().name("스펙").build();
+            categoryRepository.save(category1);
+            categoryRepository.save(category2);
+
+            saveContent(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            saveContent(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+            saveContent(url1, null, null, category2);
+            saveContent(url2, null, null, category2);
         }
 
-        @DisplayName("일반적인 검색어")
-        @Test
-        public void findContentByNormalTerm() throws Exception {
+        @Nested
+        @DisplayName("카테고리 검색어")
+        class findContentsByCategoryTerm {
 
-            // when
-            String term = "소마";
-            ResultActions actions =
-                    mockMvc.perform(
-                            get("/content/v1/link")
-                                    .param("term", term)
-                                    .param("page", "0")
-                                    .param("size", "20"));
+            @Test
+            @DisplayName("일반적인 검색어")
+            public void findContentByNormalTerm() throws Exception {
 
-            // then
-            actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(1)));
+                // when
+                String categoryTerm = "활동";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("categoryTerm", categoryTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
+
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
+            }
+
+            @Test
+            @DisplayName("빈값 검색어")
+            public void findContentByEmptyTerm() throws Exception {
+
+                // when
+                String categoryTerm = "";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("categoryTerm", categoryTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
+
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(4)));
+            }
+
+            @Test
+            @DisplayName("일치하는 검색어가 0개")
+            public void findZeroResult() throws Exception {
+
+                // when
+                String categoryTerm = "스펙";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("categoryTerm", categoryTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
+
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
+            }
         }
 
-        @Test
-        @DisplayName("검색어 중간에 빈칸을 포함")
-        public void findContentByBlankSpaceInTerm() throws Exception {
+        @Nested
+        @DisplayName("전체 검색어")
+        class findContentsByAllTerm {
+            @DisplayName("일반적인 검색어")
+            @Test
+            public void findContentByNormalTerm() throws Exception {
 
-            // when
-            String term = "웨어 마에";
-            ResultActions actions =
-                    mockMvc.perform(
-                            get("/content/v1/link")
-                                    .param("term", term)
-                                    .param("page", "0")
-                                    .param("size", "20"));
+                // when
+                String allTerm = "소마";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("allTerm", allTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
 
-            // then
-            actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
-        }
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(1)));
+            }
 
-        @Test
-        @DisplayName("검색어에 아무것도 입력하지 않음")
-        public void findContentByNullInTerm() throws Exception {
+            @Test
+            @DisplayName("검색어 중간에 빈칸을 포함")
+            public void findContentByBlankSpaceInTerm() throws Exception {
 
-            // when
-            String term = "";
-            ResultActions actions =
-                    mockMvc.perform(
-                            get("/content/v1/link")
-                                    .param("term", term)
-                                    .param("page", "0")
-                                    .param("size", "20"));
+                // when
+                String allTerm = "웨어 마에";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("allTerm", allTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
 
-            // then
-            actions.andExpect(status().isOk())
-                    .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(4))); // 모든 Content 출력
-        }
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
+            }
 
-        @Test
-        @DisplayName("일치하는 검색 결과 없음")
-        public void findZeroResult() throws Exception {
+            @Test
+            @DisplayName("검색어에 아무것도 입력하지 않음")
+            public void findContentByNullInTerm() throws Exception {
 
-            // when
-            String term = "1기";
-            ResultActions actions =
-                    mockMvc.perform(
-                            get("/content/v1/link")
-                                    .param("term", term)
-                                    .param("page", "0")
-                                    .param("size", "20"));
+                // when
+                String allTerm = "";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("allTerm", allTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
 
-            // then
-            actions.andExpect(status().isOk())
-                    .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(0))); // 모든 Content 출력
-        }
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(
+                                jsonPath("$.data.pageDto.content")
+                                        .value(hasSize(4))); // 모든 Content 출력
+            }
 
-        @Test
-        @DisplayName("검색어 없이 조회")
-        public void findContentByNotTerm() throws Exception {
+            @Test
+            @DisplayName("일치하는 검색 결과 없음")
+            public void findZeroResult() throws Exception {
 
-            // when
-            ResultActions actions =
-                    mockMvc.perform(get("/content/v1/link").param("page", "0").param("size", "20"));
+                // when
+                String allTerm = "1기";
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link")
+                                        .param("allTerm", allTerm)
+                                        .param("page", "0")
+                                        .param("size", "20"));
 
-            // then
-            actions.andExpect(status().isOk())
-                    .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(4))); // 모든 Content 출력
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(
+                                jsonPath("$.data.pageDto.content")
+                                        .value(hasSize(0))); // 모든 Content 출력
+            }
+
+            @Test
+            @DisplayName("검색어 없이 조회")
+            public void findContentByNotTerm() throws Exception {
+
+                // when
+                ResultActions actions =
+                        mockMvc.perform(
+                                get("/content/v1/link").param("page", "0").param("size", "20"));
+
+                // then
+                actions.andExpect(status().isOk())
+                        .andExpect(
+                                jsonPath("$.data.pageDto.content")
+                                        .value(hasSize(4))); // 모든 Content 출력
+            }
         }
 
         @Test
@@ -136,7 +212,9 @@ public class ContentIntegrationTest {
             // given
             String baseUrl = "https://www.swmaestro.org";
             String baseTitle = "소프트웨어 마에스트로";
-            saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...");
+            Category category = Category.builder().name("활동").build();
+            categoryRepository.save(category);
+            saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...", category);
 
             // when
             ResultActions actions =
@@ -149,8 +227,9 @@ public class ContentIntegrationTest {
         }
     }
 
-    public void saveContent(String url, String title, String text) {
-        Content content = Content.builder().linkUrl(url).title(title).text(text).build();
+    public void saveContent(String url, String title, String text, Category category) {
+        Content content =
+                Content.builder().linkUrl(url).title(title).text(text).category(category).build();
         contentRepository.save(content);
     }
 }
