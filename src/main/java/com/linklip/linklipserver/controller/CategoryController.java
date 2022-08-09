@@ -1,5 +1,7 @@
 package com.linklip.linklipserver.controller;
 
+import static com.linklip.linklipserver.constant.SuccessResponse.*;
+
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.category.CategoryDto;
@@ -17,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static com.linklip.linklipserver.constant.SuccessResponse.*;
 
 @Api(value = "CategoryController")
 @RestController
