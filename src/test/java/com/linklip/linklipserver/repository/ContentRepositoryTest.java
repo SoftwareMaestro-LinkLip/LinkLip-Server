@@ -84,112 +84,104 @@ class ContentRepositoryTest {
             contentRepository.save(content);
         }
 
-        @Test
-        @DisplayName("일반적인 검색어")
-        public void findContentByNormalTerm() throws Exception {
+        @Nested
+        @DisplayName("전체 검색어")
+        class findContentsByAllTerm {
 
-            // given
-            String term = "소프트";
+            @Test
+            @DisplayName("일반적인 검색어")
+            public void findContentByNormalTerm() throws Exception {
 
-            // when
-            Page<Content> page =
-                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
+                // given
+                String allTerm = "소프트";
 
-            // then
-            assertThat(page.getContent().size()).isEqualTo(1);
-        }
+                // when
+                Page<Content> page =
+                        contentRepository.findByTitleContainsOrTextContains(
+                                allTerm, allTerm, pageRequest);
 
-        @Test
-        @DisplayName("검색어 중간에 빈칸을 포함")
-        public void findContentByBlankSpaceInTerm() throws Exception {
+                // then
+                assertThat(page.getContent().size()).isEqualTo(1);
+            }
 
-            // given
-            String term = "웨어 마에";
+            @Test
+            @DisplayName("검색어 중간에 빈칸을 포함")
+            public void findContentByBlankSpaceInTerm() throws Exception {
 
-            // when
-            Page<Content> page =
-                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
+                // given
+                String allTerm = "웨어 마에";
 
-            // then
-            assertThat(page.getContent().size()).isEqualTo(1);
-        }
+                // when
+                Page<Content> page =
+                        contentRepository.findByTitleContainsOrTextContains(
+                                allTerm, allTerm, pageRequest);
 
-        @Test
-        @DisplayName("검색어에 아무것도 입력하지 않음")
-        public void findContentByNullInTerm() throws Exception {
+                // then
+                assertThat(page.getContent().size()).isEqualTo(1);
+            }
 
-            // given
-            Content content2 = Content.builder().linkUrl("https://www.swmaestro.org/").build();
-            contentRepository.save(content2);
+            @Test
+            @DisplayName("검색어 null 이거나 empty")
+            public void findContentByNullInTerm() throws Exception {
 
-            String term = "";
+                // given
+                Content content2 = Content.builder().linkUrl("https://www.swmaestro.org/").build();
+                contentRepository.save(content2);
 
-            // when
-            Page<Content> page = contentRepository.findAll(pageRequest);
+                // when
+                Page<Content> page = contentRepository.findAll(pageRequest);
 
-            // then
-            assertThat(page.getContent().size()).isEqualTo(2);
-        }
+                // then
+                assertThat(page.getContent().size()).isEqualTo(2);
+            }
 
-        @Test
-        @DisplayName("검색어 따로 없을 때, url만 포함한 데이터 검색")
-        public void findByNullInTerm() throws Exception {
+            @Test
+            @DisplayName("검색어 일치하는 검색 결과 없음")
+            public void findZeroResult() throws Exception {
 
-            // given
-            Content content2 = Content.builder().linkUrl("https://www.swmaestro.org/").build();
-            contentRepository.save(content2);
+                // given
+                String allTerm = "1기";
 
-            // when
-            Page<Content> page = contentRepository.findAll(pageRequest);
+                // when
+                Page<Content> page =
+                        contentRepository.findByTitleContainsOrTextContains(
+                                allTerm, allTerm, pageRequest);
 
-            // then
-            assertThat(page.getContent().size()).isEqualTo(2);
-        }
+                // then
+                assertThat(page.getContent().size()).isEqualTo(0);
+            }
 
-        @Test
-        @DisplayName("여러개 검색 결과")
-        public void findMultiResult() throws Exception {
+            @Test
+            @DisplayName("여러개 검색 결과")
+            public void findMultiResult() throws Exception {
 
-            // given
-            Content content2 =
-                    Content.builder()
-                            .linkUrl("https://www.swmaestro.org/")
-                            .title("소프트웨어 마에스트로")
-                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
-                            .build();
-            contentRepository.save(content2);
+                // given
+                Content content2 =
+                        Content.builder()
+                                .linkUrl("https://www.swmaestro.org/")
+                                .title("소프트웨어 마에스트로")
+                                .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                                .build();
+                contentRepository.save(content2);
 
-            Content content3 =
-                    Content.builder()
-                            .linkUrl("https://www.swmaestro.org/")
-                            .title("소프트웨어 마에스트로")
-                            .text("소프트웨어 마에스트로 12기 연수생 여러분...")
-                            .build();
-            contentRepository.save(content3);
+                Content content3 =
+                        Content.builder()
+                                .linkUrl("https://www.swmaestro.org/")
+                                .title("소프트웨어 마에스트로")
+                                .text("소프트웨어 마에스트로 12기 연수생 여러분...")
+                                .build();
+                contentRepository.save(content3);
 
-            String term = "13";
+                String allTerm = "13";
 
-            // when
-            Page<Content> page =
-                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
+                // when
+                Page<Content> page =
+                        contentRepository.findByTitleContainsOrTextContains(
+                                allTerm, allTerm, pageRequest);
 
-            // then
-            assertThat(page.getContent().size()).isEqualTo(2);
-        }
-
-        @Test
-        @DisplayName("일치하는 검색 결과 없음")
-        public void findZeroResult() throws Exception {
-
-            // given
-            String term = "1기";
-
-            // when
-            Page<Content> page =
-                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
-
-            // then
-            assertThat(page.getContent().size()).isEqualTo(0);
+                // then
+                assertThat(page.getContent().size()).isEqualTo(2);
+            }
         }
 
         @Test
@@ -221,16 +213,18 @@ class ContentRepositoryTest {
                             .build();
             contentRepository.save(content4);
 
-            String term = "13";
+            String allTerm = "13";
 
             // when
             pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
             Page<Content> page1 =
-                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(
+                            allTerm, allTerm, pageRequest);
 
             pageRequest = PageRequest.of(1, 3, Sort.by(Sort.Direction.DESC, "id"));
             Page<Content> page2 =
-                    contentRepository.findByTitleContainsOrTextContains(term, term, pageRequest);
+                    contentRepository.findByTitleContainsOrTextContains(
+                            allTerm, allTerm, pageRequest);
 
             // then
             assertThat(page1.getContent().size()).isEqualTo(3); // 첫번째 페이지 결과
