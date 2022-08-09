@@ -10,11 +10,13 @@ public class ContentDto {
     private String url;
     private String linkImg;
     private String title;
+    private String ctgName;
 
     public ContentDto(Content content) {
         this.id = content.getId();
         this.url = content.getLinkUrl();
         this.linkImg = content.getLinkImg();
         this.title = content.getTitle();
+        this.ctgName = content.getCategory().getName();
     }
 }
