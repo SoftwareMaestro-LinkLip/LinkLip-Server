@@ -2,6 +2,7 @@ package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
+import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +25,35 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContentByTerm(String term, Pageable pageable) {
+    public Page<ContentDto> findContent(FindContentRequest request, Pageable pageable) {
 
-        if (isTermNullOrEmpty(term))
-            return contentRepository.findAll(pageable).map(c -> new ContentDto(c));
+        Long categoryId = request.getCategoryId();
+        String term = request.getTerm();
 
-        return contentRepository
-                .findByTitleContainsOrTextContains(term, term, pageable)
-                .map(c -> new ContentDto(c));
+        Page<Content> page;
+
+        if (isCategoryAndTermPresent(categoryId, term)) {
+            page = contentRepository.findByCategoryAndTerm(categoryId, term, pageable);
+        } else if (isCategoryPresent(categoryId, term)) {
+            page = contentRepository.findByCategory(categoryId, pageable);
+        } else if (isTermPresentAsNotEmpty(categoryId, term)) {
+            page = contentRepository.findByTerm(term, pageable);
+        } else {
+            page = contentRepository.findAll(pageable);
+        }
+
+        return page.map(c -> new ContentDto(c));
     }
 
-    static boolean isTermNullOrEmpty(String str) {
-        return str == null || str.isEmpty();
+    static boolean isCategoryAndTermPresent(Long categoryId, String term) {
+        return categoryId != null && term != null;
+    }
+
+    static boolean isCategoryPresent(Long categoryId, String term) {
+        return categoryId != null && term == null;
+    }
+
+    static boolean isTermPresentAsNotEmpty(Long categoryId, String term) {
+        return categoryId == null && term != null && !term.isEmpty();
     }
 }
