@@ -1,5 +1,6 @@
 package com.linklip.linklipserver.dto.category;
 
+import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCategoryRequest {
 
-    @NotEmpty private String name;
+    @ApiModelProperty(required = true)
+    @NotEmpty
+    private String name;
 }
