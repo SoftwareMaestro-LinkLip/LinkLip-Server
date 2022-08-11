@@ -53,5 +53,4 @@ public class ContentService {
 
         return page.map(c -> new ContentDto(c));
     }
-
 }
