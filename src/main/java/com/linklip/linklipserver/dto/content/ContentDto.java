@@ -17,6 +17,8 @@ public class ContentDto {
         this.url = content.getLinkUrl();
         this.linkImg = content.getLinkImg();
         this.title = content.getTitle();
-        this.categoryName = content.getCategory().getName();
+        if (content.getCategory() != null) {
+            this.categoryName = content.getCategory().getName();
+        }
     }
 }
