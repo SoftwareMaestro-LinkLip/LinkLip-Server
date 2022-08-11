@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,30 +33,25 @@ public class ContentService {
         String term = request.getTerm();
         Long categoryId = request.getCategoryId();
 
-        Page<Content> page;
+        Page<Content> page = null;
 
-        if (isCategoryAndTermPresent(categoryId, term)) {
+        if (categoryId != null && StringUtils.hasText(term)) {
             page = contentRepository.findByCategoryAndTerm(categoryId, term, pageable);
-        } else if (isCategoryPresent(categoryId, term)) {
+        }
+
+        if (categoryId != null && !StringUtils.hasText(term)) {
             page = contentRepository.findByCategory(categoryId, pageable);
-        } else if (isTermPresent(categoryId, term)) {
+        }
+
+        if (categoryId == null && StringUtils.hasText(term)) {
             page = contentRepository.findByTerm(term, pageable);
-        } else {
+        }
+
+        if (categoryId == null && !StringUtils.hasText(term)) {
             page = contentRepository.findAll(pageable);
         }
 
         return page.map(c -> new ContentDto(c));
     }
 
-    static boolean isCategoryAndTermPresent(Long categoryId, String term) {
-        return categoryId != null && term != null && !term.isEmpty();
-    }
-
-    static boolean isCategoryPresent(Long categoryId, String term) {
-        return categoryId != null && (term == null || term.isEmpty());
-    }
-
-    static boolean isTermPresent(Long categoryId, String term) {
-        return categoryId == null && term != null && !term.isEmpty();
-    }
 }
