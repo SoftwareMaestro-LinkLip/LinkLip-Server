@@ -2,19 +2,23 @@ package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
+import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
+import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ContentService {
 
+    private final CategoryRepository categoryRepository;
     private final ContentRepository contentRepository;
 
     // 컨텐츠 저장
@@ -24,17 +28,29 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContentByTerm(String term, Pageable pageable) {
+    public Page<ContentDto> findContent(FindContentRequest request, Pageable pageable) {
 
-        if (isTermNullOrEmpty(term))
-            return contentRepository.findAll(pageable).map(c -> new ContentDto(c));
+        String term = request.getTerm();
+        Long categoryId = request.getCategoryId();
 
-        return contentRepository
-                .findByTitleContainsOrTextContains(term, term, pageable)
-                .map(c -> new ContentDto(c));
-    }
+        Page<Content> page = null;
 
-    static boolean isTermNullOrEmpty(String str) {
-        return str == null || str.isEmpty();
+        if (categoryId != null && StringUtils.hasText(term)) {
+            page = contentRepository.findByCategoryAndTerm(categoryId, term, pageable);
+        }
+
+        if (categoryId != null && !StringUtils.hasText(term)) {
+            page = contentRepository.findByCategory(categoryId, pageable);
+        }
+
+        if (categoryId == null && StringUtils.hasText(term)) {
+            page = contentRepository.findByTerm(term, pageable);
+        }
+
+        if (categoryId == null && !StringUtils.hasText(term)) {
+            page = contentRepository.findAll(pageable);
+        }
+
+        return page.map(c -> new ContentDto(c));
     }
 }

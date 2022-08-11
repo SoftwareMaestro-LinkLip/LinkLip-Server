@@ -26,11 +26,16 @@ public class Content extends JpaBaseDomain {
     @Lob // column type을 longtext로 설정
     private String text;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Builder
-    public Content(String linkUrl, String linkImg, String title, String text) {
+    public Content(String linkUrl, String linkImg, String title, String text, Category category) {
         this.linkUrl = linkUrl;
         this.linkImg = linkImg;
         this.title = title;
         this.text = text;
+        this.category = category;
     }
 }
