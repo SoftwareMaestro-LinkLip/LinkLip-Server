@@ -4,6 +4,7 @@ import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
+import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContentService {
 
+    private final CategoryRepository categoryRepository;
     private final ContentRepository contentRepository;
 
     // 컨텐츠 저장
@@ -27,8 +29,8 @@ public class ContentService {
 
     public Page<ContentDto> findContent(FindContentRequest request, Pageable pageable) {
 
-        Long categoryId = request.getCategoryId();
         String term = request.getTerm();
+        Long categoryId = request.getCategoryId();
 
         Page<Content> page;
 
@@ -36,7 +38,7 @@ public class ContentService {
             page = contentRepository.findByCategoryAndTerm(categoryId, term, pageable);
         } else if (isCategoryPresent(categoryId, term)) {
             page = contentRepository.findByCategory(categoryId, pageable);
-        } else if (isTermPresentAsNotEmpty(categoryId, term)) {
+        } else if (isTermPresent(categoryId, term)) {
             page = contentRepository.findByTerm(term, pageable);
         } else {
             page = contentRepository.findAll(pageable);
@@ -46,14 +48,14 @@ public class ContentService {
     }
 
     static boolean isCategoryAndTermPresent(Long categoryId, String term) {
-        return categoryId != null && term != null;
+        return categoryId != null && term != null && !term.isEmpty();
     }
 
     static boolean isCategoryPresent(Long categoryId, String term) {
-        return categoryId != null && term == null;
+        return categoryId != null && (term == null || term.isEmpty());
     }
 
-    static boolean isTermPresentAsNotEmpty(Long categoryId, String term) {
+    static boolean isTermPresent(Long categoryId, String term) {
         return categoryId == null && term != null && !term.isEmpty();
     }
 }
