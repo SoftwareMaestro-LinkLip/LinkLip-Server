@@ -28,7 +28,7 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContent(FindContentRequest request, Pageable pageable) {
+    public Page<ContentDto> findContentList(FindContentRequest request, Pageable pageable) {
 
         String term = request.getTerm();
         Long categoryId = request.getCategoryId();
