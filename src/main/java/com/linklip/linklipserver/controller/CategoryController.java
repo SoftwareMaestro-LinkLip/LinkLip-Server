@@ -28,7 +28,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @ApiOperation(value = "카테고리 생성 API v1", notes = "[GYJB-105] 카테고리 생성")
+    @ApiOperation(value = "카테고리 생성 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "카테고리 생성 완료")})
     @PostMapping("/v1")
     public ResponseEntity<?> createCategoryV1(@RequestBody @Valid CreateCategoryRequest request) {
@@ -43,7 +43,7 @@ public class CategoryController {
                 HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "카테고리 조회 API v1", notes = "[GYJB-106] 카테고리 조회")
+    @ApiOperation(value = "카테고리 조회 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "카테고리 조회 완료")})
     @GetMapping("/v1")
     @ResponseBody
@@ -60,7 +60,7 @@ public class CategoryController {
                 HttpStatus.OK);
     }
 
-    @ApiOperation(value = "카테고리 수정 API v1", notes = "[GYJB-101] 카테고리 수정")
+    @ApiOperation(value = "카테고리 수정 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "카테고리 수정 완료")})
     @PatchMapping("/v1/{categoryId}")
     @ResponseBody
