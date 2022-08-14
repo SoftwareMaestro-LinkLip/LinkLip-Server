@@ -27,7 +27,7 @@ public class ContentController {
 
     private final ContentService contentService;
 
-    @ApiOperation(value = "링크 저장 API v1", notes = "[GYJB-79] 링크 url, image, title, text DB에 저장")
+    @ApiOperation(value = "링크 저장 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "링크 저장 완료")})
     @PostMapping("/v1/link")
     public ResponseEntity<?> saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
@@ -42,7 +42,7 @@ public class ContentController {
                 HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "링크 검색 API v1", notes = "[GYJB-75] term을 통한 링크 검색")
+    @ApiOperation(value = "링크 검색 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
     public ResponseEntity<?> findLinkV1(
