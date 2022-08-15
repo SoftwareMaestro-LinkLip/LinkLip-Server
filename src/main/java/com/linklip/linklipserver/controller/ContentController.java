@@ -1,12 +1,13 @@
 package com.linklip.linklipserver.controller;
 
-import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
 
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
-import com.linklip.linklipserver.dto.content.FindLinkResponse;
+import com.linklip.linklipserver.dto.content.FindLinkListResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
 import io.swagger.annotations.*;
@@ -51,11 +52,25 @@ public class ContentController {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
-                        FIND_LINK_SUCCESS.getStatus(),
-                        FIND_LINK_SUCCESS.getSuccess(),
-                        FIND_LINK_SUCCESS.getMessage(),
-                        new FindLinkResponse(contentService.findContentList(request, pageable))),
+                        FIND_LINK_LIST_SUCCESS.getStatus(),
+                        FIND_LINK_LIST_SUCCESS.getSuccess(),
+                        FIND_LINK_LIST_SUCCESS.getMessage(),
+                        new FindLinkListResponse(
+                                contentService.findContentList(request, pageable))),
                 HttpStatus.OK);
     }
 
+    @ApiOperation(value = "컨텐츠 상세정보 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
+    @GetMapping("/v1/link/{contentId}")
+    public ResponseEntity<?> findLinkV1(@PathVariable Long contentId) {
+
+        return new ResponseEntity<>(
+                new ServerResponseWithData(
+                        FIND_CONTENT_SUCCESS.getStatus(),
+                        FIND_CONTENT_SUCCESS.getSuccess(),
+                        FIND_CONTENT_SUCCESS.getMessage(),
+                        contentService.findContent(contentId)),
+                HttpStatus.OK);
+    }
 }

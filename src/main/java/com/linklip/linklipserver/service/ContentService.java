@@ -1,5 +1,6 @@
 package com.linklip.linklipserver.service;
 
+import com.linklip.linklipserver.controller.handler.exception.NotExistException;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
@@ -52,5 +53,13 @@ public class ContentService {
         }
 
         return page.map(c -> new ContentDto(c));
+    }
+
+    public ContentDto findContent(Long contentId) {
+
+        return new ContentDto(
+                contentRepository
+                        .findById(contentId)
+                        .orElseThrow(() -> new NotExistException("존재하지 않는 contentId 입니다")));
     }
 }
