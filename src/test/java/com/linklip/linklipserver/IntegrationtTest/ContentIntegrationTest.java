@@ -238,10 +238,66 @@ public class ContentIntegrationTest {
         }
     }
 
+    @Nested
+    @DisplayName("링크 상세보기 통합테스트")
+    class findContent {
+
+        Content content;
+
+        @BeforeEach
+        public void createContents() {
+            String url1 = "https://www.swmaestro.org";
+            String url2 = "https://www.naver.com";
+            String title = "소마";
+
+            Category category1 = Category.builder().name("활동").build();
+            Category category2 = Category.builder().name("스펙").build();
+            categoryRepository.save(category1);
+            categoryRepository.save(category2);
+
+            content = saveAndReturnContent(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            saveContent(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            saveContent(url1, null, null, category2);
+            saveContent(url2, null, null, null);
+        }
+
+        @Test
+        @DisplayName("일반적인 링크 상세보기")
+        public void findNormalContent() throws Exception {
+
+            // when
+            Long contentId = content.getId();
+            ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isOk()).andExpect(jsonPath("$.data.id").value(contentId));
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 id 상세보기")
+        public void findNotExistContent() throws Exception {
+
+            // when
+            Long contentId = 987654321L;
+            System.out.println(content.getId());
+            ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isBadRequest());
+        }
+    }
+
     public void saveContent(String url, String title, String text, Category category) {
 
         Content content =
                 Content.builder().linkUrl(url).title(title).text(text).category(category).build();
         contentRepository.save(content);
+    }
+
+    public Content saveAndReturnContent(String url, String title, String text, Category category) {
+
+        Content content =
+                Content.builder().linkUrl(url).title(title).text(text).category(category).build();
+        return contentRepository.save(content);
     }
 }
