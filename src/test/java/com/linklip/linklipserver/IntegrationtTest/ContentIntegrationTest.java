@@ -1,11 +1,14 @@
 package com.linklip.linklipserver.IntegrationtTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -238,10 +243,107 @@ public class ContentIntegrationTest {
         }
     }
 
-    public void saveContent(String url, String title, String text, Category category) {
+    public Content saveContent(String url, String title, String text, Category category) {
 
         Content content =
                 Content.builder().linkUrl(url).title(title).text(text).category(category).build();
         contentRepository.save(content);
+
+        return content;
+    }
+
+    @Nested
+    @DisplayName("링크 수정 통합테스트")
+    class updateContent {
+
+        @Test
+        @DisplayName("링크 컨텐츠의 Title만 수정")
+        public void updateTitle() throws Exception {
+
+            Category category = Category.builder().name("활동").build();
+            categoryRepository.save(category);
+
+            String url = "https://www.swmaestro.org/sw/main/main.do";
+            Content savedContent = saveContent(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category);
+
+            UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
+            updateLinkRequest.setTitle("소프트웨어 마에스트로");
+
+            ResultActions actions =
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/link/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(asJsonString(updateLinkRequest)));
+
+            actions.andExpect(status().isOk());
+
+            assertThat(savedContent.getTitle()).isEqualTo(updateLinkRequest.getTitle());
+        }
+
+        @Test
+        @DisplayName("링크 컨텐츠의 Title과 카테고리 수정")
+        public void updateTitleAndCategory() throws Exception {
+
+            Category category1 = Category.builder().name("활동").build();
+            categoryRepository.save(category1);
+
+            Category category2 = Category.builder().name("대외 활동").build();
+            categoryRepository.save(category2);
+
+            String url = "https://www.swmaestro.org/sw/main/main.do";
+            Content savedContent = saveContent(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+
+            UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
+            updateLinkRequest.setTitle("소프트웨어 마에스트로");
+            updateLinkRequest.setCategoryId(category2.getId());
+
+            ResultActions actions =
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/link/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(asJsonString(updateLinkRequest)));
+
+            actions.andExpect(status().isOk());
+
+            assertThat(savedContent.getTitle()).isEqualTo(updateLinkRequest.getTitle());
+            assertThat(savedContent.getCategory().getId())
+                    .isEqualTo(updateLinkRequest.getCategoryId());
+        }
+
+        @Test
+        @DisplayName("링크 컨텐츠의 Title 없이 수정 요청을 보내면 400")
+        public void updateWithoutTitle() throws Exception {
+
+            Category category1 = Category.builder().name("활동").build();
+            categoryRepository.save(category1);
+
+            Category category2 = Category.builder().name("대외 활동").build();
+            categoryRepository.save(category2);
+
+            String url = "https://www.swmaestro.org/sw/main/main.do";
+            Content savedContent = saveContent(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+
+            UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
+            updateLinkRequest.setCategoryId(category2.getId());
+
+            ResultActions actions =
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/link/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(asJsonString(updateLinkRequest)));
+
+            actions.andExpect(status().isBadRequest());
+        }
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
