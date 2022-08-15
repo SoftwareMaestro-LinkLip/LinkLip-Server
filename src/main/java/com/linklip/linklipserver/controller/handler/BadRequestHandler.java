@@ -1,7 +1,8 @@
-package com.linklip.linklipserver.controller.exception;
+package com.linklip.linklipserver.controller.handler;
 
 import static com.linklip.linklipserver.constant.ErrorResponse.BAD_REQUEST;
 
+import com.linklip.linklipserver.controller.handler.exception.NotExistException;
 import com.linklip.linklipserver.dto.ServerResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,7 +17,8 @@ public class BadRequestHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({
         HttpMessageNotReadableException.class,
-        MethodArgumentNotValidException.class
+        MethodArgumentNotValidException.class,
+        NotExistException.class
     })
     public ServerResponse handle400(Exception exception) {
         System.out.println("❗❗️ exception = " + exception);
