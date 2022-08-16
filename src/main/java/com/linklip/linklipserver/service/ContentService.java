@@ -1,9 +1,12 @@
 package com.linklip.linklipserver.service;
 
+import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
+import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
+import com.linklip.linklipserver.exception.InvalidIdException;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +55,24 @@ public class ContentService {
         }
 
         return page.map(c -> new ContentDto(c));
+    }
+
+    @Transactional
+    public void updateLinkContent(Long id, UpdateLinkRequest request) {
+
+        Content content =
+                contentRepository
+                        .findById(id)
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+
+        String title = request.getTitle();
+        Long categoryId = request.getCategoryId();
+        Category category =
+                categoryId == null
+                        ? null
+                        : categoryRepository
+                                .findById(categoryId)
+                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+        content.update(title, category);
     }
 }

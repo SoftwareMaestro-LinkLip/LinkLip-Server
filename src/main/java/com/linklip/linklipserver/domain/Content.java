@@ -38,4 +38,9 @@ public class Content extends JpaBaseDomain {
         this.text = text;
         this.category = category;
     }
+
+    public void update(String title, Category category) {
+        this.title = title;
+        this.category = category;
+    }
 }
