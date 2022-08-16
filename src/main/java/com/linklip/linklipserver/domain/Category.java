@@ -9,7 +9,7 @@ import lombok.*;
 public class Category extends JpaBaseDomain {
 
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     private Long id;
 
