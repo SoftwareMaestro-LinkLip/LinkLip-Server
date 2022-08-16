@@ -24,7 +24,7 @@ public class BadRequestHandler {
         System.out.println("❗❗️ exception = " + exception);
 
         String responseMessage = BAD_REQUEST.getMessage();
-        if (exception.getClass() == InvalidIdException.class) {
+        if (exception instanceof InvalidIdException) {
             responseMessage = exception.getMessage();
         }
 

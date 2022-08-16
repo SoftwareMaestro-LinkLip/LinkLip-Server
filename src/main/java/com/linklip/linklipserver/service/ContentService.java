@@ -63,7 +63,7 @@ public class ContentService {
         Content content =
                 contentRepository
                         .findById(id)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다."));
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
 
         String title = request.getTitle();
         Long categoryId = request.getCategoryId();
@@ -72,8 +72,7 @@ public class ContentService {
                         ? null
                         : categoryRepository
                                 .findById(categoryId)
-                                .orElseThrow(
-                                        () -> new InvalidIdException("존재하지 않는 categoryId입니다."));
+                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
         content.update(title, category);
     }
 }
