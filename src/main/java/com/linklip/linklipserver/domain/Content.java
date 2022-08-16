@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Content extends JpaBaseDomain {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "content_id")
     private Long id;
 
