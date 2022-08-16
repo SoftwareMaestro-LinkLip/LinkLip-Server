@@ -243,6 +243,15 @@ public class ContentIntegrationTest {
         }
     }
 
+    public Content saveContent(String url, String title, String text, Category category) {
+
+        Content content =
+                Content.builder().linkUrl(url).title(title).text(text).category(category).build();
+        contentRepository.save(content);
+
+        return content;
+    }
+
     @Nested
     @DisplayName("링크 상세보기 통합테스트")
     class findContent {
@@ -290,15 +299,6 @@ public class ContentIntegrationTest {
             // then
             actions.andExpect(status().isBadRequest());
         }
-    }
-
-    public Content saveContent(String url, String title, String text, Category category) {
-
-        Content content =
-                Content.builder().linkUrl(url).title(title).text(text).category(category).build();
-        contentRepository.save(content);
-
-        return content;
     }
 
     @Nested
