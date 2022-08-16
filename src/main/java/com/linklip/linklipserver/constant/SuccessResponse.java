@@ -9,7 +9,8 @@ public enum SuccessResponse {
     CREATE_CATEGORY_SUCCESS(HttpStatus.CREATED, "OK3", "카테고리 생성 완료"),
     GET_CATEGORY_SUCCESS(HttpStatus.OK, "OK4", "카테고리 조회 완료"),
     UPDATE_CATEGORY_SUCCESS(HttpStatus.OK, "OK5", "카테고리 수정 완료"),
-    FIND_CONTENT_SUCCESS(HttpStatus.OK, "OK6", "컨텐츠 상세보기 응답 완료");
+    UPDATE_LINK_SUCCESS(HttpStatus.OK, "OK6", "링크 수정 완료"),
+    FIND_CONTENT_SUCCESS(HttpStatus.OK, "OK7", "컨텐츠 상세보기 응답 완료");
 
     @Getter private int status;
 

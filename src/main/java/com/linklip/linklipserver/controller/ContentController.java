@@ -3,12 +3,14 @@ package com.linklip.linklipserver.controller;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.UPDATE_LINK_SUCCESS;
 
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
 import com.linklip.linklipserver.dto.content.FindLinkListResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
+import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
 import io.swagger.annotations.*;
 import javax.validation.Valid;
@@ -71,6 +73,22 @@ public class ContentController {
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
                         contentService.findContent(contentId)),
+                HttpStatus.OK);
+    }
+
+    @ApiOperation("링크 내용 수정 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "링크 내용 수정 완료")})
+    @PatchMapping("/v1/link/{contentId}")
+    public ResponseEntity<?> updateLinkV1(
+            @PathVariable Long contentId, @RequestBody @Valid UpdateLinkRequest request) {
+
+        contentService.updateLinkContent(contentId, request);
+
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        UPDATE_LINK_SUCCESS.getStatus(),
+                        UPDATE_LINK_SUCCESS.getSuccess(),
+                        UPDATE_LINK_SUCCESS.getMessage()),
                 HttpStatus.OK);
     }
 }
