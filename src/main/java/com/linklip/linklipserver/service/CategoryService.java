@@ -4,10 +4,13 @@ import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.dto.category.CategoryDto;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
 import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
+import com.linklip.linklipserver.exception.InvalidIdException;
 import com.linklip.linklipserver.repository.CategoryRepository;
+import com.linklip.linklipserver.repository.ContentRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CategoryService {
+    private final ContentRepository contentRepository;
     private final CategoryRepository categoryRepository;
 
     @Transactional
@@ -37,5 +41,15 @@ public class CategoryService {
                         .findById(categoryId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 categoryId입니다."));
         category.update(request.getName());
+    }
+
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        contentRepository.deleteByCategoryId(categoryId);
+        try {
+            categoryRepository.deleteById(categoryId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidIdException("존재하지 않는 categoryId입니다.");
+        }
     }
 }
