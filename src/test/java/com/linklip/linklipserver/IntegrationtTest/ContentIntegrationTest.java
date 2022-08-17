@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.linklip.linklipserver.TestUtils;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
@@ -33,6 +33,8 @@ public class ContentIntegrationTest {
 
     @Autowired private ContentRepository contentRepository;
     @Autowired private CategoryRepository categoryRepository;
+
+    @Autowired private TestUtils testUtils;
 
     @Nested
     @DisplayName("링크 검색 통합테스트")
@@ -274,7 +276,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(asJsonString(updateLinkRequest)));
+                                    .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isOk());
 
@@ -303,7 +305,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(asJsonString(updateLinkRequest)));
+                                    .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isOk());
 
@@ -333,17 +335,9 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(asJsonString(updateLinkRequest)));
+                                    .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isBadRequest());
-        }
-    }
-
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }
