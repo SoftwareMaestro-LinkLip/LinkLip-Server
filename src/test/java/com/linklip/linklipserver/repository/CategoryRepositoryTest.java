@@ -79,4 +79,25 @@ class CategoryRepositoryTest {
             assertThat(categoryList.get(1)).isEqualTo(category1);
         }
     }
+
+    @Nested
+    @DisplayName("카테고리 삭제 테스트")
+    class deleteCategory {
+        @Test
+        @DisplayName("일반적인 카테고리 삭제")
+        public void deleteCategory() {
+            // given
+            Category category1 = Category.builder().name("채용 정보").build();
+            Category category2 = Category.builder().name("개발 정보").build();
+            categoryRepository.save(category1);
+            categoryRepository.save(category2);
+
+            // when
+            categoryRepository.deleteById(category1.getId());
+
+            // then
+            List<Category> categoryList = categoryRepository.findAllByOrderByName();
+            assertThat(categoryList.size()).isEqualTo(1);
+        }
+    }
 }
