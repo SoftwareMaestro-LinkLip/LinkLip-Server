@@ -329,4 +329,29 @@ class ContentRepositoryTest {
             assertThat(page2.getContent().size()).isEqualTo(1); // 두번째 페이지 결과
         }
     }
+
+    @Nested
+    @DisplayName("컨텐츠 상세보기")
+    class findContent {
+
+        @Test
+        @DisplayName("일반적인 경우")
+        public void getContent() throws Exception {
+
+            // given
+            Content content =
+                    Content.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .title("소프트웨어 마에스트로")
+                            .text("소프트웨어 마에스트로 12기 연수생 여러분...")
+                            .build();
+            contentRepository.save(content);
+
+            // when
+            Content result = contentRepository.findById(content.getId()).get();
+
+            // then
+            assertThat(result.getId()).isEqualTo(content.getId());
+        }
+    }
 }

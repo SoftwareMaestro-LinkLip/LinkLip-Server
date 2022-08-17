@@ -1,4 +1,4 @@
-package com.linklip.linklipserver.controller.exception;
+package com.linklip.linklipserver.controller.handler;
 
 import static com.linklip.linklipserver.constant.ErrorResponse.BAD_REQUEST;
 
