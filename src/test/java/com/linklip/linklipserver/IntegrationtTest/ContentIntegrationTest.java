@@ -2,6 +2,7 @@ package com.linklip.linklipserver.IntegrationtTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -387,6 +388,55 @@ public class ContentIntegrationTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
+            actions.andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("컨텐츠 삭제")
+    class deleteContent {
+
+        @Test
+        @DisplayName("일반적인 경우")
+        public void deleteNormalContent() throws Exception {
+
+            // given
+            Category category = testUtils.saveCategory("포털");
+            Content content = testUtils.saveContent("www.naver.com", "네이버", "오늘의 날씨", category);
+            boolean isDeleted = content.isDeleted();
+
+            // when
+            ResultActions actions =
+                    mockMvc.perform(
+                            delete("/content/v1/link/{contentId}", content.getId())
+                                    .contentType(MediaType.APPLICATION_JSON));
+
+            // then
+            actions.andExpect(status().isOk());
+
+            Content findContent = contentRepository.findById(content.getId()).get();
+
+            assertThat(findContent).isEqualTo(content);
+            assertThat(isDeleted).isEqualTo(false);
+            assertThat(findContent.isDeleted()).isEqualTo(true);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 컨텐츠 삭제")
+        public void deleteNotExistContent() throws Exception {
+
+            // given
+            Category category = testUtils.saveCategory("포털");
+            testUtils.saveContent("www.naver.com", "네이버", "오늘의 날씨", category);
+
+            // when
+            Long contentId = 987654321L;
+            ResultActions actions =
+                    mockMvc.perform(
+                            delete("/content/v1/link/{contentId}", contentId)
+                                    .contentType(MediaType.APPLICATION_JSON));
+
+            // then
             actions.andExpect(status().isBadRequest());
         }
     }
