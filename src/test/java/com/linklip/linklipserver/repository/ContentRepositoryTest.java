@@ -2,7 +2,6 @@ package com.linklip.linklipserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.linklip.linklipserver.TestUtils;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,8 +21,6 @@ class ContentRepositoryTest {
 
     @Autowired private ContentRepository contentRepository;
     @Autowired private CategoryRepository categoryRepository;
-
-    @Autowired private TestUtils testUtils;
 
     @Nested
     @DisplayName("링크 저장 테스트")
