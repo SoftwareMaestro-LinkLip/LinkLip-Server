@@ -44,8 +44,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteCategory(Long categoryId) {
-        contentRepository.deleteByCategoryId(categoryId);
+    public void releaseCategory(Long categoryId) {
+        contentRepository.releaseCategoryByCategoryId(categoryId);
         try {
             categoryRepository.deleteById(categoryId);
         } catch (EmptyResultDataAccessException e) {

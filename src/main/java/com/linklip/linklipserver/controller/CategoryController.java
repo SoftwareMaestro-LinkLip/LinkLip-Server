@@ -83,7 +83,7 @@ public class CategoryController {
     @ResponseBody
     public ResponseEntity<?> deleteCategoryV1(@PathVariable Long categoryId) {
 
-        categoryService.deleteCategory(categoryId);
+        categoryService.releaseCategory(categoryId);
 
         return new ResponseEntity<>(
                 new ServerResponse(

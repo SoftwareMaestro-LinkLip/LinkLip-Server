@@ -23,5 +23,5 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     @Modifying(clearAutomatically = true) // executeUpdate 같은 Annotation
     @Query("UPDATE Content c SET c.category = null WHERE c.category.id = :categoryId")
-    void deleteByCategoryId(@Param("categoryId") Long categoryId);
+    void releaseCategoryByCategoryId(@Param("categoryId") Long categoryId);
 }
