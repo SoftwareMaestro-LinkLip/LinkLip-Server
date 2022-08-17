@@ -11,7 +11,9 @@ public enum SuccessResponse {
     UPDATE_CATEGORY_SUCCESS(HttpStatus.OK, "OK5", "카테고리 수정 완료"),
     UPDATE_LINK_SUCCESS(HttpStatus.OK, "OK6", "링크 수정 완료"),
     FIND_CONTENT_SUCCESS(HttpStatus.OK, "OK7", "컨텐츠 상세보기 응답 완료"),
-    DELETE_CATEGORY_SUCCESS(HttpStatus.OK, "OK8", "카테고리 삭제 완료");
+    DELETE_CATEGORY_SUCCESS(HttpStatus.OK, "OK8", "카테고리 삭제 완료"),
+    DELETE_LINK_SUCCESS(HttpStatus.OK, "OK8", "카테고리 삭제 완료"),
+    ;
 
     @Getter private final int status;
 
