@@ -284,7 +284,8 @@ public class ContentIntegrationTest {
             ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
 
             // then
-            actions.andExpect(status().isOk()).andExpect(jsonPath("$.data.id").value(contentId));
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.id").value(contentId));
         }
 
         @Test

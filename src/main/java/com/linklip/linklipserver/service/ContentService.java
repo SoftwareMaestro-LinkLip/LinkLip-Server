@@ -4,6 +4,7 @@ import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.dto.content.ContentDto;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
+import com.linklip.linklipserver.dto.content.FindContentResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;
@@ -76,9 +77,9 @@ public class ContentService {
         content.update(title, category);
     }
 
-    public ContentDto findContent(Long contentId) {
+    public FindContentResponse findContent(Long contentId) {
 
-        return new ContentDto(
+        return new FindContentResponse(
                 contentRepository
                         .findById(contentId)
                         .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다")));
