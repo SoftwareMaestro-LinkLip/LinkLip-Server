@@ -3,6 +3,7 @@ package com.linklip.linklipserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class TestUtils {
 
     @Autowired private ContentRepository contentRepository;
+    @Autowired private CategoryRepository categoryRepository;
 
     public Content saveContent(String url, String title, String text, Category category) {
 
@@ -19,6 +21,14 @@ public class TestUtils {
         contentRepository.save(content);
 
         return content;
+    }
+
+    public Category saveCategory(String CategoryName) {
+
+        Category category = Category.builder().name(CategoryName).build();
+        categoryRepository.save(category);
+
+        return category;
     }
 
     public String asJsonString(final Object obj) {
