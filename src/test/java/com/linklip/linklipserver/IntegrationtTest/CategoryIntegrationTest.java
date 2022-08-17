@@ -192,7 +192,7 @@ public class CategoryIntegrationTest {
             Category category1 = Category.builder().name("운동").build();
             Category category2 = Category.builder().name("개발").build();
             Category savedCategory1 = categoryRepository.save(category1);
-            Category savedCategory2 = categoryRepository.save(category2);
+            categoryRepository.save(category2);
 
             // when
             ResultActions actions =
