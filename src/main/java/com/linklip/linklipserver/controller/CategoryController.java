@@ -76,4 +76,20 @@ public class CategoryController {
                         UPDATE_CATEGORY_SUCCESS.getMessage()),
                 HttpStatus.OK);
     }
+
+    @ApiOperation(value = "카테고리 삭제 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "카테고리 삭제 완료")})
+    @DeleteMapping("/v1/{categoryId}")
+    @ResponseBody
+    public ResponseEntity<?> deleteCategoryV1(@PathVariable Long categoryId) {
+
+        categoryService.releaseCategory(categoryId);
+
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        DELETE_CATEGORY_SUCCESS.getStatus(),
+                        DELETE_CATEGORY_SUCCESS.getSuccess(),
+                        DELETE_CATEGORY_SUCCESS.getMessage()),
+                HttpStatus.OK);
+    }
 }
