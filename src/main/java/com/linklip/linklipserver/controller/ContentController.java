@@ -98,7 +98,7 @@ public class ContentController {
     @DeleteMapping("/v1/link/{contentId}")
     public ResponseEntity<?> deleteLinkV1(@PathVariable Long contentId) {
 
-        contentService.releaseLink(contentId);
+        contentService.clearLink(contentId);
 
         return new ResponseEntity<>(
                 new ServerResponse(

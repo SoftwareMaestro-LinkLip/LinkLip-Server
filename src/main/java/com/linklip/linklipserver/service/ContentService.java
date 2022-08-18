@@ -86,7 +86,7 @@ public class ContentService {
     }
 
     @Transactional
-    public void releaseLink(Long contentId) {
+    public void clearLink(Long contentId) {
 
         Content content =
                 contentRepository
