@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 @Api(value = "ContentController")
 @RestController
 @RequiredArgsConstructor
