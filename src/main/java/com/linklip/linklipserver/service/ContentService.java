@@ -84,4 +84,14 @@ public class ContentService {
                         .findById(contentId)
                         .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다")));
     }
+
+    @Transactional
+    public void deleteLink(Long contentId) {
+
+        Content content =
+                contentRepository
+                        .findById(contentId)
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+        content.delete();
+    }
 }
