@@ -67,7 +67,7 @@ class CategoryRepositoryTest {
     class findCategory {
         @Test
         @DisplayName("이름 순으로 카테고리 조회")
-        public void findCategory() {
+        public void findCategoryNormal() {
             Category category1 = Category.builder().name("채용 정보").build();
             Category category2 = Category.builder().name("개발 정보").build();
             categoryRepository.save(category1);
@@ -85,7 +85,7 @@ class CategoryRepositoryTest {
     class deleteCategory {
         @Test
         @DisplayName("일반적인 카테고리 삭제")
-        public void deleteCategory() {
+        public void deleteCategoryNormal() {
             // given
             Category category1 = Category.builder().name("채용 정보").build();
             Category category2 = Category.builder().name("개발 정보").build();
