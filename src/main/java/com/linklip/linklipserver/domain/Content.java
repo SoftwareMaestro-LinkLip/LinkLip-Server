@@ -50,7 +50,7 @@ public class Content extends JpaBaseDomain {
         this.category = category;
     }
 
-    public void softDelete() {
+    public void delete() {
         this.isDeleted = true;
     }
 }

@@ -13,6 +13,7 @@ import com.linklip.linklipserver.dto.content.FindLinkListResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.*;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -98,7 +99,7 @@ public class ContentController {
     @DeleteMapping("/v1/link/{contentId}")
     public ResponseEntity<?> deleteLinkV1(@PathVariable Long contentId) {
 
-        contentService.releaseLink(contentId);
+        contentService.deleteLink(contentId);
 
         return new ResponseEntity<>(
                 new ServerResponse(

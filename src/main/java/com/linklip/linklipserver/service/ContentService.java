@@ -86,12 +86,12 @@ public class ContentService {
     }
 
     @Transactional
-    public void releaseLink(Long contentId) {
+    public void deleteLink(Long contentId) {
 
         Content content =
                 contentRepository
                         .findById(contentId)
                         .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
-        content.softDelete();
+        content.delete();
     }
 }
