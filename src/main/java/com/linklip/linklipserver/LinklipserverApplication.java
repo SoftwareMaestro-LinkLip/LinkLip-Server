@@ -12,15 +12,4 @@ public class LinklipserverApplication {
     public static void main(String[] args) {
         SpringApplication.run(LinklipserverApplication.class, args);
     }
-
-    @Configuration
-    public class WebConfig implements WebMvcConfigurer {
-        @Override
-        public void addCorsMappings(CorsRegistry registry) {
-            registry.addMapping("/**")
-                    .allowedOrigins(
-                            "https://develop.d2q3btuxg9ucoe.amplifyapp.com/",
-                            "http://develop.d2q3btuxg9ucoe.amplifyapp.com/");
-        }
-    }
 }
