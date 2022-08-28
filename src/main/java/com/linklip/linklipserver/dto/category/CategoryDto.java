@@ -1,5 +1,6 @@
 package com.linklip.linklipserver.dto.category;
 
+import com.linklip.linklipserver.domain.Category;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,5 +14,15 @@ public class CategoryDto {
     public CategoryDto(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public CategoryDto(Category category) {
+        this.id = category.getId();
+        this.name = category.getName();
+    }
+
+    public CategoryDto(CategoryDto category) {
+        this.id = category.getId();
+        this.name = category.getName();
     }
 }

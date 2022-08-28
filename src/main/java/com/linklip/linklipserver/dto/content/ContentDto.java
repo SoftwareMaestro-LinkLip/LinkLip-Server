@@ -1,22 +1,17 @@
 package com.linklip.linklipserver.dto.content;
 
 import com.linklip.linklipserver.domain.Content;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.linklip.linklipserver.dto.category.CategoryDto;
+import lombok.Getter;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
 public class ContentDto {
 
-    private Long id;
-    private String url;
-    private String linkImg;
-    private String title;
-    private String categoryName;
+    private final Long id;
+    private final String url;
+    private final String linkImg;
+    private final String title;
+    private CategoryDto category = null;
 
     public ContentDto(Content content) {
         this.id = content.getId();
@@ -24,7 +19,7 @@ public class ContentDto {
         this.linkImg = content.getLinkImg();
         this.title = content.getTitle();
         if (content.getCategory() != null) {
-            this.categoryName = content.getCategory().getName();
+            this.category = new CategoryDto(content.getCategory());
         }
     }
 
@@ -33,6 +28,15 @@ public class ContentDto {
         this.url = content.getUrl();
         this.linkImg = content.getLinkImg();
         this.title = content.getTitle();
-        this.categoryName = content.getCategoryName();
+        if (content.getCategory() != null) {
+            this.category = new CategoryDto(content.getCategory());
+        }
+    }
+
+    public CategoryDto getCategory() {
+        if (category != null) {
+            return new CategoryDto(category);
+        }
+        return null;
     }
 }
