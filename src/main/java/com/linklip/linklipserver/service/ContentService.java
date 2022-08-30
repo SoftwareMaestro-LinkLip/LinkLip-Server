@@ -2,9 +2,9 @@ package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
-import com.linklip.linklipserver.dto.content.ContentDto;
+import com.linklip.linklipserver.domain.Link;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
-import com.linklip.linklipserver.dto.content.FindContentResponse;
+import com.linklip.linklipserver.dto.content.LinkDto;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;

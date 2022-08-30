@@ -6,9 +6,9 @@ import org.springframework.data.domain.Page;
 @Data
 public class FindLinkListResponse {
 
-    Page<ContentDto> pageDto;
+    Page<?> pageDto;
 
-    public FindLinkListResponse(Page<ContentDto> pageDto) {
+    public FindLinkListResponse(Page<?> pageDto) {
         this.pageDto = pageDto;
     }
 }
