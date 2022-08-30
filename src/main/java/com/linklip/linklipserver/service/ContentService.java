@@ -68,9 +68,9 @@ public class ContentService {
     public LinkDto findContent(Long contentId) {
 
         Content content =
-            contentRepository
-                .findById(contentId)
-                .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+                contentRepository
+                        .findById(contentId)
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
 
         if (content instanceof Link) {
             return new LinkDto((Link) content);
