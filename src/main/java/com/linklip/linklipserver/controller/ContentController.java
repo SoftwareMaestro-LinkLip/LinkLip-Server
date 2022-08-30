@@ -1,6 +1,6 @@
 package com.linklip.linklipserver.controller;
 
-import static com.linklip.linklipserver.constant.SuccessResponse.DELETE_LINK_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.DELETE_CONTENT_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
@@ -95,18 +95,18 @@ public class ContentController {
                 HttpStatus.OK);
     }
 
-    @ApiOperation("링크 삭제 API v1")
-    @ApiResponses({@ApiResponse(code = 200, message = "링크 삭제 완료")})
-    @DeleteMapping("/v1/link/{contentId}")
-    public ResponseEntity<?> deleteLinkV1(@PathVariable Long contentId) {
+    @ApiOperation("컨텐츠 삭제 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "컨텐츠 삭제 완료")})
+    @DeleteMapping("/v1/{contentId}")
+    public ResponseEntity<?> deleteContentV1(@PathVariable Long contentId) {
 
-        contentService.deleteLink(contentId);
+        contentService.deleteContent(contentId);
 
         return new ResponseEntity<>(
                 new ServerResponse(
-                        DELETE_LINK_SUCCESS.getStatus(),
-                        DELETE_LINK_SUCCESS.getSuccess(),
-                        DELETE_LINK_SUCCESS.getMessage()),
+                        DELETE_CONTENT_SUCCESS.getStatus(),
+                        DELETE_CONTENT_SUCCESS.getSuccess(),
+                        DELETE_CONTENT_SUCCESS.getMessage()),
                 HttpStatus.OK);
     }
 }

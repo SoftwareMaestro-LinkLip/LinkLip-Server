@@ -86,7 +86,7 @@ public class ContentService {
     }
 
     @Transactional
-    public void deleteLink(Long contentId) {
+    public void deleteContent(Long contentId) {
 
         Content content =
                 contentRepository

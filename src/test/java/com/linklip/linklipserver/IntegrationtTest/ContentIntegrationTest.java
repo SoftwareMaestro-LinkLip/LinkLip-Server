@@ -408,7 +408,7 @@ public class ContentIntegrationTest {
             // when
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/content/v1/link/{contentId}", content.getId())
+                            delete("/content/v1/{contentId}", content.getId())
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
@@ -433,7 +433,7 @@ public class ContentIntegrationTest {
             Long contentId = 987654321L;
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/content/v1/link/{contentId}", contentId)
+                            delete("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
