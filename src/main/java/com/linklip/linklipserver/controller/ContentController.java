@@ -48,20 +48,19 @@ public class ContentController {
                 HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "링크 검색 API v1")
+    @ApiOperation(value = "컨텐츠 검색 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
-    public ResponseEntity<?> findLinkListV1(
+    public ResponseEntity<?> findContentListV1(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
-                        FIND_LINK_LIST_SUCCESS.getStatus(),
-                        FIND_LINK_LIST_SUCCESS.getSuccess(),
-                        FIND_LINK_LIST_SUCCESS.getMessage(),
-                        new FindLinkListResponse(
-                                contentService.findContentList(request, pageable))),
+                        FIND_CONTENT_LIST_SUCCESS.getStatus(),
+                        FIND_CONTENT_LIST_SUCCESS.getSuccess(),
+                        FIND_CONTENT_LIST_SUCCESS.getMessage(),
+                        contentService.findContentList(request, pageable)),
                 HttpStatus.OK);
     }
 

@@ -16,7 +16,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     @EntityGraph(attributePaths = {"category"})
     @Query(
-            "SELECT c FROM Content c WHERE c.category.id=:categoryId AND (c.title LIKE %:term% OR c.text LIKE %:term%)")
+            "SELECT l FROM Link l WHERE l.category.id=:categoryId AND (l.title LIKE %:term% OR l.text LIKE %:term%)")
     Page<Content> findByCategoryAndTerm(
             @Param("categoryId") Long categoryId, @Param("term") String term, Pageable pageable);
 
@@ -25,7 +25,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     Page<Content> findByCategory(@Param("categoryId") Long categoryId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"category"})
-    @Query("SELECT c FROM Content c WHERE c.title LIKE %:term% OR c.text LIKE %:term%")
+    @Query("SELECT l FROM Link l WHERE l.title LIKE %:term% OR l.text LIKE %:term%")
     Page<Content> findByTerm(@Param("term") String term, Pageable pageable);
 
     @Modifying(clearAutomatically = true) // executeUpdate 같은 Annotation

@@ -32,7 +32,7 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContentList(FindContentRequest request, Pageable pageable) {
+    public Page<?> findContentList(FindContentRequest request, Pageable pageable) {
 
         String term = request.getTerm();
         Long categoryId = request.getCategoryId();
@@ -55,7 +55,14 @@ public class ContentService {
             page = contentRepository.findAll(pageable);
         }
 
-        return page.map(c -> new ContentDto(c));
+        return page.map(
+                (c) -> {
+                    if (c instanceof Link) {
+                        return new LinkDto((Link) c);
+                    }
+                    // TODO 수정 필요
+                    return null;
+                });
     }
 
     @Transactional
