@@ -1,18 +1,13 @@
 package com.linklip.linklipserver.dto.content;
 
-import com.linklip.linklipserver.domain.Content;
 import lombok.Getter;
 
 @Getter
-public class FindContentResponse {
+public class FindContentResponse<T> {
 
-    private ContentDto content;
+    private final T content;
 
-    public FindContentResponse(Content content) {
-        this.content = new ContentDto(content);
-    }
-
-    public ContentDto getContent() {
-        return new ContentDto(content);
+    public FindContentResponse(T content) {
+        this.content = content;
     }
 }

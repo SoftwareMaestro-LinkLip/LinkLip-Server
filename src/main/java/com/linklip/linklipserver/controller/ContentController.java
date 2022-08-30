@@ -74,7 +74,7 @@ public class ContentController {
                         FIND_CONTENT_SUCCESS.getStatus(),
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
-                        contentService.findContent(contentId)),
+                        new FindContentResponse(contentService.findContent(contentId))),
                 HttpStatus.OK);
     }
 

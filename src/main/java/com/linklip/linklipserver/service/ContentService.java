@@ -65,6 +65,21 @@ public class ContentService {
                 });
     }
 
+    public LinkDto findContent(Long contentId) {
+
+        Content content =
+            contentRepository
+                .findById(contentId)
+                .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+
+        if (content instanceof Link) {
+            return new LinkDto((Link) content);
+        }
+
+        // TODO 수정 필요
+        return null;
+    }
+
     @Transactional
     public void updateLinkContent(Long id, UpdateLinkRequest request) {
 
