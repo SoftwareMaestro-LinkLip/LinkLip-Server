@@ -98,4 +98,14 @@ public class ContentService {
                                 .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
         ((Link) content).update(title, category);
     }
+
+    @Transactional
+    public void deleteContent(Long contentId) {
+
+        Content content =
+                contentRepository
+                        .findById(contentId)
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+        content.delete();
+    }
 }
