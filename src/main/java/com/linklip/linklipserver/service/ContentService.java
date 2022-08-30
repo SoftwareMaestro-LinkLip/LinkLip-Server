@@ -96,24 +96,6 @@ public class ContentService {
                         : categoryRepository
                                 .findById(categoryId)
                                 .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
-        content.update(title, category);
-    }
-
-    public FindContentResponse findContent(Long contentId) {
-
-        return new FindContentResponse(
-                contentRepository
-                        .findById(contentId)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다")));
-    }
-
-    @Transactional
-    public void deleteContent(Long contentId) {
-
-        Content content =
-                contentRepository
-                        .findById(contentId)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
-        content.delete();
+        ((Link) content).update(title, category);
     }
 }

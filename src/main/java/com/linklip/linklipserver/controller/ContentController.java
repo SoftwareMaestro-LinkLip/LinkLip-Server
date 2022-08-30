@@ -1,15 +1,15 @@
 package com.linklip.linklipserver.controller;
 
 import static com.linklip.linklipserver.constant.SuccessResponse.DELETE_CONTENT_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_SUCCESS;
-import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.UPDATE_LINK_SUCCESS;
 
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
-import com.linklip.linklipserver.dto.content.FindLinkListResponse;
+import com.linklip.linklipserver.dto.content.FindContentResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
