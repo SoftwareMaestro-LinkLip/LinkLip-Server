@@ -217,11 +217,11 @@ public class CategoryIntegrationTest {
             Category savedCategory2 = categoryRepository.save(category2);
 
             Content content1 =
-                    testUtils.saveContent("naver.com", "Naver", "뉴스 로그인 회원가입", savedCategory1);
+                    testUtils.saveLink("naver.com", "Naver", "뉴스 로그인 회원가입", savedCategory1);
             Content content2 =
-                    testUtils.saveContent("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory1);
+                    testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory1);
             Content content3 =
-                    testUtils.saveContent("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory2);
+                    testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory2);
 
             // when
             ResultActions actions =

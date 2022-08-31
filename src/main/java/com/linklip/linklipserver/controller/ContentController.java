@@ -1,15 +1,15 @@
 package com.linklip.linklipserver.controller;
 
-import static com.linklip.linklipserver.constant.SuccessResponse.DELETE_LINK_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.DELETE_CONTENT_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_SUCCESS;
-import static com.linklip.linklipserver.constant.SuccessResponse.FIND_LINK_LIST_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
 import static com.linklip.linklipserver.constant.SuccessResponse.UPDATE_LINK_SUCCESS;
 
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
-import com.linklip.linklipserver.dto.content.FindLinkListResponse;
+import com.linklip.linklipserver.dto.content.FindContentResponse;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.service.ContentService;
@@ -48,20 +48,19 @@ public class ContentController {
                 HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "링크 검색 API v1")
+    @ApiOperation(value = "컨텐츠 검색 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
-    public ResponseEntity<?> findLinkListV1(
+    public ResponseEntity<?> findContentListV1(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
-                        FIND_LINK_LIST_SUCCESS.getStatus(),
-                        FIND_LINK_LIST_SUCCESS.getSuccess(),
-                        FIND_LINK_LIST_SUCCESS.getMessage(),
-                        new FindLinkListResponse(
-                                contentService.findContentList(request, pageable))),
+                        FIND_CONTENT_LIST_SUCCESS.getStatus(),
+                        FIND_CONTENT_LIST_SUCCESS.getSuccess(),
+                        FIND_CONTENT_LIST_SUCCESS.getMessage(),
+                        contentService.findContentList(request, pageable)),
                 HttpStatus.OK);
     }
 
@@ -75,7 +74,7 @@ public class ContentController {
                         FIND_CONTENT_SUCCESS.getStatus(),
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
-                        contentService.findContent(contentId)),
+                        new FindContentResponse(contentService.findContent(contentId))),
                 HttpStatus.OK);
     }
 
@@ -95,18 +94,18 @@ public class ContentController {
                 HttpStatus.OK);
     }
 
-    @ApiOperation("링크 삭제 API v1")
-    @ApiResponses({@ApiResponse(code = 200, message = "링크 삭제 완료")})
-    @DeleteMapping("/v1/link/{contentId}")
-    public ResponseEntity<?> deleteLinkV1(@PathVariable Long contentId) {
+    @ApiOperation("컨텐츠 삭제 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "컨텐츠 삭제 완료")})
+    @DeleteMapping("/v1/{contentId}")
+    public ResponseEntity<?> deleteContentV1(@PathVariable Long contentId) {
 
-        contentService.deleteLink(contentId);
+        contentService.deleteContent(contentId);
 
         return new ResponseEntity<>(
                 new ServerResponse(
-                        DELETE_LINK_SUCCESS.getStatus(),
-                        DELETE_LINK_SUCCESS.getSuccess(),
-                        DELETE_LINK_SUCCESS.getMessage()),
+                        DELETE_CONTENT_SUCCESS.getStatus(),
+                        DELETE_CONTENT_SUCCESS.getSuccess(),
+                        DELETE_CONTENT_SUCCESS.getMessage()),
                 HttpStatus.OK);
     }
 }

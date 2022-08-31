@@ -2,9 +2,9 @@ package com.linklip.linklipserver.service;
 
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
-import com.linklip.linklipserver.dto.content.ContentDto;
+import com.linklip.linklipserver.domain.Link;
 import com.linklip.linklipserver.dto.content.FindContentRequest;
-import com.linklip.linklipserver.dto.content.FindContentResponse;
+import com.linklip.linklipserver.dto.content.LinkDto;
 import com.linklip.linklipserver.dto.content.SaveLinkRequest;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;
@@ -32,7 +32,7 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContentList(FindContentRequest request, Pageable pageable) {
+    public Page<?> findContentList(FindContentRequest request, Pageable pageable) {
 
         String term = request.getTerm();
         Long categoryId = request.getCategoryId();
@@ -55,7 +55,29 @@ public class ContentService {
             page = contentRepository.findAll(pageable);
         }
 
-        return page.map(c -> new ContentDto(c));
+        return page.map(
+                (c) -> {
+                    if (c instanceof Link) {
+                        return new LinkDto((Link) c);
+                    }
+                    // TODO 수정 필요
+                    return null;
+                });
+    }
+
+    public LinkDto findContent(Long contentId) {
+
+        Content content =
+                contentRepository
+                        .findById(contentId)
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+
+        if (content instanceof Link) {
+            return new LinkDto((Link) content);
+        }
+
+        // TODO 수정 필요
+        return null;
     }
 
     @Transactional
@@ -74,19 +96,11 @@ public class ContentService {
                         : categoryRepository
                                 .findById(categoryId)
                                 .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
-        content.update(title, category);
-    }
-
-    public FindContentResponse findContent(Long contentId) {
-
-        return new FindContentResponse(
-                contentRepository
-                        .findById(contentId)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다")));
+        ((Link) content).update(title, category);
     }
 
     @Transactional
-    public void deleteLink(Long contentId) {
+    public void deleteContent(Long contentId) {
 
         Content content =
                 contentRepository

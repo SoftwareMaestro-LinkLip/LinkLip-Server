@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.linklip.linklipserver.TestUtils;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.domain.Link;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
@@ -54,10 +55,10 @@ public class ContentIntegrationTest {
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
-            saveContent(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
-            saveContent(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
-            saveContent(url1, null, null, category2);
-            saveContent(url2, null, null, category2);
+            testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            testUtils.saveLink(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+            testUtils.saveLink(url1, null, null, category2);
+            testUtils.saveLink(url2, null, null, category2);
         }
 
         @Nested
@@ -73,13 +74,14 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1/link")
+                                        .contentType(MediaType.APPLICATION_JSON)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("page", "0")
                                         .param("size", "20"));
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(2)));
+                        .andExpect(jsonPath("$.data.content").value(hasSize(2)));
             }
 
             @DisplayName("일반적인 검색어")
@@ -99,7 +101,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(1)));
+                        .andExpect(jsonPath("$.data.content").value(hasSize(1)));
             }
 
             @Test
@@ -119,9 +121,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(
-                                jsonPath("$.data.pageDto.content")
-                                        .value(hasSize(2))); // 모든 Content 출력
+                        .andExpect(jsonPath("$.data.content").value(hasSize(2))); // 모든 Content 출력
             }
 
             @Test
@@ -141,9 +141,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(
-                                jsonPath("$.data.pageDto.content")
-                                        .value(hasSize(0))); // 모든 Content 출력
+                        .andExpect(jsonPath("$.data.content").value(hasSize(0))); // 모든 Content 출력
             }
         }
 
@@ -166,7 +164,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(jsonPath("$.data.pageDto.content").value(hasSize(1)));
+                        .andExpect(jsonPath("$.data.content").value(hasSize(1)));
             }
 
             @Test
@@ -184,9 +182,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(
-                                jsonPath("$.data.pageDto.content")
-                                        .value(hasSize(4))); // 모든 Content 출력
+                        .andExpect(jsonPath("$.data.content").value(hasSize(4))); // 모든 Content 출력
             }
 
             @Test
@@ -204,9 +200,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(
-                                jsonPath("$.data.pageDto.content")
-                                        .value(hasSize(0))); // 모든 Content 출력
+                        .andExpect(jsonPath("$.data.content").value(hasSize(0))); // 모든 Content 출력
             }
 
             @Test
@@ -220,9 +214,7 @@ public class ContentIntegrationTest {
 
                 // then
                 actions.andExpect(status().isOk())
-                        .andExpect(
-                                jsonPath("$.data.pageDto.content")
-                                        .value(hasSize(4))); // 모든 Content 출력
+                        .andExpect(jsonPath("$.data.content").value(hasSize(4))); // 모든 Content 출력
             }
         }
 
@@ -233,7 +225,7 @@ public class ContentIntegrationTest {
             // given
             String baseUrl = "https://www.swmaestro.org";
             String baseTitle = "소프트웨어 마에스트로";
-            saveContent(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            testUtils.saveLink(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...", null);
 
             // when
             ResultActions actions =
@@ -241,18 +233,8 @@ public class ContentIntegrationTest {
 
             // then
             actions.andExpect(status().isOk())
-                    .andExpect(
-                            jsonPath("$.data.pageDto.content").value(hasSize(2))); // 모든 Content 출력
+                    .andExpect(jsonPath("$.data.content").value(hasSize(2))); // 모든 Content 출력
         }
-    }
-
-    public Content saveContent(String url, String title, String text, Category category) {
-
-        Content content =
-                Content.builder().linkUrl(url).title(title).text(text).category(category).build();
-        contentRepository.save(content);
-
-        return content;
     }
 
     @Nested
@@ -272,10 +254,10 @@ public class ContentIntegrationTest {
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
-            content = saveContent(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
-            saveContent(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
-            saveContent(url1, null, null, category2);
-            saveContent(url2, null, null, null);
+            content = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            testUtils.saveLink(url1, null, null, category2);
+            testUtils.saveLink(url2, null, null, null);
         }
 
         @Test
@@ -317,7 +299,8 @@ public class ContentIntegrationTest {
             categoryRepository.save(category);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
-            Content savedContent = saveContent(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category);
+            Content savedContent =
+                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category);
 
             UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
             updateLinkRequest.setTitle("소프트웨어 마에스트로");
@@ -331,7 +314,7 @@ public class ContentIntegrationTest {
 
             actions.andExpect(status().isOk());
 
-            assertThat(savedContent.getTitle()).isEqualTo(updateLinkRequest.getTitle());
+            assertThat(((Link) savedContent).getTitle()).isEqualTo(updateLinkRequest.getTitle());
         }
 
         @Test
@@ -345,7 +328,8 @@ public class ContentIntegrationTest {
             categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
-            Content savedContent = saveContent(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+            Content savedContent =
+                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
 
             UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
             updateLinkRequest.setTitle("소프트웨어 마에스트로");
@@ -360,7 +344,7 @@ public class ContentIntegrationTest {
 
             actions.andExpect(status().isOk());
 
-            assertThat(savedContent.getTitle()).isEqualTo(updateLinkRequest.getTitle());
+            assertThat(((Link) savedContent).getTitle()).isEqualTo(updateLinkRequest.getTitle());
             assertThat(savedContent.getCategory().getId())
                     .isEqualTo(updateLinkRequest.getCategoryId());
         }
@@ -376,7 +360,8 @@ public class ContentIntegrationTest {
             categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
-            Content savedContent = saveContent(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+            Content savedContent =
+                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
 
             UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
             updateLinkRequest.setCategoryId(category2.getId());
@@ -402,13 +387,13 @@ public class ContentIntegrationTest {
 
             // given
             Category category = testUtils.saveCategory("포털");
-            Content content = testUtils.saveContent("www.naver.com", "네이버", "오늘의 날씨", category);
+            Content content = testUtils.saveLink("www.naver.com", "네이버", "오늘의 날씨", category);
             boolean isDeleted = content.isDeleted();
 
             // when
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/content/v1/link/{contentId}", content.getId())
+                            delete("/content/v1/{contentId}", content.getId())
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
@@ -427,13 +412,13 @@ public class ContentIntegrationTest {
 
             // given
             Category category = testUtils.saveCategory("포털");
-            testUtils.saveContent("www.naver.com", "네이버", "오늘의 날씨", category);
+            testUtils.saveLink("www.naver.com", "네이버", "오늘의 날씨", category);
 
             // when
             Long contentId = 987654321L;
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/content/v1/link/{contentId}", contentId)
+                            delete("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then

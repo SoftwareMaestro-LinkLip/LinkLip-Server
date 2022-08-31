@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.domain.Link;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,7 +30,7 @@ class ContentRepositoryTest {
         @Test
         @DisplayName("링크 url만 저장")
         public void saveOnlyUrl() {
-            Content content = Content.builder().linkUrl("https://www.swmaestro.org/").build();
+            Content content = Link.builder().linkUrl("https://www.swmaestro.org/").build();
 
             Content savedContent = contentRepository.save(content);
             assertThat(content).isEqualTo(savedContent);
@@ -39,7 +40,7 @@ class ContentRepositoryTest {
         @DisplayName("링크 url과 썸네일 저장")
         public void saveUrlAndThumbnail() {
             Content content =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
                                     "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
@@ -53,7 +54,7 @@ class ContentRepositoryTest {
         @DisplayName("링크 url, 썸네일, Title, Text 저장")
         public void saveLinkContent() {
             Content content =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
                                     "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
@@ -81,7 +82,7 @@ class ContentRepositoryTest {
             categoryRepository.save(category);
 
             Content content1 =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
                                     "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
@@ -90,7 +91,7 @@ class ContentRepositoryTest {
                             .category(category)
                             .build();
             Content content2 =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
                                     "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
@@ -153,14 +154,14 @@ class ContentRepositoryTest {
 
                 // given
                 Content content1 =
-                        Content.builder()
+                        Link.builder()
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 13기 연수생 여러분...")
                                 .category(category)
                                 .build();
                 Content content2 =
-                        Content.builder()
+                        Link.builder()
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 12기 연수생 여러분...")
@@ -231,7 +232,7 @@ class ContentRepositoryTest {
             public void findContentByNullInTerm() throws Exception {
 
                 // given
-                Content content2 = Content.builder().linkUrl("https://www.swmaestro.org/").build();
+                Content content2 = Link.builder().linkUrl("https://www.swmaestro.org/").build();
                 contentRepository.save(content2);
 
                 // when
@@ -261,7 +262,7 @@ class ContentRepositoryTest {
 
                 // given
                 Content content2 =
-                        Content.builder()
+                        Link.builder()
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 13기 연수생 여러분...")
@@ -269,7 +270,7 @@ class ContentRepositoryTest {
                 contentRepository.save(content2);
 
                 Content content3 =
-                        Content.builder()
+                        Link.builder()
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 12기 연수생 여러분...")
@@ -292,7 +293,7 @@ class ContentRepositoryTest {
 
             // given
             Content content2 =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
@@ -300,7 +301,7 @@ class ContentRepositoryTest {
             contentRepository.save(content2);
 
             Content content3 =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
@@ -308,7 +309,7 @@ class ContentRepositoryTest {
             contentRepository.save(content3);
 
             Content content4 =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
@@ -340,7 +341,7 @@ class ContentRepositoryTest {
 
             // given
             Content content =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 12기 연수생 여러분...")
