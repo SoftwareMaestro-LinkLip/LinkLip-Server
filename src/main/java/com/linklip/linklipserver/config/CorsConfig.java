@@ -11,7 +11,10 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "https://develop.d2q3btuxg9ucoe.amplifyapp.com/",
-                        "http://develop.d2q3btuxg9ucoe.amplifyapp.com/")
+                        "http://develop.d2q3btuxg9ucoe.amplifyapp.com/",
+                        "http://localhost:3000/",
+                        "http://localhost:8080/"
+                        )
                 .allowCredentials(true);
     }
 }
