@@ -28,7 +28,24 @@ public class ContentService {
     // 컨텐츠 저장
     @Transactional
     public void saveLinkContent(SaveLinkRequest request) {
-        Content content = request.toEntity();
+
+        Long categoryId = request.getCategoryId();
+
+        Category category =
+                categoryId == null
+                        ? null
+                        : categoryRepository
+                                .findById(categoryId)
+                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+
+        Content content =
+                Link.builder()
+                        .linkUrl(request.getUrl())
+                        .linkImg(request.getLinkImg())
+                        .title(request.getTitle())
+                        .text(request.getText())
+                        .category(category)
+                        .build();
         contentRepository.save(content);
     }
 
