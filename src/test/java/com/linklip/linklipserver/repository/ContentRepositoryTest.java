@@ -71,7 +71,7 @@ class ContentRepositoryTest {
         public void saveLinkContentWithCategory() {
             Category category = Category.builder().name("취업 정보").build();
             Content content =
-                    Content.builder()
+                    Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .linkImg(
                                     "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
