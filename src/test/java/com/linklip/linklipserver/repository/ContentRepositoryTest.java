@@ -65,6 +65,24 @@ class ContentRepositoryTest {
             Content savedContent = contentRepository.save(content);
             assertThat(content).isEqualTo(savedContent);
         }
+
+        @Test
+        @DisplayName("링크 url, 썸네일, Title, Text, 카테고리 저장")
+        public void saveLinkContentWithCategory() {
+            Category category = Category.builder().name("취업 정보").build();
+            Content content =
+                    Link.builder()
+                            .linkUrl("https://www.swmaestro.org/")
+                            .linkImg(
+                                    "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
+                            .title("소프트웨어 마에스트로")
+                            .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .category(category)
+                            .build();
+
+            Content savedContent = contentRepository.save(content);
+            assertThat(content).isEqualTo(savedContent);
+        }
     }
 
     @Nested
