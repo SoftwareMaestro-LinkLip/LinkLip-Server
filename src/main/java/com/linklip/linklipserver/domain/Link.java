@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("link")
 public class Link extends Content {
 
-    @Column(nullable = false)
     private String linkUrl;
 
     private String linkImg;
