@@ -143,18 +143,18 @@ public class ContentService {
     public void updateNoteContent(Long contentId, UpdateNoteRequest request) {
 
         Content content =
-            contentRepository
-                .findById(contentId)
-                .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+                contentRepository
+                        .findById(contentId)
+                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
 
         String title = request.getText();
         Long categoryId = request.getCategoryId();
         Category category =
-            categoryId == null
-                ? null
-                : categoryRepository
-                    .findById(categoryId)
-                    .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+                categoryId == null
+                        ? null
+                        : categoryRepository
+                                .findById(categoryId)
+                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
         ((Note) content).update(title, category);
     }
 }

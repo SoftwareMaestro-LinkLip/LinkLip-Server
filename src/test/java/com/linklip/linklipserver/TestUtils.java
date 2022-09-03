@@ -27,8 +27,7 @@ public class TestUtils {
 
     public Content saveNote(String text, Category category) {
 
-        Content content =
-            Note.builder().text(text).category(category).build();
+        Content content = Note.builder().text(text).category(category).build();
         contentRepository.save(content);
 
         return content;

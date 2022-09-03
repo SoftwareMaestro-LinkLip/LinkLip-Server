@@ -121,15 +121,16 @@ public class ContentController {
     @ApiOperation(value = "메모 수정 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "메모 수정 완료")})
     @PatchMapping("/v1/note/{contentId}")
-    public ResponseEntity<?> updateNoteV1(@PathVariable Long contentId, @RequestBody @Valid UpdateNoteRequest request) {
+    public ResponseEntity<?> updateNoteV1(
+            @PathVariable Long contentId, @RequestBody @Valid UpdateNoteRequest request) {
 
         contentService.updateNoteContent(contentId, request);
 
         return new ResponseEntity<>(
-            new ServerResponse(
-                UPDATE_NOTE_SUCCESS.getStatus(),
-                UPDATE_NOTE_SUCCESS.getSuccess(),
-                UPDATE_NOTE_SUCCESS.getMessage()),
-            HttpStatus.OK);
+                new ServerResponse(
+                        UPDATE_NOTE_SUCCESS.getStatus(),
+                        UPDATE_NOTE_SUCCESS.getSuccess(),
+                        UPDATE_NOTE_SUCCESS.getMessage()),
+                HttpStatus.OK);
     }
 }

@@ -447,11 +447,11 @@ public class ContentIntegrationTest {
 
             // when
             ResultActions actions =
-                mockMvc.perform(
-                    MockMvcRequestBuilders.patch(
-                        "/content/v1/note/{contentId}", savedContent.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(testUtils.asJsonString(updateNoteRequest)));
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/note/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
             actions.andExpect(status().isOk());
@@ -475,17 +475,17 @@ public class ContentIntegrationTest {
 
             // when
             ResultActions actions =
-                mockMvc.perform(
-                    MockMvcRequestBuilders.patch(
-                        "/content/v1/note/{contentId}", savedContent.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(testUtils.asJsonString(updateNoteRequest)));
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/note/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
             actions.andExpect(status().isOk());
             assertThat(((Note) savedContent).getText()).isEqualTo(updateNoteRequest.getText());
             assertThat(savedContent.getCategory().getId())
-                .isEqualTo(updateNoteRequest.getCategoryId());
+                    .isEqualTo(updateNoteRequest.getCategoryId());
         }
 
         @Test
@@ -505,11 +505,11 @@ public class ContentIntegrationTest {
 
             // when
             ResultActions actions =
-                mockMvc.perform(
-                    MockMvcRequestBuilders.patch(
-                        "/content/v1/note/{contentId}", savedContent.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(testUtils.asJsonString(updateNoteRequest)));
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/note/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
             actions.andExpect(status().isBadRequest());
