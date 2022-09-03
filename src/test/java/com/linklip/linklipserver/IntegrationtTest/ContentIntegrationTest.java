@@ -10,7 +10,9 @@ import com.linklip.linklipserver.TestUtils;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.domain.Link;
+import com.linklip.linklipserver.domain.Note;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
+import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -420,6 +422,94 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             delete("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON));
+
+            // then
+            actions.andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("메모 수정 통합테스트")
+    class UpdateNoteContent {
+
+        @Test
+        @DisplayName("메모 컨텐츠 text 수정")
+        public void updateText() throws Exception {
+
+            // given
+            Category category = testUtils.saveCategory("ToDo List");
+
+            String text = "마트에서 사과 구매";
+            Content savedContent = testUtils.saveNote(text, category);
+
+            UpdateNoteRequest updateNoteRequest = new UpdateNoteRequest();
+            updateNoteRequest.setText("마트에서 포도 구매");
+
+            // when
+            ResultActions actions =
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/note/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(testUtils.asJsonString(updateNoteRequest)));
+
+            // then
+            actions.andExpect(status().isOk());
+            assertThat(((Note) savedContent).getText()).isEqualTo(updateNoteRequest.getText());
+        }
+
+        @Test
+        @DisplayName("메모 컨텐츠 text, 카테고리 수정")
+        public void updateTextAndCategory() throws Exception {
+
+            // given
+            Category fromCategory = testUtils.saveCategory("ToDo List");
+            Category toCategory = testUtils.saveCategory("ToDo");
+
+            String text = "마트에서 사과 구매";
+            Content savedContent = testUtils.saveNote(text, fromCategory);
+
+            UpdateNoteRequest updateNoteRequest = new UpdateNoteRequest();
+            updateNoteRequest.setText("마트에서 포도 구매");
+            updateNoteRequest.setCategoryId(toCategory.getId());
+
+            // when
+            ResultActions actions =
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/note/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(testUtils.asJsonString(updateNoteRequest)));
+
+            // then
+            actions.andExpect(status().isOk());
+            assertThat(((Note) savedContent).getText()).isEqualTo(updateNoteRequest.getText());
+            assertThat(savedContent.getCategory().getId())
+                    .isEqualTo(updateNoteRequest.getCategoryId());
+        }
+
+        @Test
+        @DisplayName("메모 컨텐츠의 text 없이 수정 요청을 보내면 400")
+        public void updateWithoutText() throws Exception {
+
+            // given
+            Category fromCategory = testUtils.saveCategory("ToDo List");
+            Category toCategory = testUtils.saveCategory("ToDo");
+
+            String text = "마트에서 사과 구매";
+            Content savedContent = testUtils.saveNote(text, fromCategory);
+
+            UpdateNoteRequest updateNoteRequest = new UpdateNoteRequest();
+            updateNoteRequest.setText("");
+            updateNoteRequest.setCategoryId(toCategory.getId());
+
+            // when
+            ResultActions actions =
+                    mockMvc.perform(
+                            MockMvcRequestBuilders.patch(
+                                            "/content/v1/note/{contentId}", savedContent.getId())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
             actions.andExpect(status().isBadRequest());
