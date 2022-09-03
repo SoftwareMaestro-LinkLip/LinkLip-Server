@@ -21,4 +21,9 @@ public class Note extends Content {
         this.text = text;
         super.updateCategory(category);
     }
+
+    public void update(String text, Category category) {
+        this.text = text;
+        super.updateCategory(category);
+    }
 }

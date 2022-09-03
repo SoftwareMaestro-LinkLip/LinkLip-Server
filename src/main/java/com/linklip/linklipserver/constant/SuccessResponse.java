@@ -14,6 +14,7 @@ public enum SuccessResponse {
     DELETE_CATEGORY_SUCCESS(HttpStatus.OK, "OK8", "카테고리 삭제 완료"),
     DELETE_CONTENT_SUCCESS(HttpStatus.OK, "OK9", "컨텐츠 삭제 완료"),
     SAVE_NOTE_SUCCESS(HttpStatus.CREATED, "OK10", "메모 저장 완료"),
+    UPDATE_NOTE_SUCCESS(HttpStatus.OK, "OK11", "메모 수정 완료"),
     ;
 
     @Getter private final int status;
