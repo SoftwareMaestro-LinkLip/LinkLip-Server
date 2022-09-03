@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.domain.Link;
+import com.linklip.linklipserver.domain.Note;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,7 +26,7 @@ class ContentRepositoryTest {
 
     @Nested
     @DisplayName("링크 저장 테스트")
-    class saveContent {
+    class saveLink {
 
         @Test
         @DisplayName("링크 url만 저장")
@@ -371,6 +372,34 @@ class ContentRepositoryTest {
 
             // then
             assertThat(result.getId()).isEqualTo(content.getId());
+        }
+    }
+
+    @Nested
+    @DisplayName("메모 저장 테스트")
+    class saveNoteContent {
+
+        @Test
+        @DisplayName("카테고리 설정 없이 메모 저장")
+        public void saveOnlyText() {
+            Content content = Note.builder().text("TOPCIT 지원 기간 9월 중순까지!!").build();
+
+            Content savedContent = contentRepository.save(content);
+            assertThat(savedContent).isEqualTo(content);
+        }
+
+        @Test
+        @DisplayName("카테고리 설정하여 메모 저장")
+        public void saveTextWithCategory() {
+            Category category = Category.builder().name("시험 접수").build();
+            Category savedCategory = categoryRepository.save(category);
+
+            Content content =
+                    Note.builder().text("TOPCIT 지원 기간 9월 중순까지!!").category(savedCategory).build();
+
+            Content savedContent = contentRepository.save(content);
+            assertThat(savedContent).isEqualTo(content);
+            assertThat(savedContent.getCategory()).isEqualTo(savedCategory);
         }
     }
 }

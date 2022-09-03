@@ -1,17 +1,10 @@
 package com.linklip.linklipserver.controller;
 
-import static com.linklip.linklipserver.constant.SuccessResponse.DELETE_CONTENT_SUCCESS;
-import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_LIST_SUCCESS;
-import static com.linklip.linklipserver.constant.SuccessResponse.FIND_CONTENT_SUCCESS;
-import static com.linklip.linklipserver.constant.SuccessResponse.SAVE_LINK_SUCCESS;
-import static com.linklip.linklipserver.constant.SuccessResponse.UPDATE_LINK_SUCCESS;
+import static com.linklip.linklipserver.constant.SuccessResponse.*;
 
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
-import com.linklip.linklipserver.dto.content.FindContentRequest;
-import com.linklip.linklipserver.dto.content.FindContentResponse;
-import com.linklip.linklipserver.dto.content.SaveLinkRequest;
-import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
+import com.linklip.linklipserver.dto.content.*;
 import com.linklip.linklipserver.service.ContentService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.*;
@@ -107,5 +100,20 @@ public class ContentController {
                         DELETE_CONTENT_SUCCESS.getSuccess(),
                         DELETE_CONTENT_SUCCESS.getMessage()),
                 HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "메모 저장 API v1")
+    @ApiResponses({@ApiResponse(code = 201, message = "메모 저장 완료")})
+    @PostMapping("/v1/note")
+    public ResponseEntity<?> saveNoteV1(@RequestBody @Valid SaveNoteRequest request) {
+
+        contentService.saveNoteContent(request);
+
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        SAVE_NOTE_SUCCESS.getStatus(),
+                        SAVE_NOTE_SUCCESS.getSuccess(),
+                        SAVE_NOTE_SUCCESS.getMessage()),
+                HttpStatus.CREATED);
     }
 }

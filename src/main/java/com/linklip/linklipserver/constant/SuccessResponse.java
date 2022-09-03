@@ -13,6 +13,7 @@ public enum SuccessResponse {
     FIND_CONTENT_SUCCESS(HttpStatus.OK, "OK7", "컨텐츠 상세보기 응답 완료"),
     DELETE_CATEGORY_SUCCESS(HttpStatus.OK, "OK8", "카테고리 삭제 완료"),
     DELETE_CONTENT_SUCCESS(HttpStatus.OK, "OK9", "컨텐츠 삭제 완료"),
+    SAVE_NOTE_SUCCESS(HttpStatus.CREATED, "OK10", "메모 저장 완료"),
     ;
 
     @Getter private final int status;
