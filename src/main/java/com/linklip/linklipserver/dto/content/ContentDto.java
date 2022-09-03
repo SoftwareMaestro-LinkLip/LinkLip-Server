@@ -7,5 +7,4 @@ public class ContentDto {
     public String type;
     public Long id;
     public CategoryDto category;
-
 }

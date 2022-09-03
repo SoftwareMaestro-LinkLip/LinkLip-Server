@@ -264,7 +264,6 @@ public class ContentIntegrationTest {
 
             // Note
             note1 = testUtils.saveNote("아무 메모나 끄적끄적", category1);
-
         }
 
         @Test
@@ -305,6 +304,18 @@ public class ContentIntegrationTest {
             actions.andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content.id").value(contentId))
                     .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 id  Note Content 상세보기")
+        public void findNotExistNoteContent() throws Exception {
+
+            // when
+            Long contentId = 987654321L;
+            ResultActions actions = mockMvc.perform(get("/content/v2/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isBadRequest());
         }
     }
 

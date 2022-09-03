@@ -96,7 +96,6 @@ public class ContentService {
         }
 
         throw new InvalidIdException("존재하지 않는 contentId입니다");
-
     }
 
     @Transactional
