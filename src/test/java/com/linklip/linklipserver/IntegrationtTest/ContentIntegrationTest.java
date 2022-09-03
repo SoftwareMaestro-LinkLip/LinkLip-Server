@@ -10,6 +10,7 @@ import com.linklip.linklipserver.TestUtils;
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.domain.Link;
+import com.linklip.linklipserver.domain.Note;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
@@ -241,10 +242,12 @@ public class ContentIntegrationTest {
     @DisplayName("링크 상세보기 통합테스트")
     class findContent {
 
-        Content content;
+        Content link1;
+        Content note1;
 
         @BeforeEach
         public void createContents() {
+            // Link
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
             String title = "소마";
@@ -254,10 +257,14 @@ public class ContentIntegrationTest {
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
-            content = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            link1 = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, null, category2);
             testUtils.saveLink(url2, null, null, null);
+
+            // Note
+            note1 = testUtils.saveNote("아무 메모나 끄적끄적", category1);
+
         }
 
         @Test
@@ -265,7 +272,7 @@ public class ContentIntegrationTest {
         public void findNormalContent() throws Exception {
 
             // when
-            Long contentId = content.getId();
+            Long contentId = link1.getId();
             ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
 
             // then
@@ -279,11 +286,25 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = 987654321L;
-            System.out.println(content.getId());
+            System.out.println(link1.getId());
             ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Note Content 상세보기")
+        public void finNoteContent() throws Exception {
+
+            // when
+            Long contentId = note1.getId();
+            ResultActions actions = mockMvc.perform(get("/content/v2/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.id").value(contentId))
+                    .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
         }
     }
 
