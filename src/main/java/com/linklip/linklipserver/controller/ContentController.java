@@ -71,6 +71,20 @@ public class ContentController {
                 HttpStatus.OK);
     }
 
+    @ApiOperation(value = "컨텐츠 상세정보 API v2")
+    @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
+    @GetMapping("/v2/{contentId}")
+    public ResponseEntity<?> findContentV2(@PathVariable Long contentId) {
+
+        return new ResponseEntity<>(
+                new ServerResponseWithData(
+                        FIND_CONTENT_SUCCESS.getStatus(),
+                        FIND_CONTENT_SUCCESS.getSuccess(),
+                        FIND_CONTENT_SUCCESS.getMessage(),
+                        new FindContentResponse(contentService.findContent(contentId))),
+                HttpStatus.OK);
+    }
+
     @ApiOperation("링크 내용 수정 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "링크 내용 수정 완료")})
     @PatchMapping("/v1/link/{contentId}")

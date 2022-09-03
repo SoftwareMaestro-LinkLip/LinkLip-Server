@@ -80,7 +80,7 @@ public class ContentService {
                 });
     }
 
-    public LinkDto findContent(Long contentId) {
+    public ContentDto findContent(Long contentId) {
 
         Content content =
                 contentRepository
@@ -91,8 +91,12 @@ public class ContentService {
             return new LinkDto((Link) content);
         }
 
-        // TODO 수정 필요
-        return null;
+        if (content instanceof Note) {
+            return new NoteDto((Note) content);
+        }
+
+        throw new InvalidIdException("존재하지 않는 contentId입니다");
+
     }
 
     @Transactional
