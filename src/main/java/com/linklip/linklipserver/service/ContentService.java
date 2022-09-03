@@ -124,6 +124,7 @@ public class ContentService {
         content.delete();
     }
 
+    @Transactional
     public void saveNoteContent(SaveNoteRequest request) {
         Long categoryId = request.getCategoryId();
 
