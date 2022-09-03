@@ -147,7 +147,7 @@ public class ContentService {
                         .findById(contentId)
                         .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
 
-        String title = request.getText();
+        String text = request.getText();
         Long categoryId = request.getCategoryId();
         Category category =
                 categoryId == null
@@ -155,6 +155,6 @@ public class ContentService {
                         : categoryRepository
                                 .findById(categoryId)
                                 .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
-        ((Note) content).update(title, category);
+        ((Note) content).update(text, category);
     }
 }

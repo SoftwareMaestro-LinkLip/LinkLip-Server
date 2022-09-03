@@ -119,7 +119,7 @@ public class ContentController {
     }
 
     @ApiOperation(value = "메모 수정 API v1")
-    @ApiResponses({@ApiResponse(code = 201, message = "메모 수정 완료")})
+    @ApiResponses({@ApiResponse(code = 200, message = "메모 수정 완료")})
     @PatchMapping("/v1/note/{contentId}")
     public ResponseEntity<?> updateNoteV1(
             @PathVariable Long contentId, @RequestBody @Valid UpdateNoteRequest request) {
