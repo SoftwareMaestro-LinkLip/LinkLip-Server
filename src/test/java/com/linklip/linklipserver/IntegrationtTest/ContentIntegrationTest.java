@@ -593,6 +593,7 @@ public class ContentIntegrationTest {
         }
     }
 
+    @Nested
     @DisplayName("메모 수정 통합테스트")
     class UpdateNoteContent {
 
