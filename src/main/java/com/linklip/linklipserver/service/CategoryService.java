@@ -1,5 +1,7 @@
 package com.linklip.linklipserver.service;
 
+import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_CATEGORY_ID;
+
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.dto.category.CategoryDto;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
@@ -39,7 +41,10 @@ public class CategoryService {
         Category category =
                 categoryRepository
                         .findById(categoryId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 categoryId입니다."));
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                NOT_EXSIT_CATEGORY_ID.getMessage()));
         category.update(request.getName());
     }
 
@@ -49,7 +54,7 @@ public class CategoryService {
         try {
             categoryRepository.deleteById(categoryId);
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidIdException("존재하지 않는 categoryId입니다.");
+            throw new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage());
         }
     }
 }

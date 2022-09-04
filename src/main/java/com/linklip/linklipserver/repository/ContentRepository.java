@@ -15,18 +15,19 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     Page<Content> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = {"category"})
-    @Query(
-            "SELECT l FROM Link l WHERE l.category.id=:categoryId AND (l.title LIKE %:term% OR l.text LIKE %:term%)")
-    Page<Content> findByCategoryAndTerm(
-            @Param("categoryId") Long categoryId, @Param("term") String term, Pageable pageable);
-
-    @EntityGraph(attributePaths = {"category"})
     @Query("SELECT c FROM Content c WHERE c.category.id=:categoryId")
     Page<Content> findByCategory(@Param("categoryId") Long categoryId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"category"})
-    @Query("SELECT l FROM Link l WHERE l.title LIKE %:term% OR l.text LIKE %:term%")
+    @Query(
+            "SELECT c FROM Content c WHERE treat(c as Link).linkUrl LIKE %:term% OR treat(c as Link).title LIKE %:term% OR treat(c as Link).text LIKE %:term% OR treat(c as Note).text LIKE %:term%")
     Page<Content> findByTerm(@Param("term") String term, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"category"})
+    @Query(
+            "SELECT c FROM Content c WHERE c.category.id=:categoryId AND (treat(c as Link).linkUrl LIKE %:term% OR treat(c as Link).title LIKE %:term% OR treat(c as Link).text LIKE %:term% OR treat(c as Note).text LIKE %:term%)")
+    Page<Content> findByCategoryAndTerm(
+            @Param("categoryId") Long categoryId, @Param("term") String term, Pageable pageable);
 
     @Modifying(clearAutomatically = true) // executeUpdate 같은 Annotation
     @Query("UPDATE Content c SET c.category = null WHERE c.category.id = :categoryId")

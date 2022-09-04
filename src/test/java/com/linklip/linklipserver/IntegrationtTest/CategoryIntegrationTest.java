@@ -40,7 +40,7 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 생성 통합테스트")
-    class createCategoryIntegrationTest {
+    class CreateCategoryIntegrationTest {
         @Test
         @DisplayName("일반적인 카테고리 명인 경우 201")
         public void createNormalCategory() throws Exception {
@@ -98,7 +98,7 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 조회 통합테스트")
-    class findCategoryIntegrationTest {
+    class FindCategoryIntegrationTest {
         @Test
         @DisplayName("카테고리 조회에 성공한 경우 200")
         public void findCategory() throws Exception {
@@ -109,15 +109,14 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 수정 통합테스트")
-    class updateCategoryIntegrationTest {
+    class UpdateCategoryIntegrationTest {
         @Test
         @DisplayName("일반적인 카테고리명 수정")
         public void updateCategory() throws Exception {
 
             // given
-            Category category = Category.builder().name("운동").build();
-            Category entity = categoryRepository.save(category);
-            long categoryId = entity.getId();
+            Category category = testUtils.saveCategory("운동");
+            long categoryId = category.getId();
 
             // when
             UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest();
@@ -138,11 +137,9 @@ public class CategoryIntegrationTest {
         public void updateCategoryByPresentName() throws Exception {
 
             // given
-            Category category1 = Category.builder().name("운동").build();
-            Category entity = categoryRepository.save(category1);
-            Category category2 = Category.builder().name("스포츠").build();
-            categoryRepository.save(category2);
-            long categoryId = entity.getId();
+            Category category1 = testUtils.saveCategory("운동");
+            testUtils.saveCategory("스포츠");
+            long categoryId = category1.getId();
 
             // when
             UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest();
@@ -163,9 +160,8 @@ public class CategoryIntegrationTest {
         public void updateCategoryByNullName() throws Exception {
 
             // given
-            Category category = Category.builder().name("운동").build();
-            Category entity = categoryRepository.save(category);
-            long categoryId = entity.getId();
+            Category category = testUtils.saveCategory("운동");
+            long categoryId = category.getId();
 
             // when
             UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest();
@@ -184,20 +180,18 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 삭제 통합테스트")
-    class deleteCategoryIntegrationTest {
+    class DeleteCategoryIntegrationTest {
         @Test
         @DisplayName("컨텐츠가 존재하지 않는 카테고리 수정")
         public void deleteEmptyCategory() throws Exception {
             // given
-            Category category1 = Category.builder().name("운동").build();
-            Category category2 = Category.builder().name("개발").build();
-            Category savedCategory1 = categoryRepository.save(category1);
-            categoryRepository.save(category2);
+            Category category1 = testUtils.saveCategory("운동");
+            testUtils.saveCategory("개발");
 
             // when
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/category/v1/{categoryId}", savedCategory1.getId())
+                            delete("/category/v1/{categoryId}", category1.getId())
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
@@ -211,22 +205,17 @@ public class CategoryIntegrationTest {
         @DisplayName("컨텐츠가 존재하는 카테고리 수정")
         public void deleteCategoryHavingContents() throws Exception {
             // given
-            Category category1 = Category.builder().name("홈페이지").build();
-            Category savedCategory1 = categoryRepository.save(category1);
-            Category category2 = Category.builder().name("개발").build();
-            Category savedCategory2 = categoryRepository.save(category2);
+            Category category1 = testUtils.saveCategory("홈페이지");
+            Category category2 = testUtils.saveCategory("개발");
 
-            Content content1 =
-                    testUtils.saveLink("naver.com", "Naver", "뉴스 로그인 회원가입", savedCategory1);
-            Content content2 =
-                    testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory1);
-            Content content3 =
-                    testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory2);
+            Content content1 = testUtils.saveLink("naver.com", "Naver", "뉴스 로그인 회원가입", category1);
+            Content content2 = testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", category1);
+            Content content3 = testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", category2);
 
             // when
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/category/v1/{categoryId}", savedCategory1.getId())
+                            delete("/category/v1/{categoryId}", category1.getId())
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
@@ -241,7 +230,7 @@ public class CategoryIntegrationTest {
 
             assertThat(findContent1.get().getCategory()).isEqualTo(null);
             assertThat(findContent2.get().getCategory()).isEqualTo(null);
-            assertThat(findContent3.get().getCategory().getId()).isEqualTo(savedCategory2.getId());
+            assertThat(findContent3.get().getCategory().getId()).isEqualTo(category2.getId());
         }
     }
 }

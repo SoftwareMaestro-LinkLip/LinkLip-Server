@@ -42,7 +42,7 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("링크 검색 통합테스트")
-    class findContents {
+    class FindLinks {
 
         Category category1;
 
@@ -52,10 +52,8 @@ public class ContentIntegrationTest {
             String url2 = "https://www.naver.com";
             String title = "소마";
 
-            category1 = Category.builder().name("활동").build();
-            Category category2 = Category.builder().name("스펙").build();
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
+            category1 = testUtils.saveCategory("활동");
+            Category category2 = testUtils.saveCategory("스펙");
 
             testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
@@ -65,7 +63,7 @@ public class ContentIntegrationTest {
 
         @Nested
         @DisplayName("카테고리 해당 컨텐츠")
-        class findContentsByCategory {
+        class FindContentsByCategory {
 
             @DisplayName("컨텐츠 불러오기")
             @Test
@@ -75,7 +73,7 @@ public class ContentIntegrationTest {
                 Long categoryId = category1.getId();
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("page", "0")
@@ -88,14 +86,14 @@ public class ContentIntegrationTest {
 
             @DisplayName("일반적인 검색어")
             @Test
-            public void findContentByNormalTerm() throws Exception {
+            public void FindContentByNormalTerm() throws Exception {
 
                 // when
                 Long categoryId = category1.getId();
                 String term = "소마";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -115,7 +113,7 @@ public class ContentIntegrationTest {
                 String term = "";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -135,7 +133,7 @@ public class ContentIntegrationTest {
                 String term = "1기";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -149,7 +147,7 @@ public class ContentIntegrationTest {
 
         @Nested
         @DisplayName("전체 검색어")
-        class findContentsByTerm {
+        class FindContentsByTerm {
 
             @DisplayName("일반적인 검색어")
             @Test
@@ -159,7 +157,7 @@ public class ContentIntegrationTest {
                 String term = "소마";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -177,7 +175,7 @@ public class ContentIntegrationTest {
                 String term = "";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -195,7 +193,7 @@ public class ContentIntegrationTest {
                 String term = "1기";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -211,8 +209,7 @@ public class ContentIntegrationTest {
 
                 // when
                 ResultActions actions =
-                        mockMvc.perform(
-                                get("/content/v1/link").param("page", "0").param("size", "20"));
+                        mockMvc.perform(get("/content/v1").param("page", "0").param("size", "20"));
 
                 // then
                 actions.andExpect(status().isOk())
@@ -231,7 +228,7 @@ public class ContentIntegrationTest {
 
             // when
             ResultActions actions =
-                    mockMvc.perform(get("/content/v1/link").param("page", "1").param("size", "3"));
+                    mockMvc.perform(get("/content/v1").param("page", "1").param("size", "3"));
 
             // then
             actions.andExpect(status().isOk())
@@ -241,22 +238,21 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("링크 상세보기 통합테스트")
-    class findContent {
+    class FindLink {
 
-        Content content;
+        Content link1;
 
         @BeforeEach
         public void createContents() {
+            // Link
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
             String title = "소마";
 
-            Category category1 = Category.builder().name("활동").build();
-            Category category2 = Category.builder().name("스펙").build();
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
+            Category category1 = testUtils.saveCategory("활동");
+            Category category2 = testUtils.saveCategory("스펙");
 
-            content = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
+            link1 = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, null, category2);
             testUtils.saveLink(url2, null, null, null);
@@ -267,8 +263,8 @@ public class ContentIntegrationTest {
         public void findNormalContent() throws Exception {
 
             // when
-            Long contentId = content.getId();
-            ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
+            Long contentId = link1.getId();
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isOk())
@@ -281,8 +277,8 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = 987654321L;
-            System.out.println(content.getId());
-            ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
+            System.out.println(link1.getId());
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -291,14 +287,13 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("링크 수정 통합테스트")
-    class updateContent {
+    class UpdateLink {
 
         @Test
         @DisplayName("링크 컨텐츠의 Title만 수정")
         public void updateTitle() throws Exception {
 
-            Category category = Category.builder().name("활동").build();
-            categoryRepository.save(category);
+            Category category = testUtils.saveCategory("활동");
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
@@ -323,11 +318,9 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title과 카테고리 수정")
         public void updateTitleAndCategory() throws Exception {
 
-            Category category1 = Category.builder().name("활동").build();
-            categoryRepository.save(category1);
+            Category category1 = testUtils.saveCategory("활동");
 
-            Category category2 = Category.builder().name("대외 활동").build();
-            categoryRepository.save(category2);
+            Category category2 = testUtils.saveCategory("대외 활동");
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
@@ -355,11 +348,9 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title 없이 수정 요청을 보내면 400")
         public void updateWithoutTitle() throws Exception {
 
-            Category category1 = Category.builder().name("활동").build();
-            categoryRepository.save(category1);
+            Category category1 = testUtils.saveCategory("활동");
 
-            Category category2 = Category.builder().name("대외 활동").build();
-            categoryRepository.save(category2);
+            Category category2 = testUtils.saveCategory("대외 활동");
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
@@ -381,7 +372,7 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("컨텐츠 삭제")
-    class deleteContent {
+    class DeleteContent {
 
         @Test
         @DisplayName("일반적인 경우")
@@ -422,6 +413,177 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             delete("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON));
+
+            // then
+            actions.andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("메모 검색 통합테스트")
+    class FindNotes {
+        Category category1;
+        Category category2;
+        Content note1;
+
+        @BeforeEach
+        public void createContents() {
+            String text1 = "9월 11일에 소망팀 모의면접 (OS, DB)";
+            String text2 = "디자이너 외주 마감일자 확정 필요";
+            String text3 = "갑자기 무슨 태풍이래";
+            String text4 = "다음주 멘토링은 목요일에 온라인으로";
+            String text5 = "모의면접 방향성 고민해보자!";
+
+            category1 = testUtils.saveCategory("활동");
+            category2 = testUtils.saveCategory("프로젝트");
+
+            note1 = testUtils.saveNote(text1, category1);
+            testUtils.saveNote(text2, category2);
+            testUtils.saveNote(text3, null);
+            testUtils.saveNote(text4, category1);
+            testUtils.saveNote(text5, null);
+        }
+
+        @DisplayName("전체 메모 불러오기")
+        @Test
+        public void findAllContent() throws Exception {
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .param("page", "0")
+                                    .param("size", "20"));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content").value(hasSize(5)));
+        }
+
+        @DisplayName("검색어 없이 카테고리로 조회")
+        @Test
+        public void findContentWithCategory() throws Exception {
+
+            // when
+            Long categoryId = category1.getId();
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .param("categoryId", String.valueOf(categoryId))
+                                    .param("page", "0")
+                                    .param("size", "20"));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content").value(hasSize(2)));
+        }
+
+        @DisplayName("검색어와 함께 카테고리로 조회")
+        @Test
+        public void findContentWithCategoryAndTerm() throws Exception {
+
+            // when
+            Long categoryId1 = category1.getId();
+            Long categoryId2 = category2.getId();
+            String term = "면접";
+
+            ResultActions actions1 =
+                    mockMvc.perform(
+                            get("/content/v1")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .param("categoryId", String.valueOf(categoryId1))
+                                    .param("term", String.valueOf(term))
+                                    .param("page", "0")
+                                    .param("size", "20"));
+
+            ResultActions actions2 =
+                    mockMvc.perform(
+                            get("/content/v1")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .param("categoryId", String.valueOf(categoryId2))
+                                    .param("term", String.valueOf(term))
+                                    .param("page", "0")
+                                    .param("size", "20"));
+
+            // then
+            actions1.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content").value(hasSize(1)));
+
+            actions2.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content").value(hasSize(0)));
+        }
+
+        @DisplayName("카테고리 없이 검색어로 조회")
+        @Test
+        public void findContentWithTerm() throws Exception {
+
+            // when
+            String term = "면접";
+
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .param("term", String.valueOf(term))
+                                    .param("page", "0")
+                                    .param("size", "20"));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content").value(hasSize(2)));
+        }
+
+        @DisplayName("메모 상세 조회")
+        @Test
+        public void findContentDetail() throws Exception {
+
+            // when
+            Long contentId = note1.getId();
+
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/{contentId}", contentId)
+                                    .contentType(MediaType.APPLICATION_JSON));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.id").value(contentId))
+                    .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
+        }
+    }
+
+    @Nested
+    @DisplayName("메모 상세보기 통합테스트")
+    class FindNote {
+
+        Content note1;
+
+        @BeforeEach
+        public void createContents() {
+            note1 = testUtils.saveNote("테스트 메모 1", null);
+        }
+
+        @Test
+        @DisplayName("Note Content 상세보기")
+        public void finNoteContent() throws Exception {
+
+            // when
+            Long contentId = note1.getId();
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.id").value(contentId))
+                    .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 id의 Note Content 상세보기")
+        public void findNotExistNoteContent() throws Exception {
+
+            // when
+            Long contentId = 987654321L;
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isBadRequest());

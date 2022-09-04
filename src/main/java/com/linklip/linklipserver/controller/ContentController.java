@@ -42,10 +42,26 @@ public class ContentController {
                 HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "컨텐츠 검색 API v1")
+    @ApiOperation(value = "링크 검색 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
     public ResponseEntity<?> findContentListV1(
+            @ModelAttribute FindContentRequest request,
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return new ResponseEntity<>(
+                new ServerResponseWithData(
+                        FIND_CONTENT_LIST_SUCCESS.getStatus(),
+                        FIND_CONTENT_LIST_SUCCESS.getSuccess(),
+                        FIND_CONTENT_LIST_SUCCESS.getMessage(),
+                        contentService.findContentList(request, pageable)),
+                HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "컨텐츠 검색 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
+    @GetMapping("/v1")
+    public ResponseEntity<?> findContentListV2(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -62,6 +78,20 @@ public class ContentController {
     @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
     @GetMapping("/v1/link/{contentId}")
     public ResponseEntity<?> findLinkV1(@PathVariable Long contentId) {
+
+        return new ResponseEntity<>(
+                new ServerResponseWithData(
+                        FIND_CONTENT_SUCCESS.getStatus(),
+                        FIND_CONTENT_SUCCESS.getSuccess(),
+                        FIND_CONTENT_SUCCESS.getMessage(),
+                        new FindContentResponse(contentService.findContent(contentId))),
+                HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "컨텐츠 상세정보 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
+    @GetMapping("/v1/{contentId}")
+    public ResponseEntity<?> findContentV2(@PathVariable Long contentId) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
