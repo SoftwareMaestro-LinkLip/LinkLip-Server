@@ -54,8 +54,6 @@ public class ContentIntegrationTest {
 
             category1 = testUtils.saveCategory("활동");
             Category category2 = testUtils.saveCategory("스펙");
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
 
             testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
@@ -253,8 +251,6 @@ public class ContentIntegrationTest {
 
             Category category1 = testUtils.saveCategory("활동");
             Category category2 = testUtils.saveCategory("스펙");
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
 
             link1 = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
@@ -298,7 +294,6 @@ public class ContentIntegrationTest {
         public void updateTitle() throws Exception {
 
             Category category = testUtils.saveCategory("활동");
-            categoryRepository.save(category);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
@@ -324,10 +319,8 @@ public class ContentIntegrationTest {
         public void updateTitleAndCategory() throws Exception {
 
             Category category1 = testUtils.saveCategory("활동");
-            categoryRepository.save(category1);
 
             Category category2 = testUtils.saveCategory("대외 활동");
-            categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
@@ -356,10 +349,8 @@ public class ContentIntegrationTest {
         public void updateWithoutTitle() throws Exception {
 
             Category category1 = testUtils.saveCategory("활동");
-            categoryRepository.save(category1);
 
             Category category2 = testUtils.saveCategory("대외 활동");
-            categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
@@ -445,8 +436,6 @@ public class ContentIntegrationTest {
 
             category1 = testUtils.saveCategory("활동");
             category2 = testUtils.saveCategory("프로젝트");
-            categoryRepository.save(category1);
-            categoryRepository.save(category2);
 
             note1 = testUtils.saveNote(text1, category1);
             testUtils.saveNote(text2, category2);

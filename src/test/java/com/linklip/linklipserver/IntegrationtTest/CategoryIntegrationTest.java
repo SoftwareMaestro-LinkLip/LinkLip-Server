@@ -116,8 +116,7 @@ public class CategoryIntegrationTest {
 
             // given
             Category category = testUtils.saveCategory("운동");
-            Category entity = categoryRepository.save(category);
-            long categoryId = entity.getId();
+            long categoryId = category.getId();
 
             // when
             UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest();
@@ -139,10 +138,8 @@ public class CategoryIntegrationTest {
 
             // given
             Category category1 = testUtils.saveCategory("운동");
-            Category entity = categoryRepository.save(category1);
-            Category category2 = testUtils.saveCategory("스포츠");
-            categoryRepository.save(category2);
-            long categoryId = entity.getId();
+            testUtils.saveCategory("스포츠");
+            long categoryId = category1.getId();
 
             // when
             UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest();
@@ -164,8 +161,7 @@ public class CategoryIntegrationTest {
 
             // given
             Category category = testUtils.saveCategory("운동");
-            Category entity = categoryRepository.save(category);
-            long categoryId = entity.getId();
+            long categoryId = category.getId();
 
             // when
             UpdateCategoryRequest updateCategoryRequest = new UpdateCategoryRequest();
@@ -190,14 +186,12 @@ public class CategoryIntegrationTest {
         public void deleteEmptyCategory() throws Exception {
             // given
             Category category1 = testUtils.saveCategory("운동");
-            Category category2 = testUtils.saveCategory("개발");
-            Category savedCategory1 = categoryRepository.save(category1);
-            categoryRepository.save(category2);
+            testUtils.saveCategory("개발");
 
             // when
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/category/v1/{categoryId}", savedCategory1.getId())
+                            delete("/category/v1/{categoryId}", category1.getId())
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
@@ -212,21 +206,16 @@ public class CategoryIntegrationTest {
         public void deleteCategoryHavingContents() throws Exception {
             // given
             Category category1 = testUtils.saveCategory("홈페이지");
-            Category savedCategory1 = categoryRepository.save(category1);
             Category category2 = testUtils.saveCategory("개발");
-            Category savedCategory2 = categoryRepository.save(category2);
 
-            Content content1 =
-                    testUtils.saveLink("naver.com", "Naver", "뉴스 로그인 회원가입", savedCategory1);
-            Content content2 =
-                    testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory1);
-            Content content3 =
-                    testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", savedCategory2);
+            Content content1 = testUtils.saveLink("naver.com", "Naver", "뉴스 로그인 회원가입", category1);
+            Content content2 = testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", category1);
+            Content content3 = testUtils.saveLink("soma.org", "소프트웨어 마에스트로", "소마 홈페이지", category2);
 
             // when
             ResultActions actions =
                     mockMvc.perform(
-                            delete("/category/v1/{categoryId}", savedCategory1.getId())
+                            delete("/category/v1/{categoryId}", category1.getId())
                                     .contentType(MediaType.APPLICATION_JSON));
 
             // then
@@ -241,7 +230,7 @@ public class CategoryIntegrationTest {
 
             assertThat(findContent1.get().getCategory()).isEqualTo(null);
             assertThat(findContent2.get().getCategory()).isEqualTo(null);
-            assertThat(findContent3.get().getCategory().getId()).isEqualTo(savedCategory2.getId());
+            assertThat(findContent3.get().getCategory().getId()).isEqualTo(category2.getId());
         }
     }
 }
