@@ -5,8 +5,9 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorResponse {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "ERR01", "잘못된 요청입니다"),
-    NOT_FOUND(HttpStatus.NOT_FOUND, "ERR01", "요청 경로 오류"),
-    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR02", "서버 내부 오류");
+    NOT_FOUND(HttpStatus.NOT_FOUND, "ERR02", "요청 경로 오류"),
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR03", "서버 내부 오류"),
+    INVALID_CONTENT_TYPE(HttpStatus.BAD_REQUEST, "ERR04", "잘못된 Content Type입니다");
 
     @Getter private int status;
 
