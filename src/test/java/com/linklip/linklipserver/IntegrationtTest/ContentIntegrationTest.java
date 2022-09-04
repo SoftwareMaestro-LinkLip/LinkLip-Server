@@ -74,7 +74,7 @@ public class ContentIntegrationTest {
                 Long categoryId = category1.getId();
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("page", "0")
@@ -94,7 +94,7 @@ public class ContentIntegrationTest {
                 String term = "소마";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1 ")
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -114,7 +114,7 @@ public class ContentIntegrationTest {
                 String term = "";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -134,7 +134,7 @@ public class ContentIntegrationTest {
                 String term = "1기";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -158,7 +158,7 @@ public class ContentIntegrationTest {
                 String term = "소마";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -176,7 +176,7 @@ public class ContentIntegrationTest {
                 String term = "";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -194,7 +194,7 @@ public class ContentIntegrationTest {
                 String term = "1기";
                 ResultActions actions =
                         mockMvc.perform(
-                                get("/content/v1/link")
+                                get("/content/v1")
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -210,8 +210,7 @@ public class ContentIntegrationTest {
 
                 // when
                 ResultActions actions =
-                        mockMvc.perform(
-                                get("/content/v1/link").param("page", "0").param("size", "20"));
+                        mockMvc.perform(get("/content/v1").param("page", "0").param("size", "20"));
 
                 // then
                 actions.andExpect(status().isOk())
@@ -230,7 +229,7 @@ public class ContentIntegrationTest {
 
             // when
             ResultActions actions =
-                    mockMvc.perform(get("/content/v1/link").param("page", "1").param("size", "3"));
+                    mockMvc.perform(get("/content/v1").param("page", "1").param("size", "3"));
 
             // then
             actions.andExpect(status().isOk())
@@ -272,7 +271,7 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = link1.getId();
-            ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isOk())
@@ -286,7 +285,7 @@ public class ContentIntegrationTest {
             // when
             Long contentId = 987654321L;
             System.out.println(link1.getId());
-            ResultActions actions = mockMvc.perform(get("/content/v1/link/{contentId}", contentId));
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -298,7 +297,7 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = note1.getId();
-            ResultActions actions = mockMvc.perform(get("/content/v2/{contentId}", contentId));
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isOk())
@@ -312,7 +311,7 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = 987654321L;
-            ResultActions actions = mockMvc.perform(get("/content/v2/{contentId}", contentId));
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
 
             // then
             actions.andExpect(status().isBadRequest());
