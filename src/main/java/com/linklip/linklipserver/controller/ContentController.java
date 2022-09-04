@@ -5,6 +5,7 @@ import static com.linklip.linklipserver.constant.SuccessResponse.*;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.*;
+import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.service.ContentService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.*;
@@ -145,5 +146,21 @@ public class ContentController {
                         SAVE_NOTE_SUCCESS.getSuccess(),
                         SAVE_NOTE_SUCCESS.getMessage()),
                 HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "메모 수정 API v1")
+    @ApiResponses({@ApiResponse(code = 200, message = "메모 수정 완료")})
+    @PatchMapping("/v1/note/{contentId}")
+    public ResponseEntity<?> updateNoteV1(
+            @PathVariable Long contentId, @RequestBody @Valid UpdateNoteRequest request) {
+
+        contentService.updateNoteContent(contentId, request);
+
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        UPDATE_NOTE_SUCCESS.getStatus(),
+                        UPDATE_NOTE_SUCCESS.getSuccess(),
+                        UPDATE_NOTE_SUCCESS.getMessage()),
+                HttpStatus.OK);
     }
 }
