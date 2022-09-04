@@ -52,8 +52,8 @@ public class ContentIntegrationTest {
             String url2 = "https://www.naver.com";
             String title = "소마";
 
-            category1 = Category.builder().name("활동").build();
-            Category category2 = Category.builder().name("스펙").build();
+            category1 = testUtils.saveCategory("활동");
+            Category category2 = testUtils.saveCategory("스펙");
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
@@ -243,7 +243,6 @@ public class ContentIntegrationTest {
     class FindLink {
 
         Content link1;
-        Content note1;
 
         @BeforeEach
         public void createContents() {
@@ -252,8 +251,8 @@ public class ContentIntegrationTest {
             String url2 = "https://www.naver.com";
             String title = "소마";
 
-            Category category1 = Category.builder().name("활동").build();
-            Category category2 = Category.builder().name("스펙").build();
+            Category category1 = testUtils.saveCategory("활동");
+            Category category2 = testUtils.saveCategory("스펙");
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
@@ -261,9 +260,6 @@ public class ContentIntegrationTest {
             testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
             testUtils.saveLink(url1, null, null, category2);
             testUtils.saveLink(url2, null, null, null);
-
-            // Note
-            note1 = testUtils.saveNote("아무 메모나 끄적끄적", category1);
         }
 
         @Test
@@ -291,32 +287,6 @@ public class ContentIntegrationTest {
             // then
             actions.andExpect(status().isBadRequest());
         }
-
-        @Test
-        @DisplayName("Note Content 상세보기")
-        public void finNoteContent() throws Exception {
-
-            // when
-            Long contentId = note1.getId();
-            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
-
-            // then
-            actions.andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.content.id").value(contentId))
-                    .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 id  Note Content 상세보기")
-        public void findNotExistNoteContent() throws Exception {
-
-            // when
-            Long contentId = 987654321L;
-            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
-
-            // then
-            actions.andExpect(status().isBadRequest());
-        }
     }
 
     @Nested
@@ -327,7 +297,8 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title만 수정")
         public void updateTitle() throws Exception {
 
-            Category category = Category.builder().name("활동").build();
+            Category category = testUtils.saveCategory("활동");
+            ;
             categoryRepository.save(category);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
@@ -353,10 +324,12 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title과 카테고리 수정")
         public void updateTitleAndCategory() throws Exception {
 
-            Category category1 = Category.builder().name("활동").build();
+            Category category1 = testUtils.saveCategory("활동");
+            ;
             categoryRepository.save(category1);
 
-            Category category2 = Category.builder().name("대외 활동").build();
+            Category category2 = testUtils.saveCategory("대외 활동");
+            ;
             categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
@@ -385,10 +358,12 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title 없이 수정 요청을 보내면 400")
         public void updateWithoutTitle() throws Exception {
 
-            Category category1 = Category.builder().name("활동").build();
+            Category category1 = testUtils.saveCategory("활동");
+            ;
             categoryRepository.save(category1);
 
-            Category category2 = Category.builder().name("대외 활동").build();
+            Category category2 = testUtils.saveCategory("대외 활동");
+            ;
             categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
@@ -473,8 +448,10 @@ public class ContentIntegrationTest {
             String text4 = "다음주 멘토링은 목요일에 온라인으로";
             String text5 = "모의면접 방향성 고민해보자!";
 
-            category1 = Category.builder().name("활동").build();
-            category2 = Category.builder().name("프로젝트").build();
+            category1 = testUtils.saveCategory("활동");
+            ;
+            category2 = testUtils.saveCategory("프로젝트");
+            ;
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
@@ -590,6 +567,44 @@ public class ContentIntegrationTest {
             actions.andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content.id").value(contentId))
                     .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
+        }
+    }
+
+    @Nested
+    @DisplayName("메모 상세보기 통합테스트")
+    class FindNote {
+
+        Content note1;
+
+        @BeforeEach
+        public void createContents() {
+            note1 = testUtils.saveNote("테스트 메모 1", null);
+        }
+
+        @Test
+        @DisplayName("Note Content 상세보기")
+        public void finNoteContent() throws Exception {
+
+            // when
+            Long contentId = note1.getId();
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.id").value(contentId))
+                    .andExpect(jsonPath("$.data.content.text").value(((Note) note1).getText()));
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 id의 Note Content 상세보기")
+        public void findNotExistNoteContent() throws Exception {
+
+            // when
+            Long contentId = 987654321L;
+            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+
+            // then
+            actions.andExpect(status().isBadRequest());
         }
     }
 

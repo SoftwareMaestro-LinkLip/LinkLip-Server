@@ -115,7 +115,8 @@ public class CategoryIntegrationTest {
         public void updateCategory() throws Exception {
 
             // given
-            Category category = Category.builder().name("운동").build();
+            Category category = testUtils.saveCategory("운동");
+            ;
             Category entity = categoryRepository.save(category);
             long categoryId = entity.getId();
 
@@ -138,9 +139,9 @@ public class CategoryIntegrationTest {
         public void updateCategoryByPresentName() throws Exception {
 
             // given
-            Category category1 = Category.builder().name("운동").build();
+            Category category1 = testUtils.saveCategory("운동");
             Category entity = categoryRepository.save(category1);
-            Category category2 = Category.builder().name("스포츠").build();
+            Category category2 = testUtils.saveCategory("스포츠");
             categoryRepository.save(category2);
             long categoryId = entity.getId();
 
@@ -163,7 +164,7 @@ public class CategoryIntegrationTest {
         public void updateCategoryByNullName() throws Exception {
 
             // given
-            Category category = Category.builder().name("운동").build();
+            Category category = testUtils.saveCategory("운동");
             Category entity = categoryRepository.save(category);
             long categoryId = entity.getId();
 
@@ -189,8 +190,8 @@ public class CategoryIntegrationTest {
         @DisplayName("컨텐츠가 존재하지 않는 카테고리 수정")
         public void deleteEmptyCategory() throws Exception {
             // given
-            Category category1 = Category.builder().name("운동").build();
-            Category category2 = Category.builder().name("개발").build();
+            Category category1 = testUtils.saveCategory("운동");
+            Category category2 = testUtils.saveCategory("개발");
             Category savedCategory1 = categoryRepository.save(category1);
             categoryRepository.save(category2);
 
@@ -211,9 +212,9 @@ public class CategoryIntegrationTest {
         @DisplayName("컨텐츠가 존재하는 카테고리 수정")
         public void deleteCategoryHavingContents() throws Exception {
             // given
-            Category category1 = Category.builder().name("홈페이지").build();
+            Category category1 = testUtils.saveCategory("홈페이지");
             Category savedCategory1 = categoryRepository.save(category1);
-            Category category2 = Category.builder().name("개발").build();
+            Category category2 = testUtils.saveCategory("개발");
             Category savedCategory2 = categoryRepository.save(category2);
 
             Content content1 =

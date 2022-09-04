@@ -1,5 +1,7 @@
 package com.linklip.linklipserver.service;
 
+import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_CATEGORY_ID;
+
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.dto.category.CategoryDto;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
@@ -13,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_CATEGORY_ID;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,7 +41,10 @@ public class CategoryService {
         Category category =
                 categoryRepository
                         .findById(categoryId)
-                        .orElseThrow(() -> new IllegalArgumentException(NOT_EXSIT_CATEGORY_ID.getMessage()));
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                NOT_EXSIT_CATEGORY_ID.getMessage()));
         category.update(request.getName());
     }
 

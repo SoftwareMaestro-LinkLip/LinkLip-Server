@@ -1,7 +1,6 @@
 package com.linklip.linklipserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.linklip.linklipserver.domain.Category;
 import java.util.List;
