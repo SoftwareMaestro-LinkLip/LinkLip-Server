@@ -7,7 +7,9 @@ public enum ErrorResponse {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "ERR01", "잘못된 요청입니다"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "ERR02", "요청 경로 오류"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR03", "서버 내부 오류"),
-    INVALID_CONTENT_TYPE(HttpStatus.BAD_REQUEST, "ERR04", "잘못된 Content Type입니다");
+    INVALID_CONTENT_TYPE(HttpStatus.BAD_REQUEST, "ERR04", "잘못된 Content Type입니다"),
+    NOT_EXSIT_CONTENT_ID(HttpStatus.NOT_FOUND, "ERR05", "존재하지 않는 Content ID입니다"),
+    NOT_EXSIT_CATEGORY_ID(HttpStatus.NOT_FOUND, "ERR06", "존재하지 않는 Category ID입니다");
 
     @Getter private int status;
 

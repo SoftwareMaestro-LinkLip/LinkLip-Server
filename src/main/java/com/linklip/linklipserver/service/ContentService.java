@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import static com.linklip.linklipserver.constant.ErrorResponse.*;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class ContentService {
                         ? null
                         : categoryRepository
                                 .findById(categoryId)
-                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+                                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
 
         Content content =
                 Link.builder()
@@ -82,7 +84,7 @@ public class ContentService {
                         return new NoteDto((Note) c);
                     }
 
-                    return null;
+                    throw new InvalidIdException(INVALID_CONTENT_TYPE.getMessage());
                 });
     }
 
@@ -91,7 +93,7 @@ public class ContentService {
         Content content =
                 contentRepository
                         .findById(contentId)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+                        .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
         if (content instanceof Link) {
             return new LinkDto((Link) content);
@@ -101,7 +103,7 @@ public class ContentService {
             return new NoteDto((Note) content);
         }
 
-        throw new InvalidIdException("존재하지 않는 Content Type입니다");
+        throw new InvalidIdException(INVALID_CONTENT_TYPE.getMessage());
     }
 
     @Transactional
@@ -110,7 +112,7 @@ public class ContentService {
         Content content =
                 contentRepository
                         .findById(id)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+                        .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
         String title = request.getTitle();
         Long categoryId = request.getCategoryId();
@@ -119,7 +121,7 @@ public class ContentService {
                         ? null
                         : categoryRepository
                                 .findById(categoryId)
-                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+                                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
         ((Link) content).update(title, category);
     }
 
@@ -129,7 +131,7 @@ public class ContentService {
         Content content =
                 contentRepository
                         .findById(contentId)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+                        .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
         content.delete();
     }
 
@@ -142,7 +144,7 @@ public class ContentService {
                         ? null
                         : categoryRepository
                                 .findById(categoryId)
-                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+                                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
 
         Content content = Note.builder().text(request.getText()).category(category).build();
         contentRepository.save(content);
@@ -154,7 +156,7 @@ public class ContentService {
         Content content =
                 contentRepository
                         .findById(contentId)
-                        .orElseThrow(() -> new InvalidIdException("존재하지 않는 contentId입니다"));
+                        .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
         String text = request.getText();
         Long categoryId = request.getCategoryId();
@@ -163,7 +165,7 @@ public class ContentService {
                         ? null
                         : categoryRepository
                                 .findById(categoryId)
-                                .orElseThrow(() -> new InvalidIdException("존재하지 않는 categoryId입니다"));
+                                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
         ((Note) content).update(text, category);
     }
 }
