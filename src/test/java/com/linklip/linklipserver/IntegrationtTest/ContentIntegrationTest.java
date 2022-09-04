@@ -298,7 +298,6 @@ public class ContentIntegrationTest {
         public void updateTitle() throws Exception {
 
             Category category = testUtils.saveCategory("활동");
-            ;
             categoryRepository.save(category);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
@@ -325,11 +324,9 @@ public class ContentIntegrationTest {
         public void updateTitleAndCategory() throws Exception {
 
             Category category1 = testUtils.saveCategory("활동");
-            ;
             categoryRepository.save(category1);
 
             Category category2 = testUtils.saveCategory("대외 활동");
-            ;
             categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
@@ -359,11 +356,9 @@ public class ContentIntegrationTest {
         public void updateWithoutTitle() throws Exception {
 
             Category category1 = testUtils.saveCategory("활동");
-            ;
             categoryRepository.save(category1);
 
             Category category2 = testUtils.saveCategory("대외 활동");
-            ;
             categoryRepository.save(category2);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
@@ -449,9 +444,7 @@ public class ContentIntegrationTest {
             String text5 = "모의면접 방향성 고민해보자!";
 
             category1 = testUtils.saveCategory("활동");
-            ;
             category2 = testUtils.saveCategory("프로젝트");
-            ;
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 

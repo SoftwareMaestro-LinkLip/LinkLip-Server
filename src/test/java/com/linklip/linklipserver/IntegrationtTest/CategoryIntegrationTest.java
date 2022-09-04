@@ -116,7 +116,6 @@ public class CategoryIntegrationTest {
 
             // given
             Category category = testUtils.saveCategory("운동");
-            ;
             Category entity = categoryRepository.save(category);
             long categoryId = entity.getId();
 
