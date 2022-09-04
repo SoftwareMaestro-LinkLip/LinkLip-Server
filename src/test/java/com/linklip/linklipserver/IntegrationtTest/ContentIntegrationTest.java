@@ -42,7 +42,7 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("링크 검색 통합테스트")
-    class findLinks {
+    class FindLinks {
 
         Category category1;
 
@@ -65,7 +65,7 @@ public class ContentIntegrationTest {
 
         @Nested
         @DisplayName("카테고리 해당 컨텐츠")
-        class findContentsByCategory {
+        class FindContentsByCategory {
 
             @DisplayName("컨텐츠 불러오기")
             @Test
@@ -88,7 +88,7 @@ public class ContentIntegrationTest {
 
             @DisplayName("일반적인 검색어")
             @Test
-            public void findContentByNormalTerm() throws Exception {
+            public void FindContentByNormalTerm() throws Exception {
 
                 // when
                 Long categoryId = category1.getId();
@@ -149,7 +149,7 @@ public class ContentIntegrationTest {
 
         @Nested
         @DisplayName("전체 검색어")
-        class findContentsByTerm {
+        class FindContentsByTerm {
 
             @DisplayName("일반적인 검색어")
             @Test
@@ -240,7 +240,7 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("링크 상세보기 통합테스트")
-    class findLink {
+    class FindLink {
 
         Content link1;
         Content note1;
@@ -321,7 +321,7 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("링크 수정 통합테스트")
-    class updateLink {
+    class UpdateLink {
 
         @Test
         @DisplayName("링크 컨텐츠의 Title만 수정")
@@ -411,7 +411,7 @@ public class ContentIntegrationTest {
 
     @Nested
     @DisplayName("컨텐츠 삭제")
-    class deleteContent {
+    class DeleteContent {
 
         @Test
         @DisplayName("일반적인 경우")
