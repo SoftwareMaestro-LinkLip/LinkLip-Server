@@ -26,7 +26,7 @@ class ContentRepositoryTest {
 
     @Nested
     @DisplayName("링크 저장 테스트")
-    class saveLink {
+    class SaveLink {
 
         @Test
         @DisplayName("링크 url만 저장")
@@ -88,7 +88,7 @@ class ContentRepositoryTest {
 
     @Nested
     @DisplayName("링크 검색 테스트")
-    class findContents {
+    class FindContents {
 
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
         Category category;
@@ -125,7 +125,7 @@ class ContentRepositoryTest {
 
         @Nested
         @DisplayName("카테고리 해당 컨텐츠")
-        class findContentsByCategory {
+        class FindContentsByCategory {
 
             @Test
             @DisplayName("컨텐츠 불러오기")
@@ -216,7 +216,7 @@ class ContentRepositoryTest {
 
         @Nested
         @DisplayName("전체 검색어")
-        class findContentsByTerm {
+        class FindContentsByTerm {
 
             @Test
             @DisplayName("일반적인 검색어")
@@ -352,7 +352,7 @@ class ContentRepositoryTest {
 
     @Nested
     @DisplayName("컨텐츠 상세보기")
-    class findContent {
+    class FindContent {
 
         @Test
         @DisplayName("일반적인 경우")
@@ -377,7 +377,7 @@ class ContentRepositoryTest {
 
     @Nested
     @DisplayName("메모 저장 테스트")
-    class saveNoteContent {
+    class SaveNoteContent {
 
         @Test
         @DisplayName("카테고리 설정 없이 메모 저장")

@@ -20,7 +20,7 @@ class CategoryRepositoryTest {
 
     @Nested
     @DisplayName("카테고리 생성 테스트")
-    class saveCategory {
+    class SaveCategory {
 
         @Test
         @DisplayName("일반적인 카테고리 명 생성")
@@ -64,7 +64,7 @@ class CategoryRepositoryTest {
 
     @Nested
     @DisplayName("카테고리 조회 테스트")
-    class findCategory {
+    class FindCategory {
         @Test
         @DisplayName("이름 순으로 카테고리 조회")
         public void findCategoryNormal() {
@@ -82,7 +82,7 @@ class CategoryRepositoryTest {
 
     @Nested
     @DisplayName("카테고리 삭제 테스트")
-    class deleteCategory {
+    class DeleteCategory {
         @Test
         @DisplayName("일반적인 카테고리 삭제")
         public void deleteCategoryNormal() {

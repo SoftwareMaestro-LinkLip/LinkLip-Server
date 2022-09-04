@@ -40,7 +40,7 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 생성 통합테스트")
-    class createCategoryIntegrationTest {
+    class CreateCategoryIntegrationTest {
         @Test
         @DisplayName("일반적인 카테고리 명인 경우 201")
         public void createNormalCategory() throws Exception {
@@ -98,7 +98,7 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 조회 통합테스트")
-    class findCategoryIntegrationTest {
+    class FindCategoryIntegrationTest {
         @Test
         @DisplayName("카테고리 조회에 성공한 경우 200")
         public void findCategory() throws Exception {
@@ -109,7 +109,7 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 수정 통합테스트")
-    class updateCategoryIntegrationTest {
+    class UpdateCategoryIntegrationTest {
         @Test
         @DisplayName("일반적인 카테고리명 수정")
         public void updateCategory() throws Exception {
@@ -184,7 +184,7 @@ public class CategoryIntegrationTest {
 
     @Nested
     @DisplayName("카테고리 삭제 통합테스트")
-    class deleteCategoryIntegrationTest {
+    class DeleteCategoryIntegrationTest {
         @Test
         @DisplayName("컨텐츠가 존재하지 않는 카테고리 수정")
         public void deleteEmptyCategory() throws Exception {
