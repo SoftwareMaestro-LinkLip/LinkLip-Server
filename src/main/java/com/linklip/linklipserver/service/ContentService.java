@@ -47,7 +47,7 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public Page<?> findContentList(FindContentRequest request, Pageable pageable) {
+    public Page<ContentDto> findContentList(FindContentRequest request, Pageable pageable) {
 
         String term = request.getTerm();
         Long categoryId = request.getCategoryId();
@@ -72,10 +72,15 @@ public class ContentService {
 
         return page.map(
                 (c) -> {
+                    // Link Content
                     if (c instanceof Link) {
                         return new LinkDto((Link) c);
                     }
-                    // TODO 수정 필요
+                    // Note Content
+                    if (c instanceof Note) {
+                        return new NoteDto((Note) c);
+                    }
+
                     return null;
                 });
     }
@@ -95,7 +100,7 @@ public class ContentService {
             return new NoteDto((Note) content);
         }
 
-        throw new InvalidIdException("존재하지 않는 contentId입니다");
+        throw new InvalidIdException("존재하지 않는 Content Type입니다");
     }
 
     @Transactional
