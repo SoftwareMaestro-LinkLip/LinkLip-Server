@@ -38,3 +38,4 @@ out/
 
 ### application-XXX.yml
 src/main/resources/application-dev.yml
+src/main/resources/application-oauth.yml

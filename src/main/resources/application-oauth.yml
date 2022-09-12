@@ -1,0 +1,16 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 818847779080-cchksnakeffqems3059b3tb36h7o0bjr.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+
+jwt:
+  target-url: https://develop.d2q3btuxg9ucoe.amplifyapp.com/oauth2/redirect/
+  secret-key: software-maestro-13.linklip-application-2022.secret-key
+  token-expired-time-ms: 7200000

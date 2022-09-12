@@ -8,8 +8,6 @@ spring:
     url: jdbc:mariadb://localhost:3306/linklip_db
     username: root
     password: 1234
-
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -17,6 +15,9 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 1000
+
+  profiles:
+    include: oauth
 
 logging.level:
   org.hibernate.SQL: debug
