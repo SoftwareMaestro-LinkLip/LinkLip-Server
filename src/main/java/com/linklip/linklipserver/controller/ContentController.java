@@ -55,7 +55,7 @@ public class ContentController {
     public ResponseEntity<?> findContentListV1(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
-                Pageable pageable) {
+                    Pageable pageable) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
@@ -72,7 +72,7 @@ public class ContentController {
     public ResponseEntity<?> findContentListV2(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
-                Pageable pageable) {
+                    Pageable pageable) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
