@@ -1,22 +1,10 @@
+---
 spring:
-  mvc:
-    path match:
-      matching-strategy: ant_path_matcher
-    throw-exception-if-no-handler-found: true
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/linklip_db
-    username: root
-    password: 1234
+  profiles:
+    active: dev
 
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        default_batch_fetch_size: 1000
-
-logging.level:
-  org.hibernate.SQL: debug
+---
+spring:
+  profiles:
+    active: local
+    

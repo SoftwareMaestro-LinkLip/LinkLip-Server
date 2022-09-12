@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### application-XXX.yml ###
+**/application-dev.yml
+**/application-local.yml
