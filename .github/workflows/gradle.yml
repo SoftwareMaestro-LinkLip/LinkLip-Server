@@ -63,7 +63,7 @@ jobs:
         run: |
           cd ./src/main/resources
           touch ./application-oauth.yml
-          echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-oauth.yml
+          echo "${{ secrets.APPLICATION_OAUTH }}" > ./application-oauth.yml
         shell: bash
 
       - name: MariaDB Connection
