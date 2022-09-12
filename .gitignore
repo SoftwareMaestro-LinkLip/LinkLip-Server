@@ -36,6 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-### application-XXX.yml
-src/main/resources/application-dev.yml
-src/main/resources/application-oauth.yml
+### application-XXX.yml ###
+**/application-dev.yml
+**/application-local.yml
+**/application-oauth.yml
