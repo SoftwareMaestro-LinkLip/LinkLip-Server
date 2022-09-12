@@ -40,6 +40,32 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      ## create application-dev.yml
+      - name: Make application-dev.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-dev.yml
+          echo "${{ secrets.APPLICATION_DEV }}" > ./application-dev.yml
+        shell: bash
+
+      ## create application-local.yml
+      - name: Make application-local.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-local.yml
+          echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-local.yml
+        shell: bash
+
+      ## create application-oauth.yml
+      - name: Make application-oauth.yml
+        if: contains(github.ref, 'oauth')
+        run: |
+          cd ./src/main/resources
+          touch ./application-oauth.yml
+          echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-oauth.yml
+        shell: bash
+
       - name: MariaDB Connection
         uses: getong/mariadb-action@v1.1
         with:
