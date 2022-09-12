@@ -43,7 +43,6 @@ jobs:
 
       ## create application-dev.yml
       - name: Make application-dev.yml
-        if: contains(github.ref, 'develop')
         run: |
           cd ./src/main/resources
           touch ./application-dev.yml
@@ -52,7 +51,6 @@ jobs:
 
       ## create application-local.yml
       - name: Make application-local.yml
-        if: contains(github.ref, 'develop')
         run: |
           cd ./src/main/resources
           touch ./application-local.yml
