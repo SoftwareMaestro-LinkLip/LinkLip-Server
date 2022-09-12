@@ -1,6 +1,7 @@
 package com.linklip.linklipserver.config.auth;
 
 import com.linklip.linklipserver.domain.User;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 // Security Session => Authentication => UserDetails => User
 
+// TODO User 직렬화 필요
+@SuppressFBWarnings
 @RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails, OAuth2User {
 

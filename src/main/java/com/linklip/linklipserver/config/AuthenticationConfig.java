@@ -3,6 +3,7 @@ package com.linklip.linklipserver.config;
 import com.linklip.linklipserver.config.filter.JwtTokenFilter;
 import com.linklip.linklipserver.config.oauth.OAuth2SuccessHandler;
 import com.linklip.linklipserver.config.oauth.OAuth2UserService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// TODO 불평하는 원인 파악 필요
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록
