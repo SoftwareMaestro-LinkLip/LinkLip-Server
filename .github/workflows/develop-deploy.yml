@@ -53,7 +53,7 @@ jobs:
         if: contains(github.ref, 'develop')
         run: |
           cd ./src/main/resources
-          touch ./application-dev.yml
+          touch ./application-local.yml
           echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-local.yml
         shell: bash
 
