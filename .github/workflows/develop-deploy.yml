@@ -59,7 +59,6 @@ jobs:
 
       ## create application-oauth.yml
       - name: Make application-oauth.yml
-        if: contains(github.ref, 'oauth')
         run: |
           cd ./src/main/resources
           touch ./application-oauth.yml
