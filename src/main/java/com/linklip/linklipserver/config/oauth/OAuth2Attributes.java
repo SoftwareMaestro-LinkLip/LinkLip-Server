@@ -2,7 +2,6 @@ package com.linklip.linklipserver.config.oauth;
 
 import com.linklip.linklipserver.domain.Social;
 import com.linklip.linklipserver.domain.User;
-import com.linklip.linklipserver.domain.UserState;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,19 +12,14 @@ import lombok.NoArgsConstructor;
 public class OAuth2Attributes {
 
     private String name;
-    private String picture;
     private Social socialType;
     private String socialId;
-    private UserState userState;
 
     @Builder
-    public OAuth2Attributes(
-            String name, String picture, Social socialType, String socialId, UserState userState) {
+    public OAuth2Attributes(String name, Social socialType, String socialId) {
         this.name = name;
-        this.picture = picture;
         this.socialType = socialType;
         this.socialId = socialId;
-        this.userState = userState;
     }
 
     // userNameAttributeName은 해당 서비스의 map의 키값이 되는 값이됩니다. {google="sub", kakao="id",
@@ -47,12 +41,9 @@ public class OAuth2Attributes {
             String userNameAttributeName, Map<String, Object> attributes) {
         String socialId = Social.GOOGLE + "_" + attributes.get(userNameAttributeName);
         return OAuth2Attributes.builder()
-                .socialId(socialId)
                 .name((String) attributes.get("name"))
-                .picture((String) attributes.get("picture"))
                 .socialType(Social.GOOGLE)
                 .socialId(socialId)
-                .userState(UserState.USED)
                 .build();
     }
 
@@ -71,12 +62,6 @@ public class OAuth2Attributes {
     //    }
 
     public User toEntity() {
-        return User.builder()
-                .nickName(name)
-                .profileImg(picture)
-                .socialType(socialType)
-                .socialId(socialId)
-                .userState(userState)
-                .build();
+        return User.builder().nickName(name).socialType(socialType).socialId(socialId).build();
     }
 }

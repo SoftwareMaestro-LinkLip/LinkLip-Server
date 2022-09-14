@@ -25,8 +25,6 @@ public class User extends JpaBaseDomain {
     @Column(nullable = false)
     private String nickName;
 
-    private String profileImg;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Social socialType;
@@ -34,24 +32,10 @@ public class User extends JpaBaseDomain {
     @Column(nullable = false)
     private String socialId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserState userState;
-
-    // TODO: 현재는 사용되지 않고 있어 SPOTBUGS 불평. 회원탈퇴 기능 추가 시 추가 예정.
-    // private LocalDate deletedAt;
-
     @Builder
-    public User(
-            String nickName,
-            String profileImg,
-            Social socialType,
-            String socialId,
-            UserState userState) {
+    public User(String nickName, Social socialType, String socialId) {
         this.nickName = nickName;
-        this.profileImg = profileImg;
         this.socialType = socialType;
         this.socialId = socialId;
-        this.userState = userState;
     }
 }
