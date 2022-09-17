@@ -5,7 +5,6 @@ import com.linklip.linklipserver.config.oauth.OAuth2SuccessHandler;
 import com.linklip.linklipserver.config.oauth.OAuth2UserService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,12 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록
 public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
-
-    @Value("${jwt.secret-key}")
-    private String key;
-
-    @Value("${jwt.token-expired-time-ms}")
-    private Long expiredTime;
 
     private final OAuth2UserService oauth2UserService;
     private final OAuth2SuccessHandler oauth2SuccessHandler;
