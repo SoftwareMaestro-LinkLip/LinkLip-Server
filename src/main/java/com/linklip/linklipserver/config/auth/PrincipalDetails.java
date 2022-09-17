@@ -9,9 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-// Security Session => Authentication => UserDetails => User
-
-// TODO User 직렬화 필요
 @SuppressFBWarnings
 @RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails, OAuth2User {
