@@ -45,7 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             // 유효한 토큰인지 확인
             if (JwtTokenUtils.isExpired(token, key)) {
-                log.error("key is expried");
+                log.error("key is expired");
                 filterChain.doFilter(request, response);
                 return;
             }
