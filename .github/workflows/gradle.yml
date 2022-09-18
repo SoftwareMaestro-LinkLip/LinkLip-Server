@@ -57,6 +57,14 @@ jobs:
           echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-local.yml
         shell: bash
 
+      ## create application-oauth.yml
+      - name: Make application-oauth.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-oauth.yml
+          echo "${{ secrets.APPLICATION_OAUTH }}" > ./application-oauth.yml
+        shell: bash
+
       - name: MariaDB Connection
         uses: getong/mariadb-action@v1.1
         with:

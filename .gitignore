@@ -39,3 +39,4 @@ out/
 ### application-XXX.yml ###
 **/application-dev.yml
 **/application-local.yml
+**/application-oauth.yml

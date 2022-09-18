@@ -2,6 +2,7 @@ package com.linklip.linklipserver.controller;
 
 import static com.linklip.linklipserver.constant.SuccessResponse.*;
 
+import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.*;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @SuppressFBWarnings("EI_EXPOSE_REP2")
@@ -30,8 +32,11 @@ public class ContentController {
     @ApiOperation(value = "링크 저장 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "링크 저장 완료")})
     @PostMapping("/v1/link")
-    public ResponseEntity<?> saveLinkV1(@RequestBody @Valid SaveLinkRequest request) {
+    public ResponseEntity<?> saveLinkV1(
+            @RequestBody @Valid SaveLinkRequest request, @AuthenticationPrincipal User user) {
 
+        // 유저 접근 방법
+        System.out.println("userId: " + user.getId());
         contentService.saveLinkContent(request);
 
         return new ResponseEntity<>(
@@ -64,7 +69,8 @@ public class ContentController {
     @GetMapping("/v1")
     public ResponseEntity<?> findContentListV2(
             @ModelAttribute FindContentRequest request,
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
+                    Pageable pageable) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
