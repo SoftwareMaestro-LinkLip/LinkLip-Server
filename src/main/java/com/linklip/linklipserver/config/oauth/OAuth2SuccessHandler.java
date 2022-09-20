@@ -1,7 +1,6 @@
 package com.linklip.linklipserver.config.oauth;
 
 import com.linklip.linklipserver.config.util.JwtTokenUtils;
-import com.linklip.linklipserver.repository.UserRepository;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,24 +24,32 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Value("${jwt.secret-key}")
     private String key;
 
-    @Value("${jwt.token-expired-time-ms}")
-    private Long expiredTime;
+    @Value("${jwt.access-token-expired-time-ms}")
+    private Long accessTokenExpiredTime;
 
-    private final UserRepository userRepository;
+    @Value("${jwt.refresh-token-expired-time-ms}")
+    private Long refreshTokenExpiredTime;
 
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws ServletException, IOException {
 
-        String token = JwtTokenUtils.generateToken(authentication, key, expiredTime);
+        String accessToken =
+                JwtTokenUtils.generateToken(authentication, key, accessTokenExpiredTime);
+        String refreshToken =
+                JwtTokenUtils.generateToken(authentication, key, refreshTokenExpiredTime);
 
-        String url = makeRedirectUrl(targetUrl, token);
+        String url = makeRedirectUrl(targetUrl, accessToken, refreshToken);
 
         getRedirectStrategy().sendRedirect(request, response, url);
     }
 
-    private String makeRedirectUrl(String targetUrl, String token) {
-        return UriComponentsBuilder.fromUriString(targetUrl + token).build().toUriString();
+    private String makeRedirectUrl(String targetUrl, String accessToken, String refreshToken) {
+        return UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
+                .build()
+                .toUriString();
     }
 }
