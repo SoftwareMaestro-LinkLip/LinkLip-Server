@@ -1,6 +1,5 @@
-package com.linklip.linklipserver.config.util;
+package com.linklip.linklipserver.util;
 
-import com.linklip.linklipserver.config.auth.PrincipalDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import org.springframework.security.core.Authentication;
 
 public class JwtTokenUtils {
 
@@ -29,12 +27,10 @@ public class JwtTokenUtils {
                 .getBody();
     }
 
-    public static String generateToken(
-            Authentication authentication, String key, long expiredTimesMs) {
+    public static String generateToken(String socialId, String key, long expiredTimesMs) {
 
-        PrincipalDetails oAuth2User = (PrincipalDetails) authentication.getPrincipal();
         Claims claims = Jwts.claims();
-        claims.put("socialId", oAuth2User.getSocialId());
+        claims.put("socialId", socialId);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간

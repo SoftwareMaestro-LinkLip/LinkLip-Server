@@ -3,9 +3,9 @@ package com.linklip.linklipserver.config.filter;
 import static com.linklip.linklipserver.constant.ErrorResponse.EXPIRED_ACCESS_TOKEN;
 
 import com.google.common.net.HttpHeaders;
-import com.linklip.linklipserver.config.util.JwtTokenUtils;
 import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.service.UserService;
+import com.linklip.linklipserver.util.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.io.IOException;
 import javax.servlet.FilterChain;

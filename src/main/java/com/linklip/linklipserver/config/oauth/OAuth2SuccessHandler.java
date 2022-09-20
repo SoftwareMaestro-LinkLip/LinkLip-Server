@@ -1,6 +1,8 @@
 package com.linklip.linklipserver.config.oauth;
 
-import com.linklip.linklipserver.config.util.JwtTokenUtils;
+import com.linklip.linklipserver.config.auth.PrincipalDetails;
+import com.linklip.linklipserver.service.TokenService;
+import com.linklip.linklipserver.util.JwtTokenUtils;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private final TokenService tokenService;
 
     @Value("${jwt.target-url}")
     private String targetUrl;
@@ -35,14 +39,20 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws ServletException, IOException {
 
-        String accessToken =
-                JwtTokenUtils.generateToken(authentication, key, accessTokenExpiredTime);
-        String refreshToken =
-                JwtTokenUtils.generateToken(authentication, key, refreshTokenExpiredTime);
+        PrincipalDetails oAuth2User = (PrincipalDetails) authentication.getPrincipal();
+        String socialId = oAuth2User.getSocialId();
+
+        String accessToken = JwtTokenUtils.generateToken(socialId, key, accessTokenExpiredTime);
+        String refreshToken = generateRefreshToken(socialId);
 
         String url = makeRedirectUrl(targetUrl, accessToken, refreshToken);
-
         getRedirectStrategy().sendRedirect(request, response, url);
+    }
+
+    private String generateRefreshToken(String socialId) {
+        String refreshToken = JwtTokenUtils.generateToken(socialId, key, refreshTokenExpiredTime);
+        tokenService.saveRefreshToken(socialId, refreshToken);
+        return refreshToken;
     }
 
     private String makeRedirectUrl(String targetUrl, String accessToken, String refreshToken) {
