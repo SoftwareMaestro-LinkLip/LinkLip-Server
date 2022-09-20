@@ -1,9 +1,12 @@
 package com.linklip.linklipserver.config.filter;
 
+import static com.linklip.linklipserver.constant.ErrorResponse.EXPIRED_ACCESS_TOKEN;
+
 import com.google.common.net.HttpHeaders;
 import com.linklip.linklipserver.config.util.JwtTokenUtils;
 import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.service.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -43,13 +46,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             final String token = header.split(" ")[1].trim();
 
-            // 유효한 토큰인지 확인
-            if (JwtTokenUtils.isExpired(token, key)) {
-                log.error("key is expired");
-                filterChain.doFilter(request, response);
-                return;
-            }
-
             String socialId = JwtTokenUtils.getSocialId(token, key);
             User user = userService.findUser(socialId);
 
@@ -58,6 +54,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                             // TODO
                             user, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (ExpiredJwtException e) {
+            log.error("token is expired");
+            request.setAttribute("exception", EXPIRED_ACCESS_TOKEN.getCode());
+            filterChain.doFilter(request, response);
+            return;
         } catch (RuntimeException e) {
             log.error("Error occurs while validating. {}", e.toString());
             filterChain.doFilter(request, response);
