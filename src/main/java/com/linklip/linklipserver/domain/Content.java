@@ -38,6 +38,10 @@ public abstract class Content extends JpaBaseDomain {
         this.category = category;
     }
 
+    public void updateOwner(User owner) {
+        this.owner = owner;
+    }
+
     public void delete() {
         this.isDeleted = true;
     }

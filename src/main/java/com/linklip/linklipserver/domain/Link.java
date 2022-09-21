@@ -24,12 +24,19 @@ public class Link extends Content {
     private String text;
 
     @Builder
-    public Link(String linkUrl, String linkImg, String title, String text, Category category) {
+    public Link(
+            String linkUrl,
+            String linkImg,
+            String title,
+            String text,
+            Category category,
+            User owner) {
         this.linkUrl = linkUrl;
         this.linkImg = linkImg;
         this.title = title;
         this.text = text;
         super.updateCategory(category);
+        super.updateOwner(owner);
     }
 
     public void update(String title, Category category) {

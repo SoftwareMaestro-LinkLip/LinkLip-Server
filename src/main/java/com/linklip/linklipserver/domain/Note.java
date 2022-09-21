@@ -17,9 +17,10 @@ public class Note extends Content {
     private String text;
 
     @Builder
-    public Note(String text, Category category) {
+    public Note(String text, Category category, User owner) {
         this.text = text;
         super.updateCategory(category);
+        super.updateOwner(owner);
     }
 
     public void update(String text, Category category) {
