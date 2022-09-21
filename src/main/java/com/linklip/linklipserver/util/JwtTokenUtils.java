@@ -10,8 +10,8 @@ import java.util.Date;
 
 public class JwtTokenUtils {
 
-    public static String getSocialId(String token, String key) {
-        return extractClaims(token, key).get("socialId", String.class);
+    public static Long getUserId(String token, String key) {
+        return extractClaims(token, key).get("userId", Long.class);
     }
 
     public static boolean isExpired(String token, String key) {
@@ -27,10 +27,10 @@ public class JwtTokenUtils {
                 .getBody();
     }
 
-    public static String generateToken(String socialId, String key, long expiredTimesMs) {
+    public static String generateToken(Long userId, String key, long expiredTimesMs) {
 
         Claims claims = Jwts.claims();
-        claims.put("socialId", socialId);
+        claims.put("userId", userId);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간

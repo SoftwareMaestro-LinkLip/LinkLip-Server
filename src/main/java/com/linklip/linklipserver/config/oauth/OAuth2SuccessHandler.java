@@ -40,18 +40,18 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             throws ServletException, IOException {
 
         PrincipalDetails oAuth2User = (PrincipalDetails) authentication.getPrincipal();
-        String socialId = oAuth2User.getSocialId();
+        Long userId = oAuth2User.getUserId();
 
-        String accessToken = JwtTokenUtils.generateToken(socialId, key, accessTokenExpiredTime);
-        String refreshToken = generateRefreshToken(socialId);
+        String accessToken = JwtTokenUtils.generateToken(userId, key, accessTokenExpiredTime);
+        String refreshToken = generateRefreshToken(userId);
 
         String url = makeRedirectUrl(targetUrl, accessToken, refreshToken);
         getRedirectStrategy().sendRedirect(request, response, url);
     }
 
-    private String generateRefreshToken(String socialId) {
-        String refreshToken = JwtTokenUtils.generateToken(socialId, key, refreshTokenExpiredTime);
-        tokenService.saveRefreshToken(socialId, refreshToken);
+    private String generateRefreshToken(Long userId) {
+        String refreshToken = JwtTokenUtils.generateToken(userId, key, refreshTokenExpiredTime);
+        tokenService.saveRefreshToken(userId, refreshToken);
         return refreshToken;
     }
 

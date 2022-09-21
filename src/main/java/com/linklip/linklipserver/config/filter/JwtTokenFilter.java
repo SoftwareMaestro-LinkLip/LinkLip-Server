@@ -3,7 +3,6 @@ package com.linklip.linklipserver.config.filter;
 import static com.linklip.linklipserver.constant.ErrorResponse.EXPIRED_ACCESS_TOKEN;
 
 import com.google.common.net.HttpHeaders;
-import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.service.UserService;
 import com.linklip.linklipserver.util.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -40,12 +39,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             final String token = getToken(request, HttpHeaders.AUTHORIZATION);
 
-            String socialId = JwtTokenUtils.getSocialId(token, key);
-            User user = userService.findUser(socialId);
+            Long userId = JwtTokenUtils.getUserId(token, key);
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            user, null, null);
+                    new UsernamePasswordAuthenticationToken(userId, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (ExpiredJwtException e) {
             log.error("token is expired");
