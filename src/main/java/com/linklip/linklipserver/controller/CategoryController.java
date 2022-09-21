@@ -2,6 +2,7 @@ package com.linklip.linklipserver.controller;
 
 import static com.linklip.linklipserver.constant.SuccessResponse.*;
 
+import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.category.CategoryDto;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Api(value = "CategoryController")
@@ -81,9 +83,10 @@ public class CategoryController {
     @ApiResponses({@ApiResponse(code = 200, message = "카테고리 삭제 완료")})
     @DeleteMapping("/v1/{categoryId}")
     @ResponseBody
-    public ResponseEntity<?> deleteCategoryV1(@PathVariable Long categoryId) {
+    public ResponseEntity<?> deleteCategoryV1(
+            @PathVariable Long categoryId, @AuthenticationPrincipal User user) {
 
-        categoryService.releaseCategory(categoryId);
+        categoryService.releaseCategory(categoryId, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(

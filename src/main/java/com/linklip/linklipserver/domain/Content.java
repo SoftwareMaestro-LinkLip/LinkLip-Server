@@ -21,7 +21,7 @@ public abstract class Content extends JpaBaseDomain {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "owner_id")
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @Column(insertable = false, updatable = false) // 읽기 전용으로 선언

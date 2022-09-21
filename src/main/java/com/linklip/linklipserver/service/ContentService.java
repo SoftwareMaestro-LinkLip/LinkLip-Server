@@ -2,10 +2,7 @@ package com.linklip.linklipserver.service;
 
 import static com.linklip.linklipserver.constant.ErrorResponse.*;
 
-import com.linklip.linklipserver.domain.Category;
-import com.linklip.linklipserver.domain.Content;
-import com.linklip.linklipserver.domain.Link;
-import com.linklip.linklipserver.domain.Note;
+import com.linklip.linklipserver.domain.*;
 import com.linklip.linklipserver.dto.content.*;
 import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;
@@ -28,7 +25,7 @@ public class ContentService {
 
     // 컨텐츠 저장
     @Transactional
-    public void saveLinkContent(SaveLinkRequest request) {
+    public void saveLinkContent(SaveLinkRequest request, User owner) {
 
         Long categoryId = request.getCategoryId();
 
@@ -36,7 +33,7 @@ public class ContentService {
                 categoryId == null
                         ? null
                         : categoryRepository
-                                .findById(categoryId)
+                                .findByIdAndOwner(categoryId, owner)
                                 .orElseThrow(
                                         () ->
                                                 new InvalidIdException(
@@ -49,31 +46,36 @@ public class ContentService {
                         .title(request.getTitle())
                         .text(request.getText())
                         .category(category)
+                        .owner(owner)
                         .build();
         contentRepository.save(content);
     }
 
-    public Page<ContentDto> findContentList(FindContentRequest request, Pageable pageable) {
+    public Page<ContentDto> findContentList(
+            FindContentRequest request, Pageable pageable, User owner) {
 
         String term = request.getTerm();
         Long categoryId = request.getCategoryId();
+        Long ownerId = owner.getId();
 
         Page<Content> page = null;
 
         if (categoryId != null && StringUtils.hasText(term)) {
-            page = contentRepository.findByCategoryAndTerm(categoryId, term, pageable);
+            page =
+                    contentRepository.findByCategoryAndTermAndOwner(
+                            categoryId, term, pageable, ownerId);
         }
 
         if (categoryId != null && !StringUtils.hasText(term)) {
-            page = contentRepository.findByCategory(categoryId, pageable);
+            page = contentRepository.findByCategoryAndOwner(categoryId, pageable, ownerId);
         }
 
         if (categoryId == null && StringUtils.hasText(term)) {
-            page = contentRepository.findByTerm(term, pageable);
+            page = contentRepository.findByTermAndOwner(term, pageable, ownerId);
         }
 
         if (categoryId == null && !StringUtils.hasText(term)) {
-            page = contentRepository.findAll(pageable);
+            page = contentRepository.findAllByOwner(pageable, owner);
         }
 
         return page.map(
@@ -91,11 +93,11 @@ public class ContentService {
                 });
     }
 
-    public ContentDto findContent(Long contentId) {
+    public ContentDto findContent(Long contentId, User owner) {
 
         Content content =
                 contentRepository
-                        .findById(contentId)
+                        .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
@@ -111,11 +113,11 @@ public class ContentService {
     }
 
     @Transactional
-    public void updateLinkContent(Long id, UpdateLinkRequest request) {
+    public void updateLinkContent(Long contentId, UpdateLinkRequest request, User owner) {
 
         Content content =
                 contentRepository
-                        .findById(id)
+                        .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
@@ -125,7 +127,7 @@ public class ContentService {
                 categoryId == null
                         ? null
                         : categoryRepository
-                                .findById(categoryId)
+                                .findByIdAndOwner(categoryId, owner)
                                 .orElseThrow(
                                         () ->
                                                 new InvalidIdException(
@@ -134,40 +136,41 @@ public class ContentService {
     }
 
     @Transactional
-    public void deleteContent(Long contentId) {
+    public void deleteContent(Long contentId, User owner) {
 
         Content content =
                 contentRepository
-                        .findById(contentId)
+                        .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
         content.delete();
     }
 
     @Transactional
-    public void saveNoteContent(SaveNoteRequest request) {
+    public void saveNoteContent(SaveNoteRequest request, User owner) {
         Long categoryId = request.getCategoryId();
 
         Category category =
                 categoryId == null
                         ? null
                         : categoryRepository
-                                .findById(categoryId)
+                                .findByIdAndOwner(categoryId, owner)
                                 .orElseThrow(
                                         () ->
                                                 new InvalidIdException(
                                                         NOT_EXSIT_CATEGORY_ID.getMessage()));
 
-        Content content = Note.builder().text(request.getText()).category(category).build();
+        Content content =
+                Note.builder().text(request.getText()).category(category).owner(owner).build();
         contentRepository.save(content);
     }
 
     @Transactional
-    public void updateNoteContent(Long contentId, UpdateNoteRequest request) {
+    public void updateNoteContent(Long contentId, UpdateNoteRequest request, User owner) {
 
         Content content =
                 contentRepository
-                        .findById(contentId)
+                        .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
@@ -177,7 +180,7 @@ public class ContentService {
                 categoryId == null
                         ? null
                         : categoryRepository
-                                .findById(categoryId)
+                                .findByIdAndOwner(categoryId, owner)
                                 .orElseThrow(
                                         () ->
                                                 new InvalidIdException(

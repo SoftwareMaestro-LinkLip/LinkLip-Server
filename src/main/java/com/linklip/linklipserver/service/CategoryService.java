@@ -3,6 +3,7 @@ package com.linklip.linklipserver.service;
 import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_CATEGORY_ID;
 
 import com.linklip.linklipserver.domain.Category;
+import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.dto.category.CategoryDto;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
 import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
@@ -49,8 +50,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void releaseCategory(Long categoryId) {
-        contentRepository.releaseCategoryByCategoryId(categoryId);
+    public void releaseCategory(Long categoryId, User owner) {
+        contentRepository.releaseCategoryById(categoryId, owner.getId());
         try {
             categoryRepository.deleteById(categoryId);
         } catch (EmptyResultDataAccessException e) {

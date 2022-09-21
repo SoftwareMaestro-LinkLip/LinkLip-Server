@@ -35,9 +35,7 @@ public class ContentController {
     public ResponseEntity<?> saveLinkV1(
             @RequestBody @Valid SaveLinkRequest request, @AuthenticationPrincipal User user) {
 
-        // 유저 접근 방법
-        System.out.println("userId: " + user.getId());
-        contentService.saveLinkContent(request);
+        contentService.saveLinkContent(request, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
@@ -53,14 +51,15 @@ public class ContentController {
     public ResponseEntity<?> findContentListV1(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
-                    Pageable pageable) {
+                    Pageable pageable,
+            @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
                         FIND_CONTENT_LIST_SUCCESS.getStatus(),
                         FIND_CONTENT_LIST_SUCCESS.getSuccess(),
                         FIND_CONTENT_LIST_SUCCESS.getMessage(),
-                        contentService.findContentList(request, pageable)),
+                        contentService.findContentList(request, pageable, user)),
                 HttpStatus.OK);
     }
 
@@ -70,42 +69,45 @@ public class ContentController {
     public ResponseEntity<?> findContentListV2(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
-                    Pageable pageable) {
+                    Pageable pageable,
+            @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
                         FIND_CONTENT_LIST_SUCCESS.getStatus(),
                         FIND_CONTENT_LIST_SUCCESS.getSuccess(),
                         FIND_CONTENT_LIST_SUCCESS.getMessage(),
-                        contentService.findContentList(request, pageable)),
+                        contentService.findContentList(request, pageable, user)),
                 HttpStatus.OK);
     }
 
     @ApiOperation(value = "컨텐츠 상세정보 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
     @GetMapping("/v1/link/{contentId}")
-    public ResponseEntity<?> findLinkV1(@PathVariable Long contentId) {
+    public ResponseEntity<?> findLinkV1(
+            @PathVariable Long contentId, @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
                         FIND_CONTENT_SUCCESS.getStatus(),
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
-                        new FindContentResponse(contentService.findContent(contentId))),
+                        new FindContentResponse(contentService.findContent(contentId, user))),
                 HttpStatus.OK);
     }
 
     @ApiOperation(value = "컨텐츠 상세정보 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
     @GetMapping("/v1/{contentId}")
-    public ResponseEntity<?> findContentV2(@PathVariable Long contentId) {
+    public ResponseEntity<?> findContentV2(
+            @PathVariable Long contentId, @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
                         FIND_CONTENT_SUCCESS.getStatus(),
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
-                        new FindContentResponse(contentService.findContent(contentId))),
+                        new FindContentResponse(contentService.findContent(contentId, user))),
                 HttpStatus.OK);
     }
 
@@ -113,9 +115,11 @@ public class ContentController {
     @ApiResponses({@ApiResponse(code = 200, message = "링크 내용 수정 완료")})
     @PatchMapping("/v1/link/{contentId}")
     public ResponseEntity<?> updateLinkV1(
-            @PathVariable Long contentId, @RequestBody @Valid UpdateLinkRequest request) {
+            @PathVariable Long contentId,
+            @RequestBody @Valid UpdateLinkRequest request,
+            @AuthenticationPrincipal User user) {
 
-        contentService.updateLinkContent(contentId, request);
+        contentService.updateLinkContent(contentId, request, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
@@ -128,9 +132,10 @@ public class ContentController {
     @ApiOperation("컨텐츠 삭제 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "컨텐츠 삭제 완료")})
     @DeleteMapping("/v1/{contentId}")
-    public ResponseEntity<?> deleteContentV1(@PathVariable Long contentId) {
+    public ResponseEntity<?> deleteContentV1(
+            @PathVariable Long contentId, @AuthenticationPrincipal User user) {
 
-        contentService.deleteContent(contentId);
+        contentService.deleteContent(contentId, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
@@ -143,9 +148,10 @@ public class ContentController {
     @ApiOperation(value = "메모 저장 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "메모 저장 완료")})
     @PostMapping("/v1/note")
-    public ResponseEntity<?> saveNoteV1(@RequestBody @Valid SaveNoteRequest request) {
+    public ResponseEntity<?> saveNoteV1(
+            @RequestBody @Valid SaveNoteRequest request, @AuthenticationPrincipal User user) {
 
-        contentService.saveNoteContent(request);
+        contentService.saveNoteContent(request, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
@@ -159,9 +165,11 @@ public class ContentController {
     @ApiResponses({@ApiResponse(code = 200, message = "메모 수정 완료")})
     @PatchMapping("/v1/note/{contentId}")
     public ResponseEntity<?> updateNoteV1(
-            @PathVariable Long contentId, @RequestBody @Valid UpdateNoteRequest request) {
+            @PathVariable Long contentId,
+            @RequestBody @Valid UpdateNoteRequest request,
+            @AuthenticationPrincipal User user) {
 
-        contentService.updateNoteContent(contentId, request);
+        contentService.updateNoteContent(contentId, request, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
