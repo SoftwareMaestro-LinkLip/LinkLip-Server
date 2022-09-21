@@ -25,23 +25,24 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public void createCategory(CreateCategoryRequest request) {
-        Category category = request.toEntity();
+    public void createCategory(CreateCategoryRequest request, User owner) {
+
+        Category category = Category.builder().name(request.getName()).owner(owner).build();
         categoryRepository.save(category);
     }
 
-    public List<CategoryDto> findAllCategory() {
-        List<Category> all = categoryRepository.findAllByOrderByName();
+    public List<CategoryDto> findAllCategoryByOwner(User owner) {
+        List<Category> all = categoryRepository.findByOwnerOrderByName(owner);
         return all.stream()
                 .map(c -> CategoryDto.builder().id(c.getId()).name(c.getName()).build())
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void updateCategory(Long categoryId, UpdateCategoryRequest request) {
+    public void updateCategory(Long categoryId, UpdateCategoryRequest request, User owner) {
         Category category =
                 categoryRepository
-                        .findById(categoryId)
+                        .findByIdAndOwner(categoryId, owner)
                         .orElseThrow(
                                 () ->
                                         new IllegalArgumentException(

@@ -3,6 +3,8 @@ package com.linklip.linklipserver.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.linklip.linklipserver.domain.Category;
+import com.linklip.linklipserver.domain.Social;
+import com.linklip.linklipserver.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스에 테스트
 class CategoryRepositoryTest {
 
+    @Autowired private UserRepository userRepository;
     @Autowired private CategoryRepository categoryRepository;
 
     @Nested
@@ -67,12 +70,20 @@ class CategoryRepositoryTest {
         @Test
         @DisplayName("이름 순으로 카테고리 조회")
         public void findCategoryNormal() {
-            Category category1 = Category.builder().name("채용 정보").build();
-            Category category2 = Category.builder().name("개발 정보").build();
+            User user1 =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialType(Social.GOOGLE)
+                            .socialId("GOOGLE_123123123")
+                            .build();
+            userRepository.save(user1);
+
+            Category category1 = Category.builder().name("채용 정보").owner(user1).build();
+            Category category2 = Category.builder().name("개발 정보").owner(user1).build();
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
-            List<Category> categoryList = categoryRepository.findAllByOrderByName();
+            List<Category> categoryList = categoryRepository.findByOwnerOrderByName(user1);
             assertThat(categoryList.size()).isEqualTo(2);
             assertThat(categoryList.get(0)).isEqualTo(category2);
             assertThat(categoryList.get(1)).isEqualTo(category1);
@@ -86,8 +97,16 @@ class CategoryRepositoryTest {
         @DisplayName("일반적인 카테고리 삭제")
         public void deleteCategoryNormal() {
             // given
-            Category category1 = Category.builder().name("채용 정보").build();
-            Category category2 = Category.builder().name("개발 정보").build();
+            User user1 =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialType(Social.GOOGLE)
+                            .socialId("GOOGLE_123123123")
+                            .build();
+            userRepository.save(user1);
+
+            Category category1 = Category.builder().name("채용 정보").owner(user1).build();
+            Category category2 = Category.builder().name("개발 정보").owner(user1).build();
             categoryRepository.save(category1);
             categoryRepository.save(category2);
 
@@ -95,7 +114,7 @@ class CategoryRepositoryTest {
             categoryRepository.deleteById(category1.getId());
 
             // then
-            List<Category> categoryList = categoryRepository.findAllByOrderByName();
+            List<Category> categoryList = categoryRepository.findByOwnerOrderByName(user1);
             assertThat(categoryList.size()).isEqualTo(1);
         }
     }
