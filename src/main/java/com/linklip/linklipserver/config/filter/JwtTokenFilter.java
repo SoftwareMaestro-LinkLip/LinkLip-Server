@@ -28,6 +28,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.secret-key}")
     private String key;
 
+    public static final String REFRESH = "Refresh";
+
     private final UserService userService;
 
     @Override
@@ -35,23 +37,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // get header
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null || !header.startsWith("Bearer ")) {
-            log.error("Error occurs while getting header. header is null or invalid");
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
-            final String token = header.split(" ")[1].trim();
+            final String token = getToken(request, HttpHeaders.AUTHORIZATION);
 
             String socialId = JwtTokenUtils.getSocialId(token, key);
             User user = userService.findUser(socialId);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            // TODO
                             user, null, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (ExpiredJwtException e) {
@@ -66,5 +59,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String getToken(HttpServletRequest request, String header) {
+        String token = request.getHeader(header);
+        if (token != null && token.startsWith("Bearer")) {
+            return token.split(" ")[1].trim();
+        }
+        return null;
     }
 }
