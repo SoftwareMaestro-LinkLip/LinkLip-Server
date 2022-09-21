@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 public class CategoryIntegrationTest {
 
-    // @FIXME: 해당 변수에 빨간줄 들어오는데 정확한 이유 파악 필요
     @Autowired private MockMvc mockMvc;
 
     @Autowired private CategoryRepository categoryRepository;

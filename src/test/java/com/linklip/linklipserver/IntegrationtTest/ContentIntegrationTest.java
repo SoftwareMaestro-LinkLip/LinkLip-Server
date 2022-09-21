@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 public class ContentIntegrationTest {
 
-    @Autowired MockMvc mockMvc; // 해당 변수에 빨간줄 들어오는데 정확한 이유 파악 필요
+    @Autowired MockMvc mockMvc;
 
     @Autowired private ContentRepository contentRepository;
     @Autowired private CategoryRepository categoryRepository;
