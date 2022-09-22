@@ -21,15 +21,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-    // OncePerRequestFilter
-    @Value("${jwt.secret-key}")
+
     private String key;
 
-    public static final String REFRESH = "Refresh";
-
-    private final UserService userService;
+    public JwtTokenFilter(String key) {
+        this.key = key;
+    }
 
     @Override
     protected void doFilterInternal(
