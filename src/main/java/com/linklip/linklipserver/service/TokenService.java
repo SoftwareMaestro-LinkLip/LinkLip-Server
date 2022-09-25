@@ -53,7 +53,6 @@ public class TokenService {
     public Map<String, String> reissueRefreshToken(ReissueTokenRequest request) {
 
         if (JwtTokenUtils.isExpired(request.getRefreshToken(), key)) {
-            // 만료 됐습니다.
             throw new ExpiredTokenException("만료된 RefreshToken 입니다");
         }
 
