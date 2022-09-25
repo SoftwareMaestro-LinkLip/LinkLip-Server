@@ -35,4 +35,8 @@ public class RefreshToken {
         this.token = token;
         this.user = user;
     }
+
+    public void changeToken(String newToken) {
+        this.token = newToken;
+    }
 }
