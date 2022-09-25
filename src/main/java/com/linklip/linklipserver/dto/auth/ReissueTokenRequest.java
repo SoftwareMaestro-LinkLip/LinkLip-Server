@@ -1,8 +1,8 @@
 package com.linklip.linklipserver.dto.auth;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class ReissueTokenRequest {
 
     private String accessToken;
