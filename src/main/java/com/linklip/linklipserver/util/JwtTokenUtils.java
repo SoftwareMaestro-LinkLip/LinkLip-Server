@@ -1,6 +1,7 @@
 package com.linklip.linklipserver.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -20,11 +21,15 @@ public class JwtTokenUtils {
     }
 
     public static Claims extractClaims(String token, String key) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey(key))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getKey(key))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     public static String generateToken(Long userId, String key, long expiredTimesMs) {

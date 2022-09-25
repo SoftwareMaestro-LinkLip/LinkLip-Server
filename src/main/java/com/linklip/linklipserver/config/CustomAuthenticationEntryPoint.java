@@ -26,7 +26,7 @@ public class CustomAuthenticationEntryPoint
             throws IOException, ServletException {
 
         String exception = (String) request.getAttribute("exception");
-        if (exception.equals(EXPIRED_ACCESS_TOKEN.getCode())) {
+        if (exception != null && exception.equals(EXPIRED_ACCESS_TOKEN.getCode())) {
             setResponse(response, EXPIRED_ACCESS_TOKEN);
             return;
         }
