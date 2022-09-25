@@ -36,16 +36,13 @@ public class BadRequestHandler {
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({
-        ExpiredTokenException.class,
-        NotValidTokenException.class
-    })
+    @ExceptionHandler({ExpiredTokenException.class, NotValidTokenException.class})
     public ServerResponse handle401(Exception exception) {
         System.out.println("❗❗️ exception = " + exception);
 
         String responseMessage = exception.getMessage();
 
         return new ServerResponse(
-            INVALID_TOKEN.getStatus(), INVALID_TOKEN.getSuccess(), responseMessage);
+                INVALID_TOKEN.getStatus(), INVALID_TOKEN.getSuccess(), responseMessage);
     }
 }

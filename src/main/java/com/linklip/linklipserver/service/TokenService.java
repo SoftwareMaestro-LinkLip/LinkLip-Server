@@ -11,7 +11,6 @@ import com.linklip.linklipserver.exception.NotValidTokenException;
 import com.linklip.linklipserver.repository.TokenRepository;
 import com.linklip.linklipserver.repository.UserRepository;
 import com.linklip.linklipserver.util.JwtTokenUtils;
-import io.jsonwebtoken.ExpiredJwtException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +78,7 @@ public class TokenService {
             }
         }
 
-        //에러 발생
+        // 에러 발생
         throw new NotValidTokenException("유효하지 않는 RefreshToken 입니다");
     }
 }
