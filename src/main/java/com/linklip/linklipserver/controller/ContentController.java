@@ -169,6 +169,7 @@ public class ContentController {
             @RequestBody @Valid UpdateNoteRequest request,
             @AuthenticationPrincipal User user) {
 
+        System.out.println("Request User = " + user);
         contentService.updateNoteContent(contentId, request, user);
 
         return new ResponseEntity<>(

@@ -7,19 +7,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.linklip.linklipserver.TestUtils;
-import com.linklip.linklipserver.domain.Category;
-import com.linklip.linklipserver.domain.Content;
-import com.linklip.linklipserver.domain.Link;
-import com.linklip.linklipserver.domain.Note;
+import com.linklip.linklipserver.domain.*;
 import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
-import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
+import com.linklip.linklipserver.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -37,10 +42,19 @@ public class ContentIntegrationTest {
 
     @Autowired MockMvc mockMvc;
 
+    @Autowired private UserRepository userRepository;
     @Autowired private ContentRepository contentRepository;
-    @Autowired private CategoryRepository categoryRepository;
 
     @Autowired private TestUtils testUtils;
+
+    @Value("${jwt.secret-key}")
+    private String key;
+
+    @Value("${jwt.token-expired-time-ms}")
+    private Long expiredTime;
+
+    User testUser;
+    String accessToken;
 
     @Nested
     @DisplayName("링크 검색 통합테스트")
@@ -50,17 +64,32 @@ public class ContentIntegrationTest {
 
         @BeforeEach
         public void createContents() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
             String title = "소마";
+            category1 = testUtils.saveCategory("활동", testUser);
+            Category category2 = testUtils.saveCategory("스펙", testUser);
 
-            category1 = testUtils.saveCategory("활동");
-            Category category2 = testUtils.saveCategory("스펙");
-
-            testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
-            testUtils.saveLink(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
-            testUtils.saveLink(url1, null, null, category2);
-            testUtils.saveLink(url2, null, null, category2);
+            testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1, testUser);
+            testUtils.saveLink(url1, null, "소프트웨어 마에스트로 13기 연수생 여러분...", category1, testUser);
+            testUtils.saveLink(url1, null, null, category2, testUser);
+            testUtils.saveLink(url2, null, null, category2, testUser);
         }
 
         @Nested
@@ -77,6 +106,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -96,6 +126,8 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -116,6 +148,8 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -136,6 +170,8 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -160,6 +196,8 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -178,6 +216,8 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -196,6 +236,8 @@ public class ContentIntegrationTest {
                 ResultActions actions =
                         mockMvc.perform(
                                 get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -211,7 +253,12 @@ public class ContentIntegrationTest {
 
                 // when
                 ResultActions actions =
-                        mockMvc.perform(get("/content/v1").param("page", "0").param("size", "20"));
+                        mockMvc.perform(
+                                get("/content/v1")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .param("page", "0")
+                                        .param("size", "20"));
 
                 // then
                 actions.andExpect(status().isOk())
@@ -226,11 +273,16 @@ public class ContentIntegrationTest {
             // given
             String baseUrl = "https://www.swmaestro.org";
             String baseTitle = "소프트웨어 마에스트로";
-            testUtils.saveLink(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...", null);
+            testUtils.saveLink(baseUrl, baseTitle, "소프트웨어 마에스트로 12기 연수생 여러분...", null, testUser);
 
             // when
             ResultActions actions =
-                    mockMvc.perform(get("/content/v1").param("page", "1").param("size", "3"));
+                    mockMvc.perform(
+                            get("/content/v1")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .param("page", "1")
+                                    .param("size", "3"));
 
             // then
             actions.andExpect(status().isOk())
@@ -246,18 +298,36 @@ public class ContentIntegrationTest {
 
         @BeforeEach
         public void createContents() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+
             // Link
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
             String title = "소마";
 
-            Category category1 = testUtils.saveCategory("활동");
-            Category category2 = testUtils.saveCategory("스펙");
+            Category category1 = testUtils.saveCategory("활동", testUser);
+            Category category2 = testUtils.saveCategory("스펙", testUser);
 
-            link1 = testUtils.saveLink(url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
-            testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1);
-            testUtils.saveLink(url1, null, null, category2);
-            testUtils.saveLink(url2, null, null, null);
+            link1 =
+                    testUtils.saveLink(
+                            url1, title, "소프트웨어 마에스트로 12기 연수생 여러분...", category1, testUser);
+            testUtils.saveLink(url1, null, "소프트웨어 마에스트로 12기 연수생 여러분...", category1, testUser);
+            testUtils.saveLink(url1, null, null, category2, testUser);
+            testUtils.saveLink(url2, null, null, null, testUser);
         }
 
         @Test
@@ -266,7 +336,11 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = link1.getId();
-            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/{contentId}", contentId)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk())
@@ -280,7 +354,11 @@ public class ContentIntegrationTest {
             // when
             Long contentId = 987654321L;
             System.out.println(link1.getId());
-            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/{contentId}", contentId)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -291,15 +369,33 @@ public class ContentIntegrationTest {
     @DisplayName("링크 수정 통합테스트")
     class UpdateLink {
 
+        @BeforeEach
+        public void createUser() {
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+        }
+
         @Test
         @DisplayName("링크 컨텐츠의 Title만 수정")
         public void updateTitle() throws Exception {
 
-            Category category = testUtils.saveCategory("활동");
+            Category category = testUtils.saveCategory("활동", testUser);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
-                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category);
+                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category, testUser);
 
             UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
             updateLinkRequest.setTitle("소프트웨어 마에스트로");
@@ -309,6 +405,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isOk());
@@ -320,13 +417,14 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title과 카테고리 수정")
         public void updateTitleAndCategory() throws Exception {
 
-            Category category1 = testUtils.saveCategory("활동");
+            Category category1 = testUtils.saveCategory("활동", testUser);
 
-            Category category2 = testUtils.saveCategory("대외 활동");
+            Category category2 = testUtils.saveCategory("대외 활동", testUser);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
-                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+                    testUtils.saveLink(
+                            url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1, testUser);
 
             UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
             updateLinkRequest.setTitle("소프트웨어 마에스트로");
@@ -337,6 +435,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isOk());
@@ -350,13 +449,14 @@ public class ContentIntegrationTest {
         @DisplayName("링크 컨텐츠의 Title 없이 수정 요청을 보내면 400")
         public void updateWithoutTitle() throws Exception {
 
-            Category category1 = testUtils.saveCategory("활동");
+            Category category1 = testUtils.saveCategory("활동", testUser);
 
-            Category category2 = testUtils.saveCategory("대외 활동");
+            Category category2 = testUtils.saveCategory("대외 활동", testUser);
 
             String url = "https://www.swmaestro.org/sw/main/main.do";
             Content savedContent =
-                    testUtils.saveLink(url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1);
+                    testUtils.saveLink(
+                            url, "소마", "소프트웨어 마에스트로 13기 연수생 여러분...", category1, testUser);
 
             UpdateLinkRequest updateLinkRequest = new UpdateLinkRequest();
             updateLinkRequest.setCategoryId(category2.getId());
@@ -366,6 +466,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isBadRequest());
@@ -376,20 +477,41 @@ public class ContentIntegrationTest {
     @DisplayName("컨텐츠 삭제")
     class DeleteContent {
 
+        @BeforeEach
+        public void createUser() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+        }
+
         @Test
         @DisplayName("일반적인 경우")
         public void deleteNormalContent() throws Exception {
 
             // given
-            Category category = testUtils.saveCategory("포털");
-            Content content = testUtils.saveLink("www.naver.com", "네이버", "오늘의 날씨", category);
+            Category category = testUtils.saveCategory("포털", testUser);
+            Content content =
+                    testUtils.saveLink("www.naver.com", "네이버", "오늘의 날씨", category, testUser);
             boolean isDeleted = content.isDeleted();
 
             // when
             ResultActions actions =
                     mockMvc.perform(
                             delete("/content/v1/{contentId}", content.getId())
-                                    .contentType(MediaType.APPLICATION_JSON));
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk());
@@ -406,15 +528,16 @@ public class ContentIntegrationTest {
         public void deleteNotExistContent() throws Exception {
 
             // given
-            Category category = testUtils.saveCategory("포털");
-            testUtils.saveLink("www.naver.com", "네이버", "오늘의 날씨", category);
+            Category category = testUtils.saveCategory("포털", testUser);
+            testUtils.saveLink("www.naver.com", "네이버", "오늘의 날씨", category, testUser);
 
             // when
             Long contentId = 987654321L;
             ResultActions actions =
                     mockMvc.perform(
                             delete("/content/v1/{contentId}", contentId)
-                                    .contentType(MediaType.APPLICATION_JSON));
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -430,20 +553,36 @@ public class ContentIntegrationTest {
 
         @BeforeEach
         public void createContents() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+
             String text1 = "9월 11일에 소망팀 모의면접 (OS, DB)";
             String text2 = "디자이너 외주 마감일자 확정 필요";
             String text3 = "갑자기 무슨 태풍이래";
             String text4 = "다음주 멘토링은 목요일에 온라인으로";
             String text5 = "모의면접 방향성 고민해보자!";
 
-            category1 = testUtils.saveCategory("활동");
-            category2 = testUtils.saveCategory("프로젝트");
+            category1 = testUtils.saveCategory("활동", testUser);
+            category2 = testUtils.saveCategory("프로젝트", testUser);
 
-            note1 = testUtils.saveNote(text1, category1);
-            testUtils.saveNote(text2, category2);
-            testUtils.saveNote(text3, null);
-            testUtils.saveNote(text4, category1);
-            testUtils.saveNote(text5, null);
+            note1 = testUtils.saveNote(text1, category1, testUser);
+            testUtils.saveNote(text2, category2, testUser);
+            testUtils.saveNote(text3, null, testUser);
+            testUtils.saveNote(text4, category1, testUser);
+            testUtils.saveNote(text5, null, testUser);
         }
 
         @DisplayName("전체 메모 불러오기")
@@ -453,6 +592,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .param("page", "0")
                                     .param("size", "20"));
 
@@ -471,6 +611,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .param("categoryId", String.valueOf(categoryId))
                                     .param("page", "0")
                                     .param("size", "20"));
@@ -493,6 +634,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .param("categoryId", String.valueOf(categoryId1))
                                     .param("term", String.valueOf(term))
                                     .param("page", "0")
@@ -502,6 +644,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .param("categoryId", String.valueOf(categoryId2))
                                     .param("term", String.valueOf(term))
                                     .param("page", "0")
@@ -526,6 +669,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .param("term", String.valueOf(term))
                                     .param("page", "0")
                                     .param("size", "20"));
@@ -545,8 +689,8 @@ public class ContentIntegrationTest {
             ResultActions actions =
                     mockMvc.perform(
                             get("/content/v1/{contentId}", contentId)
-                                    .contentType(MediaType.APPLICATION_JSON));
-
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken));
             // then
             actions.andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content.id").value(contentId))
@@ -562,7 +706,22 @@ public class ContentIntegrationTest {
 
         @BeforeEach
         public void createContents() {
-            note1 = testUtils.saveNote("테스트 메모 1", null);
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+            note1 = testUtils.saveNote("테스트 메모 1", null, testUser);
         }
 
         @Test
@@ -571,7 +730,10 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = note1.getId();
-            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/{contentId}", contentId)
+                                    .header("Authorizations", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk())
@@ -585,7 +747,10 @@ public class ContentIntegrationTest {
 
             // when
             Long contentId = 987654321L;
-            ResultActions actions = mockMvc.perform(get("/content/v1/{contentId}", contentId));
+            ResultActions actions =
+                    mockMvc.perform(
+                            get("/content/v1/{contentId}", contentId)
+                                    .header("Authorizations", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -596,25 +761,49 @@ public class ContentIntegrationTest {
     @DisplayName("메모 수정 통합테스트")
     class UpdateNoteContent {
 
+        @BeforeEach
+        public void createUser() {
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken =
+                    generateAccessToken(
+                            socialId,
+                            "software-maestro-13.linklip-application-2022.secret-key",
+                            7200000);
+        }
+
         @Test
         @DisplayName("메모 컨텐츠 text 수정")
         public void updateText() throws Exception {
 
             // given
-            Category category = testUtils.saveCategory("ToDo List");
+            Category category = testUtils.saveCategory("ToDo List", testUser);
 
             String text = "마트에서 사과 구매";
-            Content savedContent = testUtils.saveNote(text, category);
+            Content savedContent = testUtils.saveNote(text, category, testUser);
+            System.out.println("savedContent = " + savedContent);
+            System.out.println("savedContent owner = " + savedContent.getOwner());
+            System.out.println("testUser = " + testUser);
+            System.out.println(contentRepository.findById(savedContent.getId()));
 
             UpdateNoteRequest updateNoteRequest = new UpdateNoteRequest();
             updateNoteRequest.setText("마트에서 포도 구매");
 
             // when
+            System.out.println("Access Token: " + accessToken);
             ResultActions actions =
                     mockMvc.perform(
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/note/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
@@ -627,11 +816,11 @@ public class ContentIntegrationTest {
         public void updateTextAndCategory() throws Exception {
 
             // given
-            Category fromCategory = testUtils.saveCategory("ToDo List");
-            Category toCategory = testUtils.saveCategory("ToDo");
+            Category fromCategory = testUtils.saveCategory("ToDo List", testUser);
+            Category toCategory = testUtils.saveCategory("ToDo", testUser);
 
             String text = "마트에서 사과 구매";
-            Content savedContent = testUtils.saveNote(text, fromCategory);
+            Content savedContent = testUtils.saveNote(text, fromCategory, testUser);
 
             UpdateNoteRequest updateNoteRequest = new UpdateNoteRequest();
             updateNoteRequest.setText("마트에서 포도 구매");
@@ -643,6 +832,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/note/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
@@ -657,11 +847,11 @@ public class ContentIntegrationTest {
         public void updateWithoutText() throws Exception {
 
             // given
-            Category fromCategory = testUtils.saveCategory("ToDo List");
-            Category toCategory = testUtils.saveCategory("ToDo");
+            Category fromCategory = testUtils.saveCategory("ToDo List", testUser);
+            Category toCategory = testUtils.saveCategory("ToDo", testUser);
 
             String text = "마트에서 사과 구매";
-            Content savedContent = testUtils.saveNote(text, fromCategory);
+            Content savedContent = testUtils.saveNote(text, fromCategory, testUser);
 
             UpdateNoteRequest updateNoteRequest = new UpdateNoteRequest();
             updateNoteRequest.setText("");
@@ -673,10 +863,27 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/note/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header("Authorizations", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
             actions.andExpect(status().isBadRequest());
         }
+    }
+
+    private static String generateAccessToken(String socialId, String key, long expiredTimesMs) {
+        Claims claims = Jwts.claims();
+        claims.put("socialId", socialId);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간
+                .setExpiration(new Date(System.currentTimeMillis() + expiredTimesMs)) // 만료시간
+                .signWith(getKey(key), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    private static Key getKey(String key) {
+        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
