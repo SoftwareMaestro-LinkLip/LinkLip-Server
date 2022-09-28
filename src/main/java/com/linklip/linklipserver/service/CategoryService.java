@@ -10,6 +10,7 @@ import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
+import com.linklip.linklipserver.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CategoryService {
+    private final UserRepository userRepository;
     private final ContentRepository contentRepository;
     private final CategoryRepository categoryRepository;
 
