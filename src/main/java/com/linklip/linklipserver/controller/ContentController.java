@@ -2,6 +2,7 @@ package com.linklip.linklipserver.controller;
 
 import static com.linklip.linklipserver.constant.SuccessResponse.*;
 
+import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.content.*;
@@ -32,10 +33,10 @@ public class ContentController {
     @ApiResponses({@ApiResponse(code = 201, message = "링크 저장 완료")})
     @PostMapping("/v1/link")
     public ResponseEntity<?> saveLinkV1(
-            @RequestBody @Valid SaveLinkRequest request, @AuthenticationPrincipal Long userId) {
+            @RequestBody @Valid SaveLinkRequest request, @AuthenticationPrincipal User user) {
 
         // 유저 접근 방법
-        System.out.println("userId: " + userId);
+        System.out.println("user: " + user);
         contentService.saveLinkContent(request);
 
         return new ResponseEntity<>(
