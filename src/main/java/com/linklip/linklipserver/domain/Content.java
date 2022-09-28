@@ -20,6 +20,10 @@ public abstract class Content extends JpaBaseDomain {
     @Column(name = "content_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
     @Column(insertable = false, updatable = false) // 읽기 전용으로 선언
     private String type;
 
@@ -32,6 +36,10 @@ public abstract class Content extends JpaBaseDomain {
 
     public void updateCategory(Category category) {
         this.category = category;
+    }
+
+    public void updateOwner(User owner) {
+        this.owner = owner;
     }
 
     public void delete() {

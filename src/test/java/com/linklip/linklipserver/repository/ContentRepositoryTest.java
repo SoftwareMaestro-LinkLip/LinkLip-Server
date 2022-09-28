@@ -2,10 +2,7 @@ package com.linklip.linklipserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.linklip.linklipserver.domain.Category;
-import com.linklip.linklipserver.domain.Content;
-import com.linklip.linklipserver.domain.Link;
-import com.linklip.linklipserver.domain.Note;
+import com.linklip.linklipserver.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,6 +18,7 @@ import org.springframework.data.domain.Sort;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스에 테스트
 class ContentRepositoryTest {
 
+    @Autowired private UserRepository userRepository;
     @Autowired private ContentRepository contentRepository;
     @Autowired private CategoryRepository categoryRepository;
 
@@ -92,10 +90,27 @@ class ContentRepositoryTest {
 
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
         Category category;
+        User user1;
+        User user2;
 
         // 각 test 시작 이전에 실행
         @BeforeEach
         public void createContent() {
+
+            user1 =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            user2 =
+                    User.builder()
+                            .nickName("Team neighbor")
+                            .socialId("GOOGLE_456456456")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(user1);
+            userRepository.save(user2);
 
             category = Category.builder().name("활동").build();
             categoryRepository.save(category);
@@ -108,6 +123,7 @@ class ContentRepositoryTest {
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
                             .category(category)
+                            .owner(user1)
                             .build();
             Content content2 =
                     Link.builder()
@@ -117,10 +133,22 @@ class ContentRepositoryTest {
                             .title("멋쟁이 사자처럼")
                             .text("멋쟁이 사자처럼 7기 연수생 여러분...")
                             .category(category)
+                            .owner(user2)
+                            .build();
+            Content content3 =
+                    Link.builder()
+                            .linkUrl("https://www.swmaestro.org/linklip")
+                            .linkImg(
+                                    "https://swmaestro.org/static/sw/renewal/images/common/logo_200.png")
+                            .title("링클립 화이팅!!!")
+                            .text("링클립 화이팅팅팅~~~")
+                            .category(category)
+                            .owner(user1)
                             .build();
 
             contentRepository.save(content1);
             contentRepository.save(content2);
+            contentRepository.save(content3);
         }
 
         @Nested
@@ -133,7 +161,9 @@ class ContentRepositoryTest {
 
                 // when
                 Long categoryId = category.getId();
-                Page<Content> page = contentRepository.findByCategory(categoryId, pageRequest);
+                Page<Content> page =
+                        contentRepository.findByCategoryAndOwner(
+                                categoryId, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(2);
@@ -147,7 +177,8 @@ class ContentRepositoryTest {
                 Long categoryId = category.getId();
                 String term = "소프트";
                 Page<Content> page =
-                        contentRepository.findByCategoryAndTerm(categoryId, term, pageRequest);
+                        contentRepository.findByCategoryAndTermAndOwner(
+                                categoryId, term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(1);
@@ -161,7 +192,8 @@ class ContentRepositoryTest {
                 Long categoryId = category.getId();
                 String term = "웨어 마에";
                 Page<Content> page =
-                        contentRepository.findByCategoryAndTerm(categoryId, term, pageRequest);
+                        contentRepository.findByCategoryAndTermAndOwner(
+                                categoryId, term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(1);
@@ -178,12 +210,14 @@ class ContentRepositoryTest {
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 13기 연수생 여러분...")
                                 .category(category)
+                                .owner(user1)
                                 .build();
                 Content content2 =
                         Link.builder()
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 12기 연수생 여러분...")
+                                .owner(user1)
                                 .build();
 
                 contentRepository.save(content1);
@@ -193,7 +227,8 @@ class ContentRepositoryTest {
                 Long categoryId = category.getId();
                 String term = "13";
                 Page<Content> page =
-                        contentRepository.findByCategoryAndTerm(categoryId, term, pageRequest);
+                        contentRepository.findByCategoryAndTermAndOwner(
+                                categoryId, term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(2);
@@ -207,7 +242,8 @@ class ContentRepositoryTest {
                 Long categoryId = category.getId();
                 String term = "1기";
                 Page<Content> page =
-                        contentRepository.findByCategoryAndTerm(categoryId, term, pageRequest);
+                        contentRepository.findByCategoryAndTermAndOwner(
+                                categoryId, term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(0);
@@ -226,7 +262,8 @@ class ContentRepositoryTest {
                 String term = "소프트";
 
                 // when
-                Page<Content> page = contentRepository.findByTerm(term, pageRequest);
+                Page<Content> page =
+                        contentRepository.findByTermAndOwner(term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(1);
@@ -240,7 +277,8 @@ class ContentRepositoryTest {
                 String term = "웨어 마에";
 
                 // when
-                Page<Content> page = contentRepository.findByTerm(term, pageRequest);
+                Page<Content> page =
+                        contentRepository.findByTermAndOwner(term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(1);
@@ -251,11 +289,12 @@ class ContentRepositoryTest {
             public void findContentByNullInTerm() throws Exception {
 
                 // given
-                Content content2 = Link.builder().linkUrl("https://www.swmaestro.org/").build();
-                contentRepository.save(content2);
+                Content content =
+                        Link.builder().linkUrl("https://www.swmaestro.org/").owner(user1).build();
+                contentRepository.save(content);
 
                 // when
-                Page<Content> page = contentRepository.findAll(pageRequest);
+                Page<Content> page = contentRepository.findAllByOwner(pageRequest, user1);
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(3);
@@ -269,7 +308,8 @@ class ContentRepositoryTest {
                 String term = "1기";
 
                 // when
-                Page<Content> page = contentRepository.findByTerm(term, pageRequest);
+                Page<Content> page =
+                        contentRepository.findByTermAndOwner(term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(0);
@@ -285,6 +325,7 @@ class ContentRepositoryTest {
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                                .owner(user1)
                                 .build();
                 contentRepository.save(content2);
 
@@ -293,13 +334,15 @@ class ContentRepositoryTest {
                                 .linkUrl("https://www.swmaestro.org/")
                                 .title("소프트웨어 마에스트로")
                                 .text("소프트웨어 마에스트로 12기 연수생 여러분...")
+                                .owner(user1)
                                 .build();
                 contentRepository.save(content3);
 
                 String term = "13";
 
                 // when
-                Page<Content> page = contentRepository.findByTerm(term, pageRequest);
+                Page<Content> page =
+                        contentRepository.findByTermAndOwner(term, pageRequest, user1.getId());
 
                 // then
                 assertThat(page.getContent().size()).isEqualTo(2);
@@ -316,6 +359,7 @@ class ContentRepositoryTest {
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .owner(user1)
                             .build();
             contentRepository.save(content2);
 
@@ -324,6 +368,7 @@ class ContentRepositoryTest {
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .owner(user1)
                             .build();
             contentRepository.save(content3);
 
@@ -332,6 +377,7 @@ class ContentRepositoryTest {
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 13기 연수생 여러분...")
+                            .owner(user1)
                             .build();
             contentRepository.save(content4);
 
@@ -339,10 +385,12 @@ class ContentRepositoryTest {
 
             // when
             pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id"));
-            Page<Content> page1 = contentRepository.findByTerm(term, pageRequest);
+            Page<Content> page1 =
+                    contentRepository.findByTermAndOwner(term, pageRequest, user1.getId());
 
             pageRequest = PageRequest.of(1, 3, Sort.by(Sort.Direction.DESC, "id"));
-            Page<Content> page2 = contentRepository.findByTerm(term, pageRequest);
+            Page<Content> page2 =
+                    contentRepository.findByTermAndOwner(term, pageRequest, user1.getId());
 
             // then
             assertThat(page1.getContent().size()).isEqualTo(3); // 첫번째 페이지 결과
@@ -359,16 +407,25 @@ class ContentRepositoryTest {
         public void getContent() throws Exception {
 
             // given
+            User user1 =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(user1);
+
             Content content =
                     Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
                             .title("소프트웨어 마에스트로")
                             .text("소프트웨어 마에스트로 12기 연수생 여러분...")
+                            .owner(user1)
                             .build();
             contentRepository.save(content);
 
             // when
-            Content result = contentRepository.findById(content.getId()).get();
+            Content result = contentRepository.findByIdAndOwner(content.getId(), user1).get();
 
             // then
             assertThat(result.getId()).isEqualTo(content.getId());
@@ -379,10 +436,17 @@ class ContentRepositoryTest {
     @DisplayName("메모 저장 테스트")
     class SaveNoteContent {
 
+        User user1 =
+                User.builder()
+                        .nickName("Team LinkLip")
+                        .socialId("GOOGLE_123123123")
+                        .socialType(Social.GOOGLE)
+                        .build();
+
         @Test
         @DisplayName("카테고리 설정 없이 메모 저장")
         public void saveOnlyText() {
-            Content content = Note.builder().text("TOPCIT 지원 기간 9월 중순까지!!").build();
+            Content content = Note.builder().text("TOPCIT 지원 기간 9월 중순까지!!").owner(user1).build();
 
             Content savedContent = contentRepository.save(content);
             assertThat(savedContent).isEqualTo(content);
@@ -395,7 +459,11 @@ class ContentRepositoryTest {
             Category savedCategory = categoryRepository.save(category);
 
             Content content =
-                    Note.builder().text("TOPCIT 지원 기간 9월 중순까지!!").category(savedCategory).build();
+                    Note.builder()
+                            .text("TOPCIT 지원 기간 9월 중순까지!!")
+                            .category(savedCategory)
+                            .owner(user1)
+                            .build();
 
             Content savedContent = contentRepository.save(content);
             assertThat(savedContent).isEqualTo(content);

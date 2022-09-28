@@ -2,6 +2,7 @@ package com.linklip.linklipserver.controller;
 
 import static com.linklip.linklipserver.constant.SuccessResponse.*;
 
+import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.dto.ServerResponse;
 import com.linklip.linklipserver.dto.ServerResponseWithData;
 import com.linklip.linklipserver.dto.category.CategoryDto;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Api(value = "CategoryController")
@@ -31,9 +33,10 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 생성 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "카테고리 생성 완료")})
     @PostMapping("/v1")
-    public ResponseEntity<?> createCategoryV1(@RequestBody @Valid CreateCategoryRequest request) {
+    public ResponseEntity<?> createCategoryV1(
+            @RequestBody @Valid CreateCategoryRequest request, @AuthenticationPrincipal User user) {
 
-        categoryService.createCategory(request);
+        categoryService.createCategory(request, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
@@ -47,9 +50,9 @@ public class CategoryController {
     @ApiResponses({@ApiResponse(code = 200, message = "카테고리 조회 완료")})
     @GetMapping("/v1")
     @ResponseBody
-    public ResponseEntity<?> getCategoryV1() {
+    public ResponseEntity<?> getCategoryV1(@AuthenticationPrincipal User user) {
 
-        List<CategoryDto> allCategory = categoryService.findAllCategory();
+        List<CategoryDto> allCategory = categoryService.findAllCategoryByOwner(user);
 
         return new ResponseEntity<>(
                 new ServerResponseWithData(
@@ -65,9 +68,11 @@ public class CategoryController {
     @PatchMapping("/v1/{categoryId}")
     @ResponseBody
     public ResponseEntity<?> updateCategoryV1(
-            @PathVariable Long categoryId, @RequestBody @Valid UpdateCategoryRequest request) {
+            @PathVariable Long categoryId,
+            @RequestBody @Valid UpdateCategoryRequest request,
+            @AuthenticationPrincipal User user) {
 
-        categoryService.updateCategory(categoryId, request);
+        categoryService.updateCategory(categoryId, request, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
@@ -81,9 +86,10 @@ public class CategoryController {
     @ApiResponses({@ApiResponse(code = 200, message = "카테고리 삭제 완료")})
     @DeleteMapping("/v1/{categoryId}")
     @ResponseBody
-    public ResponseEntity<?> deleteCategoryV1(@PathVariable Long categoryId) {
+    public ResponseEntity<?> deleteCategoryV1(
+            @PathVariable Long categoryId, @AuthenticationPrincipal User user) {
 
-        categoryService.releaseCategory(categoryId);
+        categoryService.releaseCategory(categoryId, user);
 
         return new ResponseEntity<>(
                 new ServerResponse(
