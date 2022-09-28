@@ -3,6 +3,7 @@ package com.linklip.linklipserver.config;
 import com.linklip.linklipserver.config.filter.JwtTokenFilter;
 import com.linklip.linklipserver.config.oauth.OAuth2SuccessHandler;
 import com.linklip.linklipserver.config.oauth.OAuth2UserService;
+import com.linklip.linklipserver.service.UserService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록
 public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserService userService;
     private final OAuth2UserService oauth2UserService;
     private final OAuth2SuccessHandler oauth2SuccessHandler;
 
@@ -46,7 +48,8 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(oauth2SuccessHandler)
                 .and()
                 .addFilterBefore(
-                        new JwtTokenFilter(key), UsernamePasswordAuthenticationFilter.class)
+                        new JwtTokenFilter(userService, key),
+                        UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
     }
