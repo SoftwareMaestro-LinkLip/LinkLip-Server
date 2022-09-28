@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser
 public class ContentIntegrationTest {
 
     @Autowired MockMvc mockMvc;
@@ -74,11 +72,7 @@ public class ContentIntegrationTest {
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = generateAccessToken(socialId, key, expiredTime);
 
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
@@ -106,7 +100,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -127,7 +121,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -149,7 +143,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -171,7 +165,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("categoryId", String.valueOf(categoryId))
                                         .param("term", term)
                                         .param("page", "0")
@@ -197,7 +191,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -217,7 +211,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -237,7 +231,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("term", term)
                                         .param("page", "0")
                                         .param("size", "20"));
@@ -256,7 +250,7 @@ public class ContentIntegrationTest {
                         mockMvc.perform(
                                 get("/content/v1")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .header("Authorizations", "Bearer " + accessToken)
+                                        .header("Authorization", "Bearer " + accessToken)
                                         .param("page", "0")
                                         .param("size", "20"));
 
@@ -280,7 +274,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .param("page", "1")
                                     .param("size", "3"));
 
@@ -340,7 +334,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk())
@@ -358,7 +352,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -405,7 +399,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isOk());
@@ -435,7 +429,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isOk());
@@ -466,7 +460,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/link/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateLinkRequest)));
 
             actions.andExpect(status().isBadRequest());
@@ -511,7 +505,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             delete("/content/v1/{contentId}", content.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk());
@@ -537,7 +531,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             delete("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -592,7 +586,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .param("page", "0")
                                     .param("size", "20"));
 
@@ -611,7 +605,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .param("categoryId", String.valueOf(categoryId))
                                     .param("page", "0")
                                     .param("size", "20"));
@@ -634,7 +628,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .param("categoryId", String.valueOf(categoryId1))
                                     .param("term", String.valueOf(term))
                                     .param("page", "0")
@@ -644,7 +638,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .param("categoryId", String.valueOf(categoryId2))
                                     .param("term", String.valueOf(term))
                                     .param("page", "0")
@@ -669,7 +663,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .param("term", String.valueOf(term))
                                     .param("page", "0")
                                     .param("size", "20"));
@@ -690,7 +684,7 @@ public class ContentIntegrationTest {
                     mockMvc.perform(
                             get("/content/v1/{contentId}", contentId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
             // then
             actions.andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content.id").value(contentId))
@@ -733,7 +727,7 @@ public class ContentIntegrationTest {
             ResultActions actions =
                     mockMvc.perform(
                             get("/content/v1/{contentId}", contentId)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk())
@@ -750,7 +744,7 @@ public class ContentIntegrationTest {
             ResultActions actions =
                     mockMvc.perform(
                             get("/content/v1/{contentId}", contentId)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isBadRequest());
@@ -803,7 +797,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/note/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
@@ -832,7 +826,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/note/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then
@@ -863,7 +857,7 @@ public class ContentIntegrationTest {
                             MockMvcRequestBuilders.patch(
                                             "/content/v1/note/{contentId}", savedContent.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateNoteRequest)));
 
             // then

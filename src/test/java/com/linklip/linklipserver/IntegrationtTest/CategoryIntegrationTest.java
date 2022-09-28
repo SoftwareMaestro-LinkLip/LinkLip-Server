@@ -14,6 +14,7 @@ import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
 import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
+import com.linklip.linklipserver.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,6 +24,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,7 +33,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +40,11 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser
 public class CategoryIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
 
+    @Autowired private UserRepository userRepository;
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private ContentRepository contentRepository;
 
@@ -52,21 +53,30 @@ public class CategoryIntegrationTest {
     @Value("${jwt.secret-key}")
     private String key;
 
-    String socialId = "GOOGLE_123123123";
-    User testUser =
-            User.builder()
-                    .nickName("Team LinkLip")
-                    .socialId("GOOGLE_123123123")
-                    .socialType(Social.GOOGLE)
-                    .build();
+    @Value("${jwt.token-expired-time-ms}")
+    private Long expiredTime;
 
-    String accessToken =
-            generateAccessToken(
-                    socialId, "software-maestro-13.linklip-application-2022.secret-key", 7200000);
+    User testUser;
+    String accessToken;
 
     @Nested
     @DisplayName("카테고리 생성 통합테스트")
     class CreateCategoryIntegrationTest {
+
+        @BeforeEach
+        public void createUser() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken = generateAccessToken(socialId, key, expiredTime);
+        }
 
         @Test
         @DisplayName("일반적인 카테고리 명인 경우 201")
@@ -78,7 +88,7 @@ public class CategoryIntegrationTest {
             mockMvc.perform(
                             post("/category/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(createCategoryRequest)))
                     .andExpect(status().isCreated());
         }
@@ -93,7 +103,7 @@ public class CategoryIntegrationTest {
             mockMvc.perform(
                             post("/category/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(createCategoryRequest)))
                     .andExpect(status().isCreated());
         }
@@ -107,7 +117,7 @@ public class CategoryIntegrationTest {
             mockMvc.perform(
                             post("/category/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(createCategoryRequest)))
                     .andExpect(status().isBadRequest());
         }
@@ -121,7 +131,7 @@ public class CategoryIntegrationTest {
             mockMvc.perform(
                             post("/category/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(createCategoryRequest)))
                     .andExpect(status().isBadRequest());
         }
@@ -130,13 +140,29 @@ public class CategoryIntegrationTest {
     @Nested
     @DisplayName("카테고리 조회 통합테스트")
     class FindCategoryIntegrationTest {
+
+        @BeforeEach
+        public void createUser() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken = generateAccessToken(socialId, key, expiredTime);
+        }
+
         @Test
         @DisplayName("카테고리 조회에 성공한 경우 200")
         public void findCategory() throws Exception {
             mockMvc.perform(
                             get("/category/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken))
+                                    .header("Authorization", "Bearer " + accessToken))
                     .andExpect(status().isOk());
         }
     }
@@ -144,6 +170,22 @@ public class CategoryIntegrationTest {
     @Nested
     @DisplayName("카테고리 수정 통합테스트")
     class UpdateCategoryIntegrationTest {
+
+        @BeforeEach
+        public void createUser() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken = generateAccessToken(socialId, key, expiredTime);
+        }
+
         @Test
         @DisplayName("일반적인 카테고리명 수정")
         public void updateCategory() throws Exception {
@@ -160,7 +202,7 @@ public class CategoryIntegrationTest {
                     mockMvc.perform(
                             patch("/category/v1/{categoryId}", categoryId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateCategoryRequest)));
 
             // then
@@ -184,7 +226,7 @@ public class CategoryIntegrationTest {
                     mockMvc.perform(
                             patch("/category/v1/{categoryId}", categoryId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateCategoryRequest)));
 
             // then
@@ -207,7 +249,7 @@ public class CategoryIntegrationTest {
                     mockMvc.perform(
                             patch("/category/v1/{categoryId}", categoryId)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken)
+                                    .header("Authorization", "Bearer " + accessToken)
                                     .content(testUtils.asJsonString(updateCategoryRequest)));
 
             // then
@@ -218,6 +260,22 @@ public class CategoryIntegrationTest {
     @Nested
     @DisplayName("카테고리 삭제 통합테스트")
     class DeleteCategoryIntegrationTest {
+
+        @BeforeEach
+        public void createUser() {
+
+            String socialId = "GOOGLE_123123123";
+            testUser =
+                    User.builder()
+                            .nickName("Team LinkLip")
+                            .socialId("GOOGLE_123123123")
+                            .socialType(Social.GOOGLE)
+                            .build();
+            userRepository.save(testUser);
+
+            accessToken = generateAccessToken(socialId, key, expiredTime);
+        }
+
         @Test
         @DisplayName("컨텐츠가 존재하지 않는 카테고리 수정")
         public void deleteEmptyCategory() throws Exception {
@@ -230,7 +288,7 @@ public class CategoryIntegrationTest {
                     mockMvc.perform(
                             delete("/category/v1/{categoryId}", category1.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk());
@@ -258,7 +316,7 @@ public class CategoryIntegrationTest {
                     mockMvc.perform(
                             delete("/category/v1/{categoryId}", category1.getId())
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .header("Authorizations", "Bearer " + accessToken));
+                                    .header("Authorization", "Bearer " + accessToken));
 
             // then
             actions.andExpect(status().isOk());
