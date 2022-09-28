@@ -15,13 +15,7 @@ import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import com.linklip.linklipserver.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Date;
+import com.linklip.linklipserver.util.JwtTokenUtils;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +47,7 @@ public class CategoryIntegrationTest {
     @Value("${jwt.secret-key}")
     private String key;
 
-    @Value("${jwt.token-expired-time-ms}")
+    @Value("${jwt.access-token-expired-time-ms}")
     private Long expiredTime;
 
     User testUser;
@@ -70,12 +64,12 @@ public class CategoryIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken = generateAccessToken(socialId, key, expiredTime);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -148,12 +142,12 @@ public class CategoryIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken = generateAccessToken(socialId, key, expiredTime);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -178,12 +172,12 @@ public class CategoryIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken = generateAccessToken(socialId, key, expiredTime);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -268,12 +262,12 @@ public class CategoryIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken = generateAccessToken(socialId, key, expiredTime);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -332,21 +326,5 @@ public class CategoryIntegrationTest {
             assertThat(findContent2.get().getCategory()).isEqualTo(null);
             assertThat(findContent3.get().getCategory().getId()).isEqualTo(category2.getId());
         }
-    }
-
-    private static String generateAccessToken(String socialId, String key, long expiredTimesMs) {
-        Claims claims = Jwts.claims();
-        claims.put("socialId", socialId);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간
-                .setExpiration(new Date(System.currentTimeMillis() + expiredTimesMs)) // 만료시간
-                .signWith(getKey(key), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    private static Key getKey(String key) {
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

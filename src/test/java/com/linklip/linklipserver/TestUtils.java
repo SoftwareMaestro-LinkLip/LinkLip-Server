@@ -69,20 +69,4 @@ public class TestUtils {
             throw new RuntimeException(e);
         }
     }
-
-    public String generateAccessToken(String socialId, String key, long expiredTimesMs) {
-        Claims claims = Jwts.claims();
-        claims.put("socialId", socialId);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간
-                .setExpiration(new Date(System.currentTimeMillis() + expiredTimesMs)) // 만료시간
-                .signWith(getKey(key), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    private static Key getKey(String key) {
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
 }

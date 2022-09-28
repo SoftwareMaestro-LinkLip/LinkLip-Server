@@ -1,5 +1,7 @@
 package com.linklip.linklipserver.service;
 
+import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_USER_ID;
+
 import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.exception.InvalidIdException;
 import com.linklip.linklipserver.repository.UserRepository;
@@ -14,9 +16,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User findUser(String userId) {
+    public User findUser(Long userId) {
         return userRepository
-                .findBySocialId(userId)
-                .orElseThrow(() -> new InvalidIdException("존재하지 않는 userId입니다"));
+                .findById(userId)
+                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_USER_ID.getMessage()));
     }
 }

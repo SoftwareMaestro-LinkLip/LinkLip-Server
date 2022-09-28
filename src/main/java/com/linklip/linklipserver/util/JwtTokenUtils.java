@@ -1,19 +1,18 @@
-package com.linklip.linklipserver.config.util;
+package com.linklip.linklipserver.util;
 
-import com.linklip.linklipserver.config.auth.PrincipalDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import org.springframework.security.core.Authentication;
 
 public class JwtTokenUtils {
 
-    public static String getSocialId(String token, String key) {
-        return extractClaims(token, key).get("socialId", String.class);
+    public static Long getUserId(String token, String key) {
+        return extractClaims(token, key).get("userId", Long.class);
     }
 
     public static boolean isExpired(String token, String key) {
@@ -22,19 +21,21 @@ public class JwtTokenUtils {
     }
 
     public static Claims extractClaims(String token, String key) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey(key))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getKey(key))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
-    public static String generateToken(
-            Authentication authentication, String key, long expiredTimesMs) {
+    public static String generateToken(Long userId, String key, long expiredTimesMs) {
 
-        PrincipalDetails oAuth2User = (PrincipalDetails) authentication.getPrincipal();
         Claims claims = Jwts.claims();
-        claims.put("socialId", oAuth2User.getSocialId());
+        claims.put("userId", userId);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간

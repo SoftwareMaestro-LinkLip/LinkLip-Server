@@ -12,6 +12,7 @@ import com.linklip.linklipserver.dto.content.UpdateLinkRequest;
 import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.repository.ContentRepository;
 import com.linklip.linklipserver.repository.UserRepository;
+import com.linklip.linklipserver.util.JwtTokenUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -48,7 +49,7 @@ public class ContentIntegrationTest {
     @Value("${jwt.secret-key}")
     private String key;
 
-    @Value("${jwt.token-expired-time-ms}")
+    @Value("${jwt.access-token-expired-time-ms}")
     private Long expiredTime;
 
     User testUser;
@@ -67,12 +68,12 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken = generateAccessToken(socialId, key, expiredTime);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
 
             String url1 = "https://www.swmaestro.org";
             String url2 = "https://www.naver.com";
@@ -297,16 +298,12 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
 
             // Link
             String url1 = "https://www.swmaestro.org";
@@ -369,16 +366,12 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -478,16 +471,12 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -552,16 +541,12 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
 
             String text1 = "9월 11일에 소망팀 모의면접 (OS, DB)";
             String text2 = "디자이너 외주 마감일자 확정 필요";
@@ -705,16 +690,13 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
+
             note1 = testUtils.saveNote("테스트 메모 1", null, testUser);
         }
 
@@ -761,16 +743,12 @@ public class ContentIntegrationTest {
             testUser =
                     User.builder()
                             .nickName("Team LinkLip")
-                            .socialId("GOOGLE_123123123")
+                            .socialId(socialId)
                             .socialType(Social.GOOGLE)
                             .build();
             userRepository.save(testUser);
 
-            accessToken =
-                    generateAccessToken(
-                            socialId,
-                            "software-maestro-13.linklip-application-2022.secret-key",
-                            7200000);
+            accessToken = JwtTokenUtils.generateToken(testUser.getId(), key, expiredTime);
         }
 
         @Test
@@ -863,21 +841,5 @@ public class ContentIntegrationTest {
             // then
             actions.andExpect(status().isBadRequest());
         }
-    }
-
-    private static String generateAccessToken(String socialId, String key, long expiredTimesMs) {
-        Claims claims = Jwts.claims();
-        claims.put("socialId", socialId);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행시간
-                .setExpiration(new Date(System.currentTimeMillis() + expiredTimesMs)) // 만료시간
-                .signWith(getKey(key), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    private static Key getKey(String key) {
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
