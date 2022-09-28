@@ -15,8 +15,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private final User user;
 
-    public String getSocialId() {
-        return user.getSocialId();
+    public Long getUserId() {
+        return user.getId();
     }
 
     @Override

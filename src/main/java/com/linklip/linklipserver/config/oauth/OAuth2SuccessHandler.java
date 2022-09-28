@@ -1,7 +1,8 @@
 package com.linklip.linklipserver.config.oauth;
 
-import com.linklip.linklipserver.config.util.JwtTokenUtils;
-import com.linklip.linklipserver.repository.UserRepository;
+import com.linklip.linklipserver.config.auth.PrincipalDetails;
+import com.linklip.linklipserver.service.TokenService;
+import com.linklip.linklipserver.util.JwtTokenUtils;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,30 +20,46 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private final TokenService tokenService;
+
     @Value("${jwt.target-url}")
     private String targetUrl;
 
     @Value("${jwt.secret-key}")
     private String key;
 
-    @Value("${jwt.token-expired-time-ms}")
-    private Long expiredTime;
+    @Value("${jwt.access-token-expired-time-ms}")
+    private Long accessTokenExpiredTime;
 
-    private final UserRepository userRepository;
+    @Value("${jwt.refresh-token-expired-time-ms}")
+    private Long refreshTokenExpiredTime;
 
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws ServletException, IOException {
 
-        String token = JwtTokenUtils.generateToken(authentication, key, expiredTime);
+        PrincipalDetails oAuth2User = (PrincipalDetails) authentication.getPrincipal();
+        Long userId = oAuth2User.getUserId();
 
-        String url = makeRedirectUrl(targetUrl, token);
+        String accessToken = JwtTokenUtils.generateToken(userId, key, accessTokenExpiredTime);
+        String refreshToken = generateRefreshToken(userId);
 
+        String url = makeRedirectUrl(targetUrl, accessToken, refreshToken);
         getRedirectStrategy().sendRedirect(request, response, url);
     }
 
-    private String makeRedirectUrl(String targetUrl, String token) {
-        return UriComponentsBuilder.fromUriString(targetUrl + token).build().toUriString();
+    private String generateRefreshToken(Long userId) {
+        String refreshToken = JwtTokenUtils.generateToken(userId, key, refreshTokenExpiredTime);
+        tokenService.saveRefreshToken(userId, refreshToken);
+        return refreshToken;
+    }
+
+    private String makeRedirectUrl(String targetUrl, String accessToken, String refreshToken) {
+        return UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
+                .build()
+                .toUriString();
     }
 }

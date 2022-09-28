@@ -1,8 +1,10 @@
 package com.linklip.linklipserver.config;
 
+import static com.linklip.linklipserver.constant.ErrorResponse.EXPIRED_ACCESS_TOKEN;
 import static com.linklip.linklipserver.constant.ErrorResponse.INVALID_TOKEN;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.linklip.linklipserver.constant.ErrorResponse;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,14 +25,26 @@ public class CustomAuthenticationEntryPoint
             AuthenticationException authException)
             throws IOException, ServletException {
 
+        String exception = (String) request.getAttribute("exception");
+        if (exception != null && exception.equals(EXPIRED_ACCESS_TOKEN.getCode())) {
+            setResponse(response, EXPIRED_ACCESS_TOKEN);
+            return;
+        }
+
+        setResponse(response, INVALID_TOKEN);
+    }
+
+    private void setResponse(HttpServletResponse response, ErrorResponse error) throws IOException {
+
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", INVALID_TOKEN.getStatus());
-        body.put("success", INVALID_TOKEN.getSuccess());
-        body.put("message", INVALID_TOKEN.getMessage());
+
+        body.put("status", error.getStatus());
+        body.put("success", error.getSuccess());
+        body.put("message", error.getMessage());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
-        response.setStatus(INVALID_TOKEN.getStatus());
+        response.setStatus(error.getStatus());
         String result = objectMapper.writeValueAsString(body);
         response.getWriter().write(result);
     }
