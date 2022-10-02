@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.linklip.linklipserver.TestUtils;
 import com.linklip.linklipserver.domain.Category;
-import com.linklip.linklipserver.domain.content.Content;
 import com.linklip.linklipserver.domain.Social;
 import com.linklip.linklipserver.domain.User;
+import com.linklip.linklipserver.domain.content.Content;
 import com.linklip.linklipserver.dto.category.CreateCategoryRequest;
 import com.linklip.linklipserver.dto.category.UpdateCategoryRequest;
 import com.linklip.linklipserver.repository.CategoryRepository;

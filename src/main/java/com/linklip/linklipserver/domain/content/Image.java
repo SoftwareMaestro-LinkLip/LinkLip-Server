@@ -23,5 +23,4 @@ public class Image extends Content {
         super.updateCategory(category);
         super.updateOwner(owner);
     }
-
 }

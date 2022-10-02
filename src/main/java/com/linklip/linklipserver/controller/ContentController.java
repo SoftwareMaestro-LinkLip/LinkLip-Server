@@ -182,22 +182,22 @@ public class ContentController {
                 HttpStatus.OK);
     }
 
-  @ApiOperation(value = "사진 저장 API v1")
-  @ApiResponses({@ApiResponse(code = 201, message = "사진 저장 완료")})
-  @PostMapping("/v1/image")
-  public ResponseEntity<?> saveImageV1(
-      @RequestPart @Valid SaveImageRequest request,
-      @RequestPart MultipartFile imageFile,
-      @AuthenticationPrincipal User user)
-      throws IOException {
+    @ApiOperation(value = "사진 저장 API v1")
+    @ApiResponses({@ApiResponse(code = 201, message = "사진 저장 완료")})
+    @PostMapping("/v1/image")
+    public ResponseEntity<?> saveImageV1(
+            @RequestPart @Valid SaveImageRequest request,
+            @RequestPart MultipartFile imageFile,
+            @AuthenticationPrincipal User user)
+            throws IOException {
 
         contentService.saveImageContent(request, imageFile, user);
 
         return new ResponseEntity<>(
-            new ServerResponse(
-                SAVE_IMAGE_SUCCESS.getStatus(),
-                SAVE_IMAGE_SUCCESS.getSuccess(),
-                SAVE_IMAGE_SUCCESS.getMessage()),
-            HttpStatus.CREATED);
+                new ServerResponse(
+                        SAVE_IMAGE_SUCCESS.getStatus(),
+                        SAVE_IMAGE_SUCCESS.getSuccess(),
+                        SAVE_IMAGE_SUCCESS.getMessage()),
+                HttpStatus.CREATED);
     }
 }

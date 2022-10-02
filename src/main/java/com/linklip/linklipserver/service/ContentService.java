@@ -196,23 +196,24 @@ public class ContentService {
     }
 
     @Transactional
-    public void saveImageContent(SaveImageRequest request, MultipartFile imageFile, User owner) throws IOException {
+    public void saveImageContent(SaveImageRequest request, MultipartFile imageFile, User owner)
+            throws IOException {
 
         Long categoryId = request.getCategoryId();
 
         Category category =
-            categoryId == null
-                ? null
-                : categoryRepository
-                    .findByIdAndOwner(categoryId, owner)
-                    .orElseThrow(
-                        () ->
-                            new InvalidIdException(
-                                NOT_EXSIT_CATEGORY_ID.getMessage()));
+                categoryId == null
+                        ? null
+                        : categoryRepository
+                                .findByIdAndOwner(categoryId, owner)
+                                .orElseThrow(
+                                        () ->
+                                                new InvalidIdException(
+                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
 
         String imageUrl = s3Upload.upload(imageFile);
         Content content =
-            Image.builder().imageUrl(imageUrl).category(category).owner(owner).build();
+                Image.builder().imageUrl(imageUrl).category(category).owner(owner).build();
         contentRepository.save(content);
     }
 }
