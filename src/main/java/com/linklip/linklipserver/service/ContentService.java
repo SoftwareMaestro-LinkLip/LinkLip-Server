@@ -3,6 +3,9 @@ package com.linklip.linklipserver.service;
 import static com.linklip.linklipserver.constant.ErrorResponse.*;
 
 import com.linklip.linklipserver.domain.*;
+import com.linklip.linklipserver.domain.content.Content;
+import com.linklip.linklipserver.domain.content.Link;
+import com.linklip.linklipserver.domain.content.Note;
 import com.linklip.linklipserver.dto.content.*;
 import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;

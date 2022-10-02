@@ -3,6 +3,9 @@ package com.linklip.linklipserver.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.linklip.linklipserver.domain.*;
+import com.linklip.linklipserver.domain.content.Content;
+import com.linklip.linklipserver.domain.content.Link;
+import com.linklip.linklipserver.domain.content.Note;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

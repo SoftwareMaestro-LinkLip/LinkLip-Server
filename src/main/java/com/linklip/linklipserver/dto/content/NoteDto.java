@@ -1,6 +1,6 @@
 package com.linklip.linklipserver.dto.content;
 
-import com.linklip.linklipserver.domain.Note;
+import com.linklip.linklipserver.domain.content.Note;
 import com.linklip.linklipserver.dto.category.CategoryDto;
 import lombok.Getter;
 

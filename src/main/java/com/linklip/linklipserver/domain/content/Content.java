@@ -1,5 +1,8 @@
-package com.linklip.linklipserver.domain;
+package com.linklip.linklipserver.domain.content;
 
+import com.linklip.linklipserver.domain.Category;
+import com.linklip.linklipserver.domain.JpaBaseDomain;
+import com.linklip.linklipserver.domain.User;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

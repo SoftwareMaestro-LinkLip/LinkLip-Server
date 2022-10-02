@@ -1,6 +1,6 @@
 package com.linklip.linklipserver.repository;
 
-import com.linklip.linklipserver.domain.Content;
+import com.linklip.linklipserver.domain.content.Content;
 import com.linklip.linklipserver.domain.User;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
