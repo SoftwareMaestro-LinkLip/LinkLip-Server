@@ -480,16 +480,21 @@ class ContentRepositoryTest {
     class SaveImageContent {
 
         User user1 =
-            User.builder()
-                .nickName("Team LinkLip")
-                .socialId("GOOGLE_123123123")
-                .socialType(Social.GOOGLE)
-                .build();
+                User.builder()
+                        .nickName("Team LinkLip")
+                        .socialId("GOOGLE_123123123")
+                        .socialType(Social.GOOGLE)
+                        .build();
 
         @Test
         @DisplayName("카테고리 설정 없이 사진 저장")
         public void saveOnlyImage() {
-            Content content = Image.builder().imageUrl("https://linklip-server-file-storage.s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-SWOT3.png").owner(user1).build();
+            Content content =
+                    Image.builder()
+                            .imageUrl(
+                                    "https://linklip-server-file-storage.s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-SWOT3.png")
+                            .owner(user1)
+                            .build();
             Content savedContent = contentRepository.save(content);
 
             assertThat(savedContent).isEqualTo(content);
@@ -501,11 +506,12 @@ class ContentRepositoryTest {
             Category category = Category.builder().name("시험 접수").build();
             Category savedCategory = categoryRepository.save(category);
             Content content =
-                Image.builder()
-                    .imageUrl("https://linklip-server-file-storage.s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-SWOT3.png")
-                    .category(savedCategory)
-                    .owner(user1)
-                    .build();
+                    Image.builder()
+                            .imageUrl(
+                                    "https://linklip-server-file-storage.s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-SWOT3.png")
+                            .category(savedCategory)
+                            .owner(user1)
+                            .build();
 
             Content savedContent = contentRepository.save(content);
 
