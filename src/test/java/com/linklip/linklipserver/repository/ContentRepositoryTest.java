@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,9 @@ class ContentRepositoryTest {
     @Autowired private UserRepository userRepository;
     @Autowired private ContentRepository contentRepository;
     @Autowired private CategoryRepository categoryRepository;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Nested
     @DisplayName("링크 저장 테스트")
@@ -492,7 +496,9 @@ class ContentRepositoryTest {
             Content content =
                     Image.builder()
                             .imageUrl(
-                                    "https://linklip-server-file-storage.s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-SWOT3.png")
+                                    "https://"
+                                            + bucket
+                                            + ".s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-test.png")
                             .owner(user1)
                             .build();
             Content savedContent = contentRepository.save(content);
@@ -508,7 +514,9 @@ class ContentRepositoryTest {
             Content content =
                     Image.builder()
                             .imageUrl(
-                                    "https://linklip-server-file-storage.s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-SWOT3.png")
+                                    "https://"
+                                            + bucket
+                                            + ".s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-test.png")
                             .category(savedCategory)
                             .owner(user1)
                             .build();
