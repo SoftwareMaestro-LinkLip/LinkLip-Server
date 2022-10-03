@@ -3,11 +3,16 @@ package com.linklip.linklipserver.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.linklip.linklipserver.domain.*;
+import com.linklip.linklipserver.domain.content.Content;
+import com.linklip.linklipserver.domain.content.Image;
+import com.linklip.linklipserver.domain.content.Link;
+import com.linklip.linklipserver.domain.content.Note;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
@@ -21,6 +26,9 @@ class ContentRepositoryTest {
     @Autowired private UserRepository userRepository;
     @Autowired private ContentRepository contentRepository;
     @Autowired private CategoryRepository categoryRepository;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Nested
     @DisplayName("링크 저장 테스트")
@@ -466,6 +474,55 @@ class ContentRepositoryTest {
                             .build();
 
             Content savedContent = contentRepository.save(content);
+            assertThat(savedContent).isEqualTo(content);
+            assertThat(savedContent.getCategory()).isEqualTo(savedCategory);
+        }
+    }
+
+    @Nested
+    @DisplayName("사진 저장 테스트")
+    class SaveImageContent {
+
+        User user1 =
+                User.builder()
+                        .nickName("Team LinkLip")
+                        .socialId("GOOGLE_123123123")
+                        .socialType(Social.GOOGLE)
+                        .build();
+
+        @Test
+        @DisplayName("카테고리 설정 없이 사진 저장")
+        public void saveOnlyImage() {
+            Content content =
+                    Image.builder()
+                            .imageUrl(
+                                    "https://"
+                                            + bucket
+                                            + ".s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-test.png")
+                            .owner(user1)
+                            .build();
+            Content savedContent = contentRepository.save(content);
+
+            assertThat(savedContent).isEqualTo(content);
+        }
+
+        @Test
+        @DisplayName("카테고리 설정하여 사진 저장")
+        public void saveImageWithCategory() {
+            Category category = Category.builder().name("시험 접수").build();
+            Category savedCategory = categoryRepository.save(category);
+            Content content =
+                    Image.builder()
+                            .imageUrl(
+                                    "https://"
+                                            + bucket
+                                            + ".s3.ap-northeast-2.amazonaws.com/1b4f69e3-56f3-4841-889a-7f1941b75e47-test.png")
+                            .category(savedCategory)
+                            .owner(user1)
+                            .build();
+
+            Content savedContent = contentRepository.save(content);
+
             assertThat(savedContent).isEqualTo(content);
             assertThat(savedContent.getCategory()).isEqualTo(savedCategory);
         }

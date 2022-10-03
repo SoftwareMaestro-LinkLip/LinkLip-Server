@@ -1,7 +1,7 @@
 package com.linklip.linklipserver.repository;
 
-import com.linklip.linklipserver.domain.Content;
 import com.linklip.linklipserver.domain.User;
+import com.linklip.linklipserver.domain.content.Content;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

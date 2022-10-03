@@ -2,6 +2,9 @@ package com.linklip.linklipserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linklip.linklipserver.domain.*;
+import com.linklip.linklipserver.domain.content.Content;
+import com.linklip.linklipserver.domain.content.Link;
+import com.linklip.linklipserver.domain.content.Note;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
 import com.linklip.linklipserver.repository.UserRepository;

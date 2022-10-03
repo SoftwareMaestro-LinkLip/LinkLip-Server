@@ -3,17 +3,23 @@ package com.linklip.linklipserver.service;
 import static com.linklip.linklipserver.constant.ErrorResponse.*;
 
 import com.linklip.linklipserver.domain.*;
+import com.linklip.linklipserver.domain.content.Content;
+import com.linklip.linklipserver.domain.content.Image;
+import com.linklip.linklipserver.domain.content.Link;
+import com.linklip.linklipserver.domain.content.Note;
 import com.linklip.linklipserver.dto.content.*;
 import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.exception.InvalidIdException;
 import com.linklip.linklipserver.repository.CategoryRepository;
 import com.linklip.linklipserver.repository.ContentRepository;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,6 +28,7 @@ public class ContentService {
 
     private final CategoryRepository categoryRepository;
     private final ContentRepository contentRepository;
+    private final S3Upload s3Upload;
 
     // 컨텐츠 저장
     @Transactional
@@ -186,5 +193,27 @@ public class ContentService {
                                                 new InvalidIdException(
                                                         NOT_EXSIT_CATEGORY_ID.getMessage()));
         ((Note) content).update(text, category);
+    }
+
+    @Transactional
+    public void saveImageContent(SaveImageRequest request, MultipartFile imageFile, User owner)
+            throws IOException {
+
+        Long categoryId = request.getCategoryId();
+
+        Category category =
+                categoryId == null
+                        ? null
+                        : categoryRepository
+                                .findByIdAndOwner(categoryId, owner)
+                                .orElseThrow(
+                                        () ->
+                                                new InvalidIdException(
+                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
+
+        String imageUrl = s3Upload.upload(imageFile);
+        Content content =
+                Image.builder().imageUrl(imageUrl).category(category).owner(owner).build();
+        contentRepository.save(content);
     }
 }

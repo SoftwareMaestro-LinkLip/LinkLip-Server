@@ -10,6 +10,7 @@ import com.linklip.linklipserver.dto.content.note.UpdateNoteRequest;
 import com.linklip.linklipserver.service.ContentService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.*;
+import java.io.IOException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @SuppressFBWarnings("EI_EXPOSE_REP2")
 @Api(value = "ContentController")
@@ -178,5 +180,24 @@ public class ContentController {
                         UPDATE_NOTE_SUCCESS.getSuccess(),
                         UPDATE_NOTE_SUCCESS.getMessage()),
                 HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "사진 저장 API v1")
+    @ApiResponses({@ApiResponse(code = 201, message = "사진 저장 완료")})
+    @PostMapping("/v1/image")
+    public ResponseEntity<?> saveImageV1(
+            @RequestPart @Valid SaveImageRequest request,
+            @RequestPart MultipartFile imageFile,
+            @AuthenticationPrincipal User user)
+            throws IOException {
+
+        contentService.saveImageContent(request, imageFile, user);
+
+        return new ResponseEntity<>(
+                new ServerResponse(
+                        SAVE_IMAGE_SUCCESS.getStatus(),
+                        SAVE_IMAGE_SUCCESS.getSuccess(),
+                        SAVE_IMAGE_SUCCESS.getMessage()),
+                HttpStatus.CREATED);
     }
 }
