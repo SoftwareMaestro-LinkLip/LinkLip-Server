@@ -1,15 +1,3 @@
-cloud:
-  aws:
-    credentials:
-      accessKey: ${secrets.AWS_ACCESS_KEY}       # AWS IAM AccessKey 적기
-      secretKey: ${secrets.AWS_SECRET_KEY}   # AWS IAM SecretKey 적기
-    s3:
-      bucket: ${secrets.AWS_S3_FILE_STORAGE_BUCKET}   # ex) marryting-gyunny
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
----
 spring:
   profiles:
     active: dev
