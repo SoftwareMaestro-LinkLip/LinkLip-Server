@@ -10,12 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "https://develop.d2q3btuxg9ucoe.amplifyapp.com/",
-                        "http://develop.d2q3btuxg9ucoe.amplifyapp.com/",
-                        "https://www.linklip.link/",
-                        "http://localhost:3000/",
-                        "http://localhost:8080/")
+                .allowedOrigins("*")
                 .allowedMethods(
                         HttpMethod.OPTIONS.name(),
                         HttpMethod.GET.name(),
@@ -23,6 +18,6 @@ public class CorsConfig implements WebMvcConfigurer {
                         HttpMethod.PATCH.name(),
                         HttpMethod.PUT.name(),
                         HttpMethod.DELETE.name())
-                .allowCredentials(true);
+                .allowCredentials(false);
     }
 }
