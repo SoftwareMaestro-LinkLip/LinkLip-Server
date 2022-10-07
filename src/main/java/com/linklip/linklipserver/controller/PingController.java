@@ -30,6 +30,6 @@ public class PingController {
                         TEST_PING_SUCCESS.getStatus(),
                         TEST_PING_SUCCESS.getSuccess(),
                         TEST_PING_SUCCESS.getMessage()),
-                HttpStatus.CREATED);
+                HttpStatus.OK);
     }
 }
