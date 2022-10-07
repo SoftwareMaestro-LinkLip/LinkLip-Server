@@ -59,6 +59,6 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers("/token/**", "/ping")
-                .antMatchers(HttpMethod.OPTIONS, "/category/v1", "/content/v1");
+                .antMatchers(HttpMethod.OPTIONS, "/category/v1/**", "/content/v1/**");
     }
 }
