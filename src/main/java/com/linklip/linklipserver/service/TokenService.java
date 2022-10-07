@@ -51,8 +51,12 @@ public class TokenService {
     @Transactional
     public Map<String, String> reissueRefreshToken(ReissueTokenRequest request) {
 
-        if (JwtTokenUtils.isExpired(request.getRefreshToken(), key)) {
-            throw new ExpiredTokenException("만료된 RefreshToken 입니다");
+        try {
+            if (JwtTokenUtils.isExpired(request.getRefreshToken(), key)) {
+                throw new ExpiredTokenException("만료된 RefreshToken 입니다");
+            }
+        } catch (RuntimeException e) {
+            throw new NotValidTokenException("인증되지 않은 사용자입니다");
         }
 
         Long userId = JwtTokenUtils.getUserId(request.getAccessToken(), key);
@@ -77,8 +81,7 @@ public class TokenService {
                 return;
             }
         }
-
         // 에러 발생
-        throw new NotValidTokenException("유효하지 않는 RefreshToken 입니다");
+        throw new NotValidTokenException("인증되지 않은 사용자입니다");
     }
 }
