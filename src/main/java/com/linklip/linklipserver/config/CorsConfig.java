@@ -18,6 +18,6 @@ public class CorsConfig implements WebMvcConfigurer {
                         HttpMethod.PATCH.name(),
                         HttpMethod.PUT.name(),
                         HttpMethod.DELETE.name())
-                .allowCredentials(true);
+                .allowCredentials(false);
     }
 }
