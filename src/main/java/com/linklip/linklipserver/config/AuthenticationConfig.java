@@ -56,6 +56,6 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/token/**", "/ping");
+        web.ignoring().antMatchers("/token/**");
     }
 }
