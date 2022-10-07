@@ -17,6 +17,7 @@ public enum SuccessResponse {
     UPDATE_NOTE_SUCCESS(HttpStatus.OK, "OK11", "메모 수정 완료"),
     REISSUE_TOKEN_SUCCESS(HttpStatus.OK, "OK12", "토큰 재발급 완료"),
     SAVE_IMAGE_SUCCESS(HttpStatus.CREATED, "OK13", "사진 저장 완료"),
+    TEST_PING_SUCCESS(HttpStatus.OK, "OK14", "상태 검사 완료"),
     ;
 
     @Getter private final int status;
