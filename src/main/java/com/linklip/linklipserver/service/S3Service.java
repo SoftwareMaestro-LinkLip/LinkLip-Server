@@ -28,4 +28,9 @@ public class S3Upload {
 
         return amazonS3.getUrl(bucket, s3FileName).toString();
     }
+
+    public void delete(String imageUrl) {
+        String s3FileName = imageUrl.split("/")[3];
+        amazonS3.deleteObject(bucket, s3FileName);
+    }
 }
