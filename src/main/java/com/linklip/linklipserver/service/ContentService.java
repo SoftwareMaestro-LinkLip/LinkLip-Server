@@ -150,7 +150,11 @@ public class ContentService {
                         .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+
         content.delete();
+        if (content instanceof Image) {
+            s3Service.delete(((Image) content).getImageUrl());
+        }
     }
 
     @Transactional
