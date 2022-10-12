@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
-public class S3Upload {
+public class S3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
