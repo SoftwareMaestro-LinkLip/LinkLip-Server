@@ -28,7 +28,7 @@ public class ContentService {
 
     private final CategoryRepository categoryRepository;
     private final ContentRepository contentRepository;
-    private final S3Upload s3Upload;
+    private final S3Service s3Service;
 
     // 컨텐츠 저장
     @Transactional
@@ -150,7 +150,11 @@ public class ContentService {
                         .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+
         content.delete();
+        if (content instanceof Image) {
+            s3Service.delete(((Image) content).getImageUrl());
+        }
     }
 
     @Transactional
@@ -211,7 +215,7 @@ public class ContentService {
                                                 new InvalidIdException(
                                                         NOT_EXSIT_CATEGORY_ID.getMessage()));
 
-        String imageUrl = s3Upload.upload(imageFile);
+        String imageUrl = s3Service.upload(imageFile);
         Content content =
                 Image.builder().imageUrl(imageUrl).category(category).owner(owner).build();
         contentRepository.save(content);
