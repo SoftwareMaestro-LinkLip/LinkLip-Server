@@ -23,7 +23,7 @@ public class PingController {
     @ApiOperation(value = "상태 검사 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "상태 검사 완료")})
     @GetMapping
-    public ResponseEntity<?> testPingV1() {
+    public ResponseEntity<ServerResponse> testPingV1() {
 
         return new ResponseEntity<>(
                 new ServerResponse(

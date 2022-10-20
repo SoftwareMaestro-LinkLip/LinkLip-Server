@@ -13,6 +13,7 @@ import io.swagger.annotations.*;
 import java.io.IOException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,7 +35,7 @@ public class ContentController {
     @ApiOperation(value = "링크 저장 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "링크 저장 완료")})
     @PostMapping("/v1/link")
-    public ResponseEntity<?> saveLinkV1(
+    public ResponseEntity<ServerResponse> saveLinkV1(
             @RequestBody @Valid SaveLinkRequest request, @AuthenticationPrincipal User user) {
 
         contentService.saveLinkContent(request, user);
@@ -50,14 +51,14 @@ public class ContentController {
     @ApiOperation(value = "링크 검색 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1/link")
-    public ResponseEntity<?> findContentListV1(
+    public ResponseEntity<ServerResponseWithData<Page<ContentDto>>> findContentListV1(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
                     Pageable pageable,
             @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
-                new ServerResponseWithData(
+                new ServerResponseWithData<>(
                         FIND_CONTENT_LIST_SUCCESS.getStatus(),
                         FIND_CONTENT_LIST_SUCCESS.getSuccess(),
                         FIND_CONTENT_LIST_SUCCESS.getMessage(),
@@ -68,14 +69,14 @@ public class ContentController {
     @ApiOperation(value = "컨텐츠 검색 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "검색결과 조회 완료")})
     @GetMapping("/v1")
-    public ResponseEntity<?> findContentListV2(
+    public ResponseEntity<ServerResponseWithData<Page<ContentDto>>> findContentListV2(
             @ModelAttribute FindContentRequest request,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC, size = 20)
                     Pageable pageable,
             @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
-                new ServerResponseWithData(
+                new ServerResponseWithData<>(
                         FIND_CONTENT_LIST_SUCCESS.getStatus(),
                         FIND_CONTENT_LIST_SUCCESS.getSuccess(),
                         FIND_CONTENT_LIST_SUCCESS.getMessage(),
@@ -86,11 +87,11 @@ public class ContentController {
     @ApiOperation(value = "컨텐츠 상세정보 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "상세정보 조회 완료")})
     @GetMapping("/v1/link/{contentId}")
-    public ResponseEntity<?> findLinkV1(
+    public ResponseEntity<ServerResponseWithData<FindContentResponse>> findLinkV1(
             @PathVariable Long contentId, @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
-                new ServerResponseWithData(
+                new ServerResponseWithData<>(
                         FIND_CONTENT_SUCCESS.getStatus(),
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
@@ -105,7 +106,7 @@ public class ContentController {
             @PathVariable Long contentId, @AuthenticationPrincipal User user) {
 
         return new ResponseEntity<>(
-                new ServerResponseWithData(
+                new ServerResponseWithData<>(
                         FIND_CONTENT_SUCCESS.getStatus(),
                         FIND_CONTENT_SUCCESS.getSuccess(),
                         FIND_CONTENT_SUCCESS.getMessage(),
@@ -116,7 +117,7 @@ public class ContentController {
     @ApiOperation("링크 내용 수정 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "링크 내용 수정 완료")})
     @PatchMapping("/v1/link/{contentId}")
-    public ResponseEntity<?> updateLinkV1(
+    public ResponseEntity<ServerResponse> updateLinkV1(
             @PathVariable Long contentId,
             @RequestBody @Valid UpdateLinkRequest request,
             @AuthenticationPrincipal User user) {
@@ -134,7 +135,7 @@ public class ContentController {
     @ApiOperation("컨텐츠 삭제 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "컨텐츠 삭제 완료")})
     @DeleteMapping("/v1/{contentId}")
-    public ResponseEntity<?> deleteContentV1(
+    public ResponseEntity<ServerResponse> deleteContentV1(
             @PathVariable Long contentId, @AuthenticationPrincipal User user) {
 
         contentService.deleteContent(contentId, user);
@@ -150,7 +151,7 @@ public class ContentController {
     @ApiOperation(value = "메모 저장 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "메모 저장 완료")})
     @PostMapping("/v1/note")
-    public ResponseEntity<?> saveNoteV1(
+    public ResponseEntity<ServerResponse> saveNoteV1(
             @RequestBody @Valid SaveNoteRequest request, @AuthenticationPrincipal User user) {
 
         contentService.saveNoteContent(request, user);
@@ -166,12 +167,11 @@ public class ContentController {
     @ApiOperation(value = "메모 수정 API v1")
     @ApiResponses({@ApiResponse(code = 200, message = "메모 수정 완료")})
     @PatchMapping("/v1/note/{contentId}")
-    public ResponseEntity<?> updateNoteV1(
+    public ResponseEntity<ServerResponse> updateNoteV1(
             @PathVariable Long contentId,
             @RequestBody @Valid UpdateNoteRequest request,
             @AuthenticationPrincipal User user) {
 
-        System.out.println("Request User = " + user);
         contentService.updateNoteContent(contentId, request, user);
 
         return new ResponseEntity<>(
@@ -185,7 +185,7 @@ public class ContentController {
     @ApiOperation(value = "사진 저장 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "사진 저장 완료")})
     @PostMapping("/v1/image")
-    public ResponseEntity<?> saveImageV1(
+    public ResponseEntity<ServerResponse> saveImageV1(
             @RequestPart @Valid SaveImageRequest request,
             @RequestPart MultipartFile imageFile,
             @AuthenticationPrincipal User user)

@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,8 @@ public class TokenController {
     @ApiOperation(value = "토큰 재발급 API v1")
     @ApiResponses({@ApiResponse(code = 201, message = "토큰 재발급 완료")})
     @PostMapping("/v1/refresh-token")
-    public ResponseEntity<?> reissueToken(@RequestBody @Valid ReissueTokenRequest request) {
+    public ResponseEntity<ServerResponseWithData<Map<String, String>>> reissueToken(
+            @RequestBody @Valid ReissueTokenRequest request) {
 
         return new ResponseEntity<>(
                 new ServerResponseWithData<>(

@@ -55,7 +55,7 @@ public class CategoryController {
         List<CategoryDto> allCategory = categoryService.findAllCategoryByOwner(user);
 
         return new ResponseEntity<>(
-                new ServerResponseWithData(
+                new ServerResponseWithData<>(
                         GET_CATEGORY_SUCCESS.getStatus(),
                         GET_CATEGORY_SUCCESS.getSuccess(),
                         GET_CATEGORY_SUCCESS.getMessage(),
