@@ -30,21 +30,10 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final S3Upload s3Upload;
 
-    // 컨텐츠 저장
     @Transactional
     public void saveLinkContent(SaveLinkRequest request, User owner) {
 
-        Long categoryId = request.getCategoryId();
-
-        Category category =
-                categoryId == null
-                        ? null
-                        : categoryRepository
-                                .findByIdAndOwner(categoryId, owner)
-                                .orElseThrow(
-                                        () ->
-                                                new InvalidIdException(
-                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
+        Category category = getCategory(request.getCategoryId(), owner);
 
         Content content =
                 Link.builder()
@@ -129,16 +118,7 @@ public class ContentService {
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
 
         String title = request.getTitle();
-        Long categoryId = request.getCategoryId();
-        Category category =
-                categoryId == null
-                        ? null
-                        : categoryRepository
-                                .findByIdAndOwner(categoryId, owner)
-                                .orElseThrow(
-                                        () ->
-                                                new InvalidIdException(
-                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
+        Category category = getCategory(request.getCategoryId(), owner);
         ((Link) content).update(title, category);
     }
 
@@ -155,18 +135,8 @@ public class ContentService {
 
     @Transactional
     public void saveNoteContent(SaveNoteRequest request, User owner) {
-        Long categoryId = request.getCategoryId();
 
-        Category category =
-                categoryId == null
-                        ? null
-                        : categoryRepository
-                                .findByIdAndOwner(categoryId, owner)
-                                .orElseThrow(
-                                        () ->
-                                                new InvalidIdException(
-                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
-
+        Category category = getCategory(request.getCategoryId(), owner);
         Content content =
                 Note.builder().text(request.getText()).category(category).owner(owner).build();
         contentRepository.save(content);
@@ -175,23 +145,13 @@ public class ContentService {
     @Transactional
     public void updateNoteContent(Long contentId, UpdateNoteRequest request, User owner) {
 
+        Category category = getCategory(request.getCategoryId(), owner);
         Content content =
                 contentRepository
                         .findByIdAndOwner(contentId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
-
         String text = request.getText();
-        Long categoryId = request.getCategoryId();
-        Category category =
-                categoryId == null
-                        ? null
-                        : categoryRepository
-                                .findByIdAndOwner(categoryId, owner)
-                                .orElseThrow(
-                                        () ->
-                                                new InvalidIdException(
-                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
         ((Note) content).update(text, category);
     }
 
@@ -199,21 +159,20 @@ public class ContentService {
     public void saveImageContent(SaveImageRequest request, MultipartFile imageFile, User owner)
             throws IOException {
 
-        Long categoryId = request.getCategoryId();
-
-        Category category =
-                categoryId == null
-                        ? null
-                        : categoryRepository
-                                .findByIdAndOwner(categoryId, owner)
-                                .orElseThrow(
-                                        () ->
-                                                new InvalidIdException(
-                                                        NOT_EXSIT_CATEGORY_ID.getMessage()));
+        Category category = getCategory(request.getCategoryId(), owner);
 
         String imageUrl = s3Upload.upload(imageFile);
         Content content =
                 Image.builder().imageUrl(imageUrl).category(category).owner(owner).build();
         contentRepository.save(content);
+    }
+
+    private Category getCategory(Long categoryId, User owner) {
+        return categoryId == null
+                ? null
+                : categoryRepository
+                        .findByIdAndOwner(categoryId, owner)
+                        .orElseThrow(
+                                () -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
     }
 }
