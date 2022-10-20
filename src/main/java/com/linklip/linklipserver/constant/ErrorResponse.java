@@ -8,11 +8,11 @@ public enum ErrorResponse {
     NOT_FOUND(HttpStatus.NOT_FOUND, "ERR02", "요청 경로 오류"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR03", "서버 내부 오류"),
     INVALID_CONTENT_TYPE(HttpStatus.BAD_REQUEST, "ERR04", "잘못된 Content Type입니다"),
-    NOT_EXSIT_CONTENT_ID(HttpStatus.NOT_FOUND, "ERR05", "존재하지 않는 Content ID입니다"),
-    NOT_EXSIT_CATEGORY_ID(HttpStatus.NOT_FOUND, "ERR06", "존재하지 않는 Category ID입니다"),
+    NOT_EXIST_CONTENT_ID(HttpStatus.NOT_FOUND, "ERR05", "존재하지 않는 Content ID입니다"),
+    NOT_EXIST_CATEGORY_ID(HttpStatus.NOT_FOUND, "ERR06", "존재하지 않는 Category ID입니다"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "ERR07", "인증되지 않은 사용자입니다"),
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "ERR08", "만료된 Access 토큰입니다"),
-    NOT_EXSIT_USER_ID(HttpStatus.NOT_FOUND, "ERR09", "존재하지 않는 User ID입니다"),
+    NOT_EXIST_USER_ID(HttpStatus.NOT_FOUND, "ERR09", "존재하지 않는 User ID입니다"),
     ;
 
     @Getter private int status;

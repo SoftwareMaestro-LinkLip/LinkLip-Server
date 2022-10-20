@@ -1,6 +1,6 @@
 package com.linklip.linklipserver.service;
 
-import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_USER_ID;
+import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXIST_USER_ID;
 
 import com.linklip.linklipserver.domain.RefreshToken;
 import com.linklip.linklipserver.domain.User;
@@ -62,7 +62,7 @@ public class TokenService {
     private User getUser(Long userId) {
         return userRepository
                 .findById(userId)
-                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_USER_ID.getMessage()));
+                .orElseThrow(() -> new InvalidIdException(NOT_EXIST_USER_ID.getMessage()));
     }
 
     private void validate(ReissueTokenRequest request) {

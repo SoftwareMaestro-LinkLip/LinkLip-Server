@@ -1,6 +1,6 @@
 package com.linklip.linklipserver.service;
 
-import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXSIT_CATEGORY_ID;
+import static com.linklip.linklipserver.constant.ErrorResponse.NOT_EXIST_CATEGORY_ID;
 
 import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.User;
@@ -52,7 +52,7 @@ public class CategoryService {
         try {
             categoryRepository.deleteById(categoryId);
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage());
+            throw new InvalidIdException(NOT_EXIST_CATEGORY_ID.getMessage());
         }
     }
 
@@ -60,6 +60,6 @@ public class CategoryService {
         return categoryRepository
                 .findByIdAndOwner(categoryId, owner)
                 .orElseThrow(
-                        () -> new IllegalArgumentException(NOT_EXSIT_CATEGORY_ID.getMessage()));
+                        () -> new IllegalArgumentException(NOT_EXIST_CATEGORY_ID.getMessage()));
     }
 }

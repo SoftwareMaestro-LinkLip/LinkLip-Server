@@ -136,13 +136,13 @@ public class ContentService {
                 : categoryRepository
                         .findByIdAndOwner(categoryId, owner)
                         .orElseThrow(
-                                () -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
+                                () -> new InvalidIdException(NOT_EXIST_CATEGORY_ID.getMessage()));
     }
 
     private Content getContent(Long contentId, User owner) {
         return contentRepository
                 .findByIdAndOwner(contentId, owner)
-                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+                .orElseThrow(() -> new InvalidIdException(NOT_EXIST_CONTENT_ID.getMessage()));
     }
 
     private Page<Content> getContents(
