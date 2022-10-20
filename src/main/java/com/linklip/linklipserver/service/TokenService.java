@@ -39,10 +39,7 @@ public class TokenService {
     @Transactional
     public void saveRefreshToken(Long userId, String token) {
 
-        User user =
-                userRepository
-                        .findById(userId)
-                        .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_USER_ID.getMessage()));
+        User user = getUser(userId);
 
         RefreshToken refreshToken = RefreshToken.builder().token(token).user(user).build();
         tokenRepository.save(refreshToken);
@@ -51,6 +48,24 @@ public class TokenService {
     @Transactional
     public Map<String, String> reissueRefreshToken(ReissueTokenRequest request) {
 
+        validate(request);
+
+        Long userId = JwtTokenUtils.getUserId(request.getAccessToken(), key);
+        String newAccessToken = JwtTokenUtils.generateToken(userId, key, accessTokenExpiredTime);
+        String newRefreshToken = JwtTokenUtils.generateToken(userId, key, refreshTokenExpiredTime);
+
+        changeToken(request, userId, newRefreshToken);
+
+        return responseTokens(newAccessToken, newRefreshToken);
+    }
+
+    private User getUser(Long userId) {
+        return userRepository
+                .findById(userId)
+                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_USER_ID.getMessage()));
+    }
+
+    private void validate(ReissueTokenRequest request) {
         try {
             if (JwtTokenUtils.isExpired(request.getRefreshToken(), key)) {
                 throw new ExpiredTokenException("만료된 RefreshToken 입니다");
@@ -58,19 +73,6 @@ public class TokenService {
         } catch (RuntimeException e) {
             throw new NotValidTokenException("인증되지 않은 사용자입니다");
         }
-
-        Long userId = JwtTokenUtils.getUserId(request.getAccessToken(), key);
-
-        String newAccessToken = JwtTokenUtils.generateToken(userId, key, accessTokenExpiredTime);
-        String newRefreshToken = JwtTokenUtils.generateToken(userId, key, refreshTokenExpiredTime);
-
-        Map<String, String> tokens = new LinkedHashMap<>();
-        tokens.put("accessToken", newAccessToken);
-        tokens.put("refreshToken", newRefreshToken);
-
-        changeToken(request, userId, newRefreshToken);
-
-        return tokens;
     }
 
     private void changeToken(ReissueTokenRequest request, Long userId, String newRefreshToken) {
@@ -81,7 +83,13 @@ public class TokenService {
                 return;
             }
         }
-        // 에러 발생
         throw new NotValidTokenException("인증되지 않은 사용자입니다");
+    }
+
+    private Map<String, String> responseTokens(String newAccessToken, String newRefreshToken) {
+        Map<String, String> tokens = new LinkedHashMap<>();
+        tokens.put("accessToken", newAccessToken);
+        tokens.put("refreshToken", newRefreshToken);
+        return tokens;
     }
 }
