@@ -28,7 +28,7 @@ public class ContentService {
 
     private final CategoryRepository categoryRepository;
     private final ContentRepository contentRepository;
-    private final S3Upload s3Upload;
+    private final S3Service s3Service;
 
     @Transactional
     public void saveLinkContent(SaveLinkRequest request, User owner) {
@@ -96,6 +96,9 @@ public class ContentService {
 
         Content content = getContent(contentId, owner);
         content.delete();
+        if (content instanceof Image) {
+            s3Service.delete(((Image) content).getImageUrl());
+        }
     }
 
     @Transactional
@@ -121,7 +124,7 @@ public class ContentService {
 
         Category category = getCategory(request.getCategoryId(), owner);
 
-        String imageUrl = s3Upload.upload(imageFile);
+        String imageUrl = s3Service.upload(imageFile);
         Content content =
                 Image.builder().imageUrl(imageUrl).category(category).owner(owner).build();
         contentRepository.save(content);
