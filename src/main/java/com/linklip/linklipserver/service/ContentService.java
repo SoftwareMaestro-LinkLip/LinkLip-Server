@@ -50,37 +50,16 @@ public class ContentService {
     public Page<ContentDto> findContentList(
             FindContentRequest request, Pageable pageable, User owner) {
 
-        String term = request.getTerm();
-        Long categoryId = request.getCategoryId();
-        Long ownerId = owner.getId();
-
-        Page<Content> page = null;
-
-        if (categoryId != null && StringUtils.hasText(term)) {
-            page =
-                    contentRepository.findByCategoryAndTermAndOwner(
-                            categoryId, term, pageable, ownerId);
-        }
-
-        if (categoryId != null && !StringUtils.hasText(term)) {
-            page = contentRepository.findByCategoryAndOwner(categoryId, pageable, ownerId);
-        }
-
-        if (categoryId == null && StringUtils.hasText(term)) {
-            page = contentRepository.findByTermAndOwner(term, pageable, ownerId);
-        }
-
-        if (categoryId == null && !StringUtils.hasText(term)) {
-            page = contentRepository.findAllByOwner(pageable, owner);
-        }
+        Page<Content> page =
+                getContents(
+                        pageable, owner, request.getCategoryId(), request.getTerm(), owner.getId());
 
         return page.map(
-                (c) -> {
-                    // Link Content
+                (Content c) -> {
                     if (c instanceof Link) {
                         return new LinkDto((Link) c);
                     }
-                    // Note Content
+
                     if (c instanceof Note) {
                         return new NoteDto((Note) c);
                     }
@@ -107,11 +86,9 @@ public class ContentService {
     @Transactional
     public void updateLinkContent(Long contentId, UpdateLinkRequest request, User owner) {
 
-        Content content = getContent(contentId, owner);
-
-        String title = request.getTitle();
         Category category = getCategory(request.getCategoryId(), owner);
-        ((Link) content).update(title, category);
+        Content content = getContent(contentId, owner);
+        ((Link) content).update(request.getTitle(), category);
     }
 
     @Transactional
@@ -135,8 +112,7 @@ public class ContentService {
 
         Category category = getCategory(request.getCategoryId(), owner);
         Content content = getContent(contentId, owner);
-        String text = request.getText();
-        ((Note) content).update(text, category);
+        ((Note) content).update(request.getText(), category);
     }
 
     @Transactional
@@ -164,5 +140,28 @@ public class ContentService {
         return contentRepository
                 .findByIdAndOwner(contentId, owner)
                 .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+    }
+
+    private Page<Content> getContents(
+            Pageable pageable, User owner, Long categoryId, String term, Long ownerId) {
+
+        if (categoryId != null && StringUtils.hasText(term)) {
+            return contentRepository.findByCategoryAndTermAndOwner(
+                    categoryId, term, pageable, ownerId);
+        }
+
+        if (categoryId != null && !StringUtils.hasText(term)) {
+            return contentRepository.findByCategoryAndOwner(categoryId, pageable, ownerId);
+        }
+
+        if (categoryId == null && StringUtils.hasText(term)) {
+            return contentRepository.findByTermAndOwner(term, pageable, ownerId);
+        }
+
+        if (categoryId == null && !StringUtils.hasText(term)) {
+            return contentRepository.findAllByOwner(pageable, owner);
+        }
+
+        throw new InvalidIdException(INVALID_CONTENT_TYPE.getMessage());
     }
 }
