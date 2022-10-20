@@ -42,13 +42,7 @@ public class CategoryService {
 
     @Transactional
     public void updateCategory(Long categoryId, UpdateCategoryRequest request, User owner) {
-        Category category =
-                categoryRepository
-                        .findByIdAndOwner(categoryId, owner)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                NOT_EXSIT_CATEGORY_ID.getMessage()));
+        Category category = getCategory(categoryId, owner);
         category.update(request.getName());
     }
 
