@@ -55,4 +55,11 @@ public class CategoryService {
             throw new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage());
         }
     }
+
+    private Category getCategory(Long categoryId, User owner) {
+        return categoryRepository
+                .findByIdAndOwner(categoryId, owner)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(NOT_EXSIT_CATEGORY_ID.getMessage()));
+    }
 }
