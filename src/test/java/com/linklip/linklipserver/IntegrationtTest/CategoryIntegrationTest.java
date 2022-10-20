@@ -58,7 +58,7 @@ public class CategoryIntegrationTest {
     class CreateCategoryIntegrationTest {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -74,7 +74,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("일반적인 카테고리 명인 경우 201")
-        public void createNormalCategory() throws Exception {
+        void createNormalCategory() throws Exception {
             String name = "취업 공고";
             CreateCategoryRequest createCategoryRequest = new CreateCategoryRequest();
             createCategoryRequest.setName(name);
@@ -89,7 +89,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("카테고리 명이 null이라는 문자열인 경우 201")
-        public void createStringNullCategory() throws Exception {
+        void createStringNullCategory() throws Exception {
             String name = "null";
             CreateCategoryRequest createCategoryRequest = new CreateCategoryRequest();
             createCategoryRequest.setName(name);
@@ -104,7 +104,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("카테고리 명이 null인 경우 400")
-        public void createNullCategory() throws Exception {
+        void createNullCategory() throws Exception {
             CreateCategoryRequest createCategoryRequest = new CreateCategoryRequest();
             createCategoryRequest.setName(null);
 
@@ -118,7 +118,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("카테고리 명이 Empty인 경우 400")
-        public void createEmtpyCategory() throws Exception {
+        void createEmptyCategory() throws Exception {
             CreateCategoryRequest createCategoryRequest = new CreateCategoryRequest();
             createCategoryRequest.setName("");
 
@@ -136,7 +136,7 @@ public class CategoryIntegrationTest {
     class FindCategoryIntegrationTest {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -152,7 +152,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("카테고리 조회에 성공한 경우 200")
-        public void findCategory() throws Exception {
+        void findCategory() throws Exception {
             mockMvc.perform(
                             get("/category/v1")
                                     .contentType(MediaType.APPLICATION_JSON)
@@ -166,7 +166,7 @@ public class CategoryIntegrationTest {
     class UpdateCategoryIntegrationTest {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -182,7 +182,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("일반적인 카테고리명 수정")
-        public void updateCategory() throws Exception {
+        void updateCategory() throws Exception {
 
             // given
             Category category = testUtils.saveCategory("운동", testUser);
@@ -205,7 +205,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("이미 존재하는 카테고리명으로 수정")
-        public void updateCategoryByPresentName() throws Exception {
+        void updateCategoryByPresentName() throws Exception {
 
             // given
             Category category1 = testUtils.saveCategory("운동", testUser);
@@ -229,7 +229,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("빈값으로 카테고리명 수정")
-        public void updateCategoryByNullName() throws Exception {
+        void updateCategoryByNullName() throws Exception {
 
             // given
             Category category = testUtils.saveCategory("운동", testUser);
@@ -256,7 +256,7 @@ public class CategoryIntegrationTest {
     class DeleteCategoryIntegrationTest {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -272,7 +272,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("컨텐츠가 존재하지 않는 카테고리 수정")
-        public void deleteEmptyCategory() throws Exception {
+        void deleteEmptyCategory() throws Exception {
             // given
             Category category1 = testUtils.saveCategory("운동", testUser);
             testUtils.saveCategory("개발", testUser);
@@ -293,7 +293,7 @@ public class CategoryIntegrationTest {
 
         @Test
         @DisplayName("컨텐츠가 존재하는 카테고리 수정")
-        public void deleteCategoryHavingContents() throws Exception {
+        void deleteCategoryHavingContents() throws Exception {
             // given
             Category category1 = testUtils.saveCategory("홈페이지", testUser);
             Category category2 = testUtils.saveCategory("개발", testUser);

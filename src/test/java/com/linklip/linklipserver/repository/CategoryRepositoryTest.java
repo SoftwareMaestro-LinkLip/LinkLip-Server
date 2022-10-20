@@ -26,7 +26,7 @@ class CategoryRepositoryTest {
 
         @Test
         @DisplayName("일반적인 카테고리 명 생성")
-        public void createCategory() {
+        void createCategory() {
             Category category = Category.builder().name("취업 공고").build();
             Category createdCategory = categoryRepository.save(category);
             assertThat(createdCategory).isEqualTo(category);
@@ -34,7 +34,7 @@ class CategoryRepositoryTest {
 
         @Test
         @DisplayName("중복되는 카테고리 명 생성")
-        public void createDuplicatedCategory() {
+        void createDuplicatedCategory() {
             Category category1 = Category.builder().name("취업 공고").build();
             Category createdCategory1 = categoryRepository.save(category1);
             Category category2 = Category.builder().name("취업 공고").build();
@@ -47,7 +47,7 @@ class CategoryRepositoryTest {
 
         @Test
         @DisplayName("null이라는 카테고리 명 생성")
-        public void createNullCategory() {
+        void createNullCategory() {
             Category category = Category.builder().name("null").build();
             Category createdCategory = categoryRepository.save(category);
 
@@ -56,7 +56,7 @@ class CategoryRepositoryTest {
 
         @Test
         @DisplayName("Empty 카테고리 명 생성")
-        public void createEmptyCategory() {
+        void createEmptyCategory() {
             Category category = Category.builder().name("").build();
             Category createdCategory = categoryRepository.save(category);
 
@@ -69,7 +69,7 @@ class CategoryRepositoryTest {
     class FindCategory {
         @Test
         @DisplayName("이름 순으로 카테고리 조회")
-        public void findCategoryNormal() {
+        void findCategoryNormal() {
             User user1 =
                     User.builder()
                             .nickName("Team LinkLip")
@@ -95,7 +95,7 @@ class CategoryRepositoryTest {
     class DeleteCategory {
         @Test
         @DisplayName("일반적인 카테고리 삭제")
-        public void deleteCategoryNormal() {
+        void deleteCategoryNormal() {
             // given
             User user1 =
                     User.builder()

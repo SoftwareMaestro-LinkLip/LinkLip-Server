@@ -36,7 +36,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("링크 url만 저장")
-        public void saveOnlyUrl() {
+        void saveOnlyUrl() {
             Content content = Link.builder().linkUrl("https://www.swmaestro.org/").build();
 
             Content savedContent = contentRepository.save(content);
@@ -45,7 +45,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("링크 url과 썸네일 저장")
-        public void saveUrlAndThumbnail() {
+        void saveUrlAndThumbnail() {
             Content content =
                     Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
@@ -59,7 +59,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("링크 url, 썸네일, Title, Text 저장")
-        public void saveLinkContent() {
+        void saveLinkContent() {
             Content content =
                     Link.builder()
                             .linkUrl("https://www.swmaestro.org/")
@@ -75,7 +75,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("링크 url, 썸네일, Title, Text, 카테고리 저장")
-        public void saveLinkContentWithCategory() {
+        void saveLinkContentWithCategory() {
             Category category = Category.builder().name("취업 정보").build();
             Content content =
                     Link.builder()
@@ -103,7 +103,7 @@ class ContentRepositoryTest {
 
         // 각 test 시작 이전에 실행
         @BeforeEach
-        public void createContent() {
+        void createContent() {
 
             user1 =
                     User.builder()
@@ -165,7 +165,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("컨텐츠 불러오기")
-            public void findContent() throws Exception {
+            void findContent() throws Exception {
 
                 // when
                 Long categoryId = category.getId();
@@ -179,7 +179,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("일반적인 검색어")
-            public void findContentByNormalTerm() throws Exception {
+            void findContentByNormalTerm() throws Exception {
 
                 // when
                 Long categoryId = category.getId();
@@ -194,7 +194,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("검색어 중간에 빈칸을 포함")
-            public void findContentByBlankSpaceInTerm() throws Exception {
+            void findContentByBlankSpaceInTerm() throws Exception {
 
                 // when
                 Long categoryId = category.getId();
@@ -209,7 +209,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("여러개 검색 결과")
-            public void findMultiResult() throws Exception {
+            void findMultiResult() throws Exception {
 
                 // given
                 Content content1 =
@@ -244,7 +244,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("일치하는 검색 결과 없음")
-            public void findZeroResult() throws Exception {
+            void findZeroResult() throws Exception {
 
                 // when
                 Long categoryId = category.getId();
@@ -264,7 +264,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("일반적인 검색어")
-            public void findContentByNormalTerm() throws Exception {
+            void findContentByNormalTerm() throws Exception {
 
                 // given
                 String term = "소프트";
@@ -279,7 +279,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("검색어 중간에 빈칸을 포함")
-            public void findContentByBlankSpaceInTerm() throws Exception {
+            void findContentByBlankSpaceInTerm() throws Exception {
 
                 // given
                 String term = "웨어 마에";
@@ -294,7 +294,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("검색어 null 이거나 empty")
-            public void findContentByNullInTerm() throws Exception {
+            void findContentByNullInTerm() throws Exception {
 
                 // given
                 Content content =
@@ -310,7 +310,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("검색어 일치하는 검색 결과 없음")
-            public void findZeroResult() throws Exception {
+            void findZeroResult() throws Exception {
 
                 // given
                 String term = "1기";
@@ -325,7 +325,7 @@ class ContentRepositoryTest {
 
             @Test
             @DisplayName("여러개 검색 결과")
-            public void findMultiResult() throws Exception {
+            void findMultiResult() throws Exception {
 
                 // given
                 Content content2 =
@@ -359,7 +359,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("각 페이지 결과 갯수 확인")
-        public void getEachPageResult() throws Exception {
+        void getEachPageResult() throws Exception {
 
             // given
             Content content2 =
@@ -412,7 +412,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("일반적인 경우")
-        public void getContent() throws Exception {
+        void getContent() throws Exception {
 
             // given
             User user1 =
@@ -453,7 +453,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("카테고리 설정 없이 메모 저장")
-        public void saveOnlyText() {
+        void saveOnlyText() {
             Content content = Note.builder().text("TOPCIT 지원 기간 9월 중순까지!!").owner(user1).build();
 
             Content savedContent = contentRepository.save(content);
@@ -462,7 +462,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("카테고리 설정하여 메모 저장")
-        public void saveTextWithCategory() {
+        void saveTextWithCategory() {
             Category category = Category.builder().name("시험 접수").build();
             Category savedCategory = categoryRepository.save(category);
 
@@ -492,7 +492,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("카테고리 설정 없이 사진 저장")
-        public void saveOnlyImage() {
+        void saveOnlyImage() {
             Content content =
                     Image.builder()
                             .imageUrl(
@@ -508,7 +508,7 @@ class ContentRepositoryTest {
 
         @Test
         @DisplayName("카테고리 설정하여 사진 저장")
-        public void saveImageWithCategory() {
+        void saveImageWithCategory() {
             Category category = Category.builder().name("시험 접수").build();
             Category savedCategory = categoryRepository.save(category);
             Content content =

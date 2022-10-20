@@ -58,7 +58,7 @@ public class ContentIntegrationTest {
         Category category1;
 
         @BeforeEach
-        public void createContents() {
+        void createContents() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -89,7 +89,7 @@ public class ContentIntegrationTest {
 
             @DisplayName("컨텐츠 불러오기")
             @Test
-            public void findContent() throws Exception {
+            void findContent() throws Exception {
 
                 // when
                 Long categoryId = category1.getId();
@@ -109,7 +109,7 @@ public class ContentIntegrationTest {
 
             @DisplayName("일반적인 검색어")
             @Test
-            public void FindContentByNormalTerm() throws Exception {
+            void FindContentByNormalTerm() throws Exception {
 
                 // when
                 Long categoryId = category1.getId();
@@ -131,7 +131,7 @@ public class ContentIntegrationTest {
 
             @Test
             @DisplayName("검색어에 아무것도 입력하지 않음")
-            public void findContentByNullInTerm() throws Exception {
+            void findContentByNullInTerm() throws Exception {
 
                 // when
                 Long categoryId = category1.getId();
@@ -153,7 +153,7 @@ public class ContentIntegrationTest {
 
             @Test
             @DisplayName("일치하는 검색 결과 없음")
-            public void findZeroResult() throws Exception {
+            void findZeroResult() throws Exception {
 
                 // when
                 Long categoryId = category1.getId();
@@ -180,7 +180,7 @@ public class ContentIntegrationTest {
 
             @DisplayName("일반적인 검색어")
             @Test
-            public void findContentByNormalTerm() throws Exception {
+            void findContentByNormalTerm() throws Exception {
 
                 // when
                 String term = "소마";
@@ -200,7 +200,7 @@ public class ContentIntegrationTest {
 
             @Test
             @DisplayName("검색어에 아무것도 입력하지 않음")
-            public void findContentByNullInTerm() throws Exception {
+            void findContentByNullInTerm() throws Exception {
 
                 // when
                 String term = "";
@@ -220,7 +220,7 @@ public class ContentIntegrationTest {
 
             @Test
             @DisplayName("일치하는 검색 결과 없음")
-            public void findZeroResult() throws Exception {
+            void findZeroResult() throws Exception {
 
                 // when
                 String term = "1기";
@@ -240,7 +240,7 @@ public class ContentIntegrationTest {
 
             @Test
             @DisplayName("검색어 없이 조회")
-            public void findContentByNotTerm() throws Exception {
+            void findContentByNotTerm() throws Exception {
 
                 // when
                 ResultActions actions =
@@ -259,7 +259,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("마지막 페이지 결과 갯수 확인")
-        public void getLastPageResult() throws Exception {
+        void getLastPageResult() throws Exception {
 
             // given
             String baseUrl = "https://www.swmaestro.org";
@@ -288,7 +288,7 @@ public class ContentIntegrationTest {
         Content link1;
 
         @BeforeEach
-        public void createContents() {
+        void createContents() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -319,7 +319,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("일반적인 링크 상세보기")
-        public void findNormalContent() throws Exception {
+        void findNormalContent() throws Exception {
 
             // when
             Long contentId = link1.getId();
@@ -336,7 +336,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("존재하지 않는 id 상세보기")
-        public void findNotExistContent() throws Exception {
+        void findNotExistContent() throws Exception {
 
             // when
             Long contentId = 987654321L;
@@ -357,7 +357,7 @@ public class ContentIntegrationTest {
     class UpdateLink {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
             String socialId = "GOOGLE_123123123";
             testUser =
                     User.builder()
@@ -372,7 +372,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("링크 컨텐츠의 Title만 수정")
-        public void updateTitle() throws Exception {
+        void updateTitle() throws Exception {
 
             Category category = testUtils.saveCategory("활동", testUser);
 
@@ -398,7 +398,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("링크 컨텐츠의 Title과 카테고리 수정")
-        public void updateTitleAndCategory() throws Exception {
+        void updateTitleAndCategory() throws Exception {
 
             Category category1 = testUtils.saveCategory("활동", testUser);
 
@@ -430,7 +430,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("링크 컨텐츠의 Title 없이 수정 요청을 보내면 400")
-        public void updateWithoutTitle() throws Exception {
+        void updateWithoutTitle() throws Exception {
 
             Category category1 = testUtils.saveCategory("활동", testUser);
 
@@ -461,7 +461,7 @@ public class ContentIntegrationTest {
     class DeleteContent {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -477,7 +477,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("일반적인 경우")
-        public void deleteNormalContent() throws Exception {
+        void deleteNormalContent() throws Exception {
 
             // given
             Category category = testUtils.saveCategory("포털", testUser);
@@ -504,7 +504,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("존재하지 않는 컨텐츠 삭제")
-        public void deleteNotExistContent() throws Exception {
+        void deleteNotExistContent() throws Exception {
 
             // given
             Category category = testUtils.saveCategory("포털", testUser);
@@ -531,7 +531,7 @@ public class ContentIntegrationTest {
         Content note1;
 
         @BeforeEach
-        public void createContents() {
+        void createContents() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -562,7 +562,7 @@ public class ContentIntegrationTest {
 
         @DisplayName("전체 메모 불러오기")
         @Test
-        public void findAllContent() throws Exception {
+        void findAllContent() throws Exception {
             ResultActions actions =
                     mockMvc.perform(
                             get("/content/v1")
@@ -578,7 +578,7 @@ public class ContentIntegrationTest {
 
         @DisplayName("검색어 없이 카테고리로 조회")
         @Test
-        public void findContentWithCategory() throws Exception {
+        void findContentWithCategory() throws Exception {
 
             // when
             Long categoryId = category1.getId();
@@ -598,7 +598,7 @@ public class ContentIntegrationTest {
 
         @DisplayName("검색어와 함께 카테고리로 조회")
         @Test
-        public void findContentWithCategoryAndTerm() throws Exception {
+        void findContentWithCategoryAndTerm() throws Exception {
 
             // when
             Long categoryId1 = category1.getId();
@@ -635,7 +635,7 @@ public class ContentIntegrationTest {
 
         @DisplayName("카테고리 없이 검색어로 조회")
         @Test
-        public void findContentWithTerm() throws Exception {
+        void findContentWithTerm() throws Exception {
 
             // when
             String term = "면접";
@@ -656,7 +656,7 @@ public class ContentIntegrationTest {
 
         @DisplayName("메모 상세 조회")
         @Test
-        public void findContentDetail() throws Exception {
+        void findContentDetail() throws Exception {
 
             // when
             Long contentId = note1.getId();
@@ -680,7 +680,7 @@ public class ContentIntegrationTest {
         Content note1;
 
         @BeforeEach
-        public void createContents() {
+        void createContents() {
 
             String socialId = "GOOGLE_123123123";
             testUser =
@@ -698,7 +698,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("Note Content 상세보기")
-        public void finNoteContent() throws Exception {
+        void finNoteContent() throws Exception {
 
             // when
             Long contentId = note1.getId();
@@ -715,7 +715,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("존재하지 않는 id의 Note Content 상세보기")
-        public void findNotExistNoteContent() throws Exception {
+        void findNotExistNoteContent() throws Exception {
 
             // when
             Long contentId = 987654321L;
@@ -734,7 +734,7 @@ public class ContentIntegrationTest {
     class UpdateNoteContent {
 
         @BeforeEach
-        public void createUser() {
+        void createUser() {
             String socialId = "GOOGLE_123123123";
             testUser =
                     User.builder()
@@ -749,7 +749,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("메모 컨텐츠 text 수정")
-        public void updateText() throws Exception {
+        void updateText() throws Exception {
 
             // given
             Category category = testUtils.saveCategory("ToDo List", testUser);
@@ -781,7 +781,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("메모 컨텐츠 text, 카테고리 수정")
-        public void updateTextAndCategory() throws Exception {
+        void updateTextAndCategory() throws Exception {
 
             // given
             Category fromCategory = testUtils.saveCategory("ToDo List", testUser);
@@ -812,7 +812,7 @@ public class ContentIntegrationTest {
 
         @Test
         @DisplayName("메모 컨텐츠의 text 없이 수정 요청을 보내면 400")
-        public void updateWithoutText() throws Exception {
+        void updateWithoutText() throws Exception {
 
             // given
             Category fromCategory = testUtils.saveCategory("ToDo List", testUser);
