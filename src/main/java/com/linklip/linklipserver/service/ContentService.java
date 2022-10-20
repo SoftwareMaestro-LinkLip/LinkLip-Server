@@ -91,11 +91,7 @@ public class ContentService {
 
     public ContentDto findContent(Long contentId, User owner) {
 
-        Content content =
-                contentRepository
-                        .findByIdAndOwner(contentId, owner)
-                        .orElseThrow(
-                                () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+        Content content = getContent(contentId, owner);
 
         if (content instanceof Link) {
             return new LinkDto((Link) content);
@@ -111,11 +107,7 @@ public class ContentService {
     @Transactional
     public void updateLinkContent(Long contentId, UpdateLinkRequest request, User owner) {
 
-        Content content =
-                contentRepository
-                        .findByIdAndOwner(contentId, owner)
-                        .orElseThrow(
-                                () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+        Content content = getContent(contentId, owner);
 
         String title = request.getTitle();
         Category category = getCategory(request.getCategoryId(), owner);
@@ -125,11 +117,7 @@ public class ContentService {
     @Transactional
     public void deleteContent(Long contentId, User owner) {
 
-        Content content =
-                contentRepository
-                        .findByIdAndOwner(contentId, owner)
-                        .orElseThrow(
-                                () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+        Content content = getContent(contentId, owner);
         content.delete();
     }
 
@@ -146,11 +134,7 @@ public class ContentService {
     public void updateNoteContent(Long contentId, UpdateNoteRequest request, User owner) {
 
         Category category = getCategory(request.getCategoryId(), owner);
-        Content content =
-                contentRepository
-                        .findByIdAndOwner(contentId, owner)
-                        .orElseThrow(
-                                () -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
+        Content content = getContent(contentId, owner);
         String text = request.getText();
         ((Note) content).update(text, category);
     }
@@ -174,5 +158,11 @@ public class ContentService {
                         .findByIdAndOwner(categoryId, owner)
                         .orElseThrow(
                                 () -> new InvalidIdException(NOT_EXSIT_CATEGORY_ID.getMessage()));
+    }
+
+    private Content getContent(Long contentId, User owner) {
+        return contentRepository
+                .findByIdAndOwner(contentId, owner)
+                .orElseThrow(() -> new InvalidIdException(NOT_EXSIT_CONTENT_ID.getMessage()));
     }
 }
