@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("image")
 public class Image extends Content {
 
-    @Lob
-    private String imageUrl;
+    @Lob private String imageUrl;
 
     @Builder
     public Image(String imageUrl, Category category, User owner) {
