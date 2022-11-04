@@ -70,5 +70,5 @@ git clone https://github.com/SoftwareMaestro-LinkLip/LinkLip-Server.git
  ```
 
 ## 💠 ERD
-<img width="1508" alt="Screen Shot 2022-07-27 at 4 02 22 PM" src="https://user-images.githubusercontent.com/39653584/181182856-31c8952f-cccd-4ab1-9800-cd753cc70a93.png">
+<img width="1508" alt="Screen Shot 2022-07-27 at 4 02 22 PM" src="https://user-images.githubusercontent.com/39055981/196995605-5dc3c714-b419-47c9-9714-22da4d194864.JPG">
 
