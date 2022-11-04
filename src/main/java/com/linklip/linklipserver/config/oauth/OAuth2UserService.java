@@ -4,6 +4,7 @@ import com.linklip.linklipserver.config.auth.PrincipalDetails;
 import com.linklip.linklipserver.domain.Social;
 import com.linklip.linklipserver.domain.User;
 import com.linklip.linklipserver.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -38,7 +39,10 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         String socialId = Social.GOOGLE + "_" + oAuth2User.getAttributes().get("sub");
 
-        if (!userRepository.existsBySocialId(socialId)) {
+        Optional<User> optionalUser = userRepository.findBySocialId(socialId);
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+        } else {
             user = userRepository.save(oAuth2Attributes.toEntity());
         }
 
