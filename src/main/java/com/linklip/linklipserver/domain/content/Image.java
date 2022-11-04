@@ -4,6 +4,7 @@ import com.linklip.linklipserver.domain.Category;
 import com.linklip.linklipserver.domain.User;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("image")
 public class Image extends Content {
 
+    @Lob
     private String imageUrl;
 
     @Builder
