@@ -38,7 +38,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         String socialId = Social.GOOGLE + "_" + oAuth2User.getAttributes().get("sub");
 
-        if (!userRepository.existsBySocialId(socialId)) {
+        if (userRepository.findBySocialId(socialId).isPresent()) {
+            user = userRepository.findBySocialId(socialId).get();
+        } else {
             user = userRepository.save(oAuth2Attributes.toEntity());
         }
 
