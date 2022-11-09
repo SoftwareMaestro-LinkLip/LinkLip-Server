@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-    private User user;
 
     // 구글로 부터 받은 UserRequest 데이터에 대한 후처리되는 함수 (구글로 부터 회원프로필 받음)
     @Override
@@ -40,6 +39,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String socialId = Social.GOOGLE + "_" + oAuth2User.getAttributes().get("sub");
 
         Optional<User> optionalUser = userRepository.findBySocialId(socialId);
+        User user;
         if (optionalUser.isPresent()) {
             user = optionalUser.get();
         } else {
