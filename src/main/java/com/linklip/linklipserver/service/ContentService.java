@@ -56,13 +56,9 @@ public class ContentService {
 
         return page.map(
                 (Content c) -> {
-                    if (c instanceof Link) {
-                        return new LinkDto((Link) c);
-                    }
+                    ContentDto contentDto = getContentDto(c);
 
-                    if (c instanceof Note) {
-                        return new NoteDto((Note) c);
-                    }
+                    if (contentDto != null) return contentDto;
 
                     throw new InvalidIdException(INVALID_CONTENT_TYPE.getMessage());
                 });
@@ -72,13 +68,9 @@ public class ContentService {
 
         Content content = getContent(contentId, owner);
 
-        if (content instanceof Link) {
-            return new LinkDto((Link) content);
-        }
+        ContentDto contentDto = getContentDto(content);
 
-        if (content instanceof Note) {
-            return new NoteDto((Note) content);
-        }
+        if (contentDto != null) return contentDto;
 
         throw new InvalidIdException(INVALID_CONTENT_TYPE.getMessage());
     }
@@ -166,5 +158,20 @@ public class ContentService {
         }
 
         throw new InvalidIdException(INVALID_CONTENT_TYPE.getMessage());
+    }
+
+    private ContentDto getContentDto(Content content) {
+        if (content instanceof Link) {
+            return new LinkDto((Link) content);
+        }
+
+        if (content instanceof Note) {
+            return new NoteDto((Note) content);
+        }
+
+        if (content instanceof Image) {
+            return new ImageDto((Image) content);
+        }
+        return null;
     }
 }
