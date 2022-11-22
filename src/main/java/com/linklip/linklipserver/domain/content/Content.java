@@ -46,6 +46,7 @@ public abstract class Content extends JpaBaseDomain {
     }
 
     public void delete() {
+        this.category = null;
         this.isDeleted = true;
     }
 }
